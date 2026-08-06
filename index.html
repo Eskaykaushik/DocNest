@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DocNest — Documentation, done simply</title>
+  <meta name="description" content="DocNest is a lightweight, dependency-free documentation engine powered by Markdown." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/markdown.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+</head>
+<body>
+  <a class="visually-hidden" href="#main-content">Skip to content</a>
+
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">D</span>
+        DocNest
+      </a>
+      <nav class="nav-actions" aria-label="Primary">
+        <a class="back-link" href="https://github.com" target="_blank" rel="noopener">
+          GitHub
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section class="hero">
+      <span class="hero-eyebrow">Markdown in, docs out</span>
+      <h1 class="hero-title">Documentation that writes<br /><span class="accent">itself into place</span></h1>
+      <p class="hero-subtitle">
+        Drop a Markdown file into <code>tutorials/</code>, add one line to
+        <code>tutorials.json</code>, and DocNest handles layout, search, and
+        navigation for you.
+      </p>
+
+      <div class="search-wrap">
+        <div class="search-input-group">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="7" cy="7" r="5" />
+            <path d="M11 11L14.5 14.5" stroke-linecap="round" />
+          </svg>
+          <input
+            type="search"
+            id="search-input"
+            placeholder="Search tutorials…"
+            aria-label="Search tutorials"
+            autocomplete="off"
+          />
+          <span class="kbd-hint" aria-hidden="true">/</span>
+        </div>
+        <p class="search-empty-hint" id="search-empty-hint" role="status"></p>
+      </div>
+    </section>
+
+    <section class="categories-section" aria-label="Filter by category">
+      <div class="categories-row" id="categories-row"></div>
+    </section>
+
+    <section class="tutorials-section" aria-label="Tutorials">
+      <div class="tutorials-grid" id="tutorials-grid"></div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    Built with DocNest — HTML, CSS and vanilla JavaScript, nothing else.
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

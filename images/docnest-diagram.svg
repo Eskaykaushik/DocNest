@@ -1,0 +1,30 @@
+<svg viewBox="0 0 760 220" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">DocNest publishing flow</title>
+  <desc id="desc">A Markdown file flows through DocNest into a rendered documentation page.</desc>
+  <defs>
+    <style>
+      .box { fill: #161B22; stroke: #30363D; stroke-width: 1.5; }
+      .label { fill: #F0F6FC; font-family: 'JetBrains Mono', monospace; font-size: 14px; }
+      .sub { fill: #8B949E; font-family: 'Inter', sans-serif; font-size: 11px; }
+      .arrow { stroke: #58A6FF; stroke-width: 2; fill: none; marker-end: url(#arrowhead); }
+    </style>
+    <marker id="arrowhead" markerWidth="10" markerHeight="8" refX="8" refY="4" orient="auto">
+      <path d="M0,0 L10,4 L0,8 Z" fill="#58A6FF" />
+    </marker>
+  </defs>
+  <rect x="20" y="70" width="180" height="80" rx="10" class="box" />
+  <text x="110" y="105" text-anchor="middle" class="label">welcome.md</text>
+  <text x="110" y="124" text-anchor="middle" class="sub">Markdown file</text>
+
+  <line x1="200" y1="110" x2="280" y2="110" class="arrow" />
+
+  <rect x="290" y="70" width="180" height="80" rx="10" class="box" />
+  <text x="380" y="105" text-anchor="middle" class="label">marked.js</text>
+  <text x="380" y="124" text-anchor="middle" class="sub">Parse + highlight</text>
+
+  <line x1="470" y1="110" x2="550" y2="110" class="arrow" />
+
+  <rect x="560" y="70" width="180" height="80" rx="10" class="box" />
+  <text x="650" y="105" text-anchor="middle" class="label">tutorial.html</text>
+  <text x="650" y="124" text-anchor="middle" class="sub">Rendered page</text>
+</svg>

@@ -1,0 +1,18 @@
+[
+  {
+    "id": "welcome",
+    "title": "Welcome to DocNest",
+    "description": "A quick tour of every Markdown feature DocNest supports, from tables to task lists.",
+    "category": "General",
+    "difficulty": "Beginner",
+    "file": "tutorials/welcome.md"
+  },
+  {
+    "id": "langchain",
+    "title": "Building Your First LangChain Agent",
+    "description": "Wire up a tool-using agent in Python and call it from a small JavaScript client.",
+    "category": "AI & ML",
+    "difficulty": "Intermediate",
+    "file": "tutorials/langchain.md"
+  }
+]
