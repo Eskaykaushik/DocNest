@@ -14,5 +14,13 @@
     "category": "AI & ML",
     "difficulty": "Intermediate",
     "file": "tutorials/langchain.md"
+  },
+  {
+    "id": "langgraph",
+    "title": "Building Stateful Workflows with LangGraph",
+    "description": "Learn how nodes, edges, and shared state let you build branching, looping workflows that go beyond a simple agent loop.",
+    "category": "AI & ML",
+    "difficulty": "Intermediate",
+    "file": "tutorials/langgraph.md"
   }
 ]
