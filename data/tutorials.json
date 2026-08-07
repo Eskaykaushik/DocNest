@@ -22,5 +22,21 @@
     "category": "AI & ML",
     "difficulty": "Intermediate",
     "file": "tutorials/langgraph.md"
+  },
+  {
+    "id": "python",
+    "title": "Python Fundamentals for Building with LLMs",
+    "description": "Type hints, dictionaries, TypedDict, decorators, and async — the core Python concepts behind LangChain and LangGraph code.",
+    "category": "Programming",
+    "difficulty": "Beginner",
+    "file": "tutorials/python.md"
+  },
+  {
+    "id": "agent-eval-techniques",
+    "title": "Agent Evaluation Techniques",
+    "description": "From golden datasets to LLM-as-judge — how to systematically measure whether an agent actually works, and catch regressions.",
+    "category": "AI & ML",
+    "difficulty": "Intermediate",
+    "file": "tutorials/agent-eval-techniques.md"
   }
 ]
