@@ -10,9 +10,33 @@
   {
     "id": "langchain",
     "title": "Building Your First LangChain Agent",
-    "description": "Wire up a tool-using agent in Python and call it from a small JavaScript client.",
+    "description": "A deep, beginner-friendly walkthrough of tools, agents, and the reasoning loop in LangChain, from first principles to a working JavaScript client.",
     "category": "AI & ML",
     "difficulty": "Intermediate",
     "file": "tutorials/langchain.md"
+  },
+  {
+    "id": "langgraph",
+    "title": "Building Stateful Workflows with LangGraph",
+    "description": "Learn how nodes, edges, and shared state let you build branching, looping workflows that go beyond a simple agent loop.",
+    "category": "AI & ML",
+    "difficulty": "Intermediate",
+    "file": "tutorials/langgraph.md"
+  },
+  {
+    "id": "python",
+    "title": "Python Fundamentals for Building with LLMs",
+    "description": "Type hints, dictionaries, TypedDict, decorators, and async — the core Python concepts behind LangChain and LangGraph code.",
+    "category": "Programming",
+    "difficulty": "Beginner",
+    "file": "tutorials/python.md"
+  },
+  {
+    "id": "agent-eval-techniques",
+    "title": "Agent Evaluation Techniques",
+    "description": "From golden datasets to LLM-as-judge — how to systematically measure whether an agent actually works, and catch regressions.",
+    "category": "AI & ML",
+    "difficulty": "Intermediate",
+    "file": "tutorials/agent-eval-techniques.md"
   }
 ]
