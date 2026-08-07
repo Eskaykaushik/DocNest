@@ -10,7 +10,7 @@
   {
     "id": "langchain",
     "title": "Building Your First LangChain Agent",
-    "description": "Wire up a tool-using agent in Python and call it from a small JavaScript client.",
+    "description": "A deep, beginner-friendly walkthrough of tools, agents, and the reasoning loop in LangChain, from first principles to a working JavaScript client.",
     "category": "AI & ML",
     "difficulty": "Intermediate",
     "file": "tutorials/langchain.md"
