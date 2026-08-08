@@ -9,6 +9,7 @@
 import { escapeHtml } from "./utils.js";
 
 const GROUP_KEY = "docnest.sidebar"; // expanded/collapsed state, per group name
+const RAIL_KEY = "docnest.sidebar-rail"; // desktop collapsed-rail state
 
 /**
  * Build (or rebuild) the sidebar inside `container`.
@@ -73,9 +74,11 @@ function renderGroup(group, activeId) {
             ${chevronSvg()}
             ${escapeHtml(subtopic.name)}
           </button>
-          <ul class="sidebar-subgroup-items">
-            ${subtopic.tutorials.map((t) => renderLink(t, activeId)).join("")}
-          </ul>
+          <div class="sidebar-collapse">
+            <ul class="sidebar-subgroup-items">
+              ${subtopic.tutorials.map((t) => renderLink(t, activeId)).join("")}
+            </ul>
+          </div>
         </li>
       `
     )
@@ -91,10 +94,12 @@ function renderGroup(group, activeId) {
         <span>${escapeHtml(group.name)}</span>
         <span class="sidebar-group-count">${count}</span>
       </button>
-      <ul class="sidebar-items">
-        ${directItems}
-        ${subtopicItems}
-      </ul>
+      <div class="sidebar-collapse">
+        <ul class="sidebar-items">
+          ${directItems}
+          ${subtopicItems}
+        </ul>
+      </div>
     </div>
   `;
 }
@@ -141,12 +146,41 @@ export function initSidebarDrawer(toggleSelector = ".sidebar-toggle") {
   const backdrop = document.querySelector(".sidebar-backdrop");
   if (!toggle) return;
 
+  const isMobile = () => window.matchMedia("(max-width: 1024px)").matches;
+
   const close = () => document.body.classList.remove("sidebar-open");
   const open = () => document.body.classList.add("sidebar-open");
 
+  const setCollapsed = (collapsed) => {
+    document.body.classList.toggle("sidebar-collapsed", collapsed);
+    toggle.setAttribute("aria-expanded", String(!collapsed));
+    toggle.setAttribute(
+      "aria-label",
+      collapsed ? "Expand sidebar" : "Collapse sidebar"
+    );
+    try {
+      localStorage.setItem(RAIL_KEY, collapsed ? "1" : "0");
+    } catch {
+      /* storage unavailable — state just won't persist */
+    }
+  };
+
+  try {
+    if (localStorage.getItem(RAIL_KEY) === "1") {
+      document.body.classList.add("sidebar-collapsed");
+      toggle.setAttribute("aria-expanded", "false");
+    }
+  } catch {
+    /* ignore */
+  }
+
   toggle.addEventListener("click", () => {
-    const isOpen = document.body.classList.contains("sidebar-open");
-    isOpen ? close() : open();
+    if (isMobile()) {
+      const isOpen = document.body.classList.contains("sidebar-open");
+      isOpen ? close() : open();
+    } else {
+      setCollapsed(!document.body.classList.contains("sidebar-collapsed"));
+    }
   });
 
   backdrop?.addEventListener("click", close);
