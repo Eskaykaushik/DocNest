@@ -34,13 +34,16 @@ function getRenderer() {
   };
 
   renderer.code = (code, infoString) => {
-    const language = (infoString || "").trim().split(/\s+/)[0] || "text";
-    const validLanguage = hljs.getLanguage(language) ? language : "plaintext";
+    const tokens = (infoString || "").trim().split(/\s+/);
+    const language = tokens[0] || "text";
+    const isTabbed = tokens.includes("tabs");
+    const langInfo = hljs.getLanguage(language);
+    const validLanguage = langInfo ? language : "plaintext";
     const highlighted = hljs.highlight(code, { language: validLanguage }).value;
-    const label = validLanguage === "plaintext" ? "text" : validLanguage;
+    const label = langInfo?.name || (validLanguage === "plaintext" ? "text" : validLanguage);
 
     return `
-      <div class="code-block">
+      <div class="code-block"${isTabbed ? ` data-tab="${escapeHtml(label)}"` : ""}>
         <div class="code-block-header">
           <span class="code-lang">${escapeHtml(label)}</span>
           <button type="button" class="copy-btn" data-code="${encodeURIComponent(code)}">
@@ -117,4 +120,90 @@ async function handleCopyClick(button) {
     button.classList.remove("copied");
     if (label) label.textContent = "Copy";
   }, 1800);
+}
+
+/**
+ * Merge consecutive code fences tagged with the `tabs` keyword into a single
+ * tabbed container. Each fence becomes a panel; a language tab bar is built
+ * from each block's language label. Safe to call multiple times; already
+ * grouped blocks are skipped via a marker attribute.
+ *
+ * Markdown authoring:
+ *   ```python tabs
+ *   print("hello")
+ *   ```
+ *   ```javascript tabs
+ *   console.log("hello");
+ *   ```
+ *
+ * @param {HTMLElement} container
+ */
+export function initCodeTabs(container) {
+  const blocks = Array.from(container.querySelectorAll(".code-block[data-tab]:not([data-tabbed])"));
+  if (blocks.length === 0) return;
+
+  const groups = groupConsecutive(blocks);
+
+  groups.forEach((run) => {
+    if (run.length < 2) {
+      // A lone `tabs` fence — render it as a normal code block.
+      delete run[0].dataset.tab;
+      return;
+    }
+
+    const tabs = document.createElement("div");
+    tabs.className = "code-tabs";
+
+    const bar = document.createElement("div");
+    bar.className = "code-tabs-bar";
+    const label = document.createElement("span");
+    label.className = "code-tabs-label";
+    label.textContent = "Language";
+    bar.appendChild(label);
+
+    run.forEach((block, index) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "code-tab-btn";
+      button.textContent = block.dataset.tab;
+      if (index === 0) button.classList.add("active");
+      button.addEventListener("click", () => activateTab(tabs, index));
+      bar.appendChild(button);
+
+      block.setAttribute("data-tabbed", "true");
+      delete block.dataset.tab;
+      block.hidden = index !== 0;
+    });
+
+    run[0].parentNode.insertBefore(tabs, run[0]);
+    tabs.appendChild(bar);
+    run.forEach((block) => tabs.appendChild(block));
+  });
+}
+
+/** Split adjacent sibling nodes into maximal consecutive runs. */
+function groupConsecutive(nodes) {
+  const groups = [];
+  let run = [];
+  let previous = null;
+
+  for (const node of nodes) {
+    if (previous && node.previousElementSibling !== previous) {
+      groups.push(run);
+      run = [];
+    }
+    run.push(node);
+    previous = node;
+  }
+  if (run.length) groups.push(run);
+  return groups;
+}
+
+function activateTab(tabs, index) {
+  tabs.querySelectorAll(".code-tab-btn").forEach((button, i) => {
+    button.classList.toggle("active", i === index);
+  });
+  tabs.querySelectorAll(".code-block").forEach((block, i) => {
+    block.hidden = i !== index;
+  });
 }
