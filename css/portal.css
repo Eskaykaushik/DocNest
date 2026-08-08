@@ -6,6 +6,32 @@
    ========================================================================== */
 
 /* --------------------------------------------------------------------- */
+/* Motion helpers                                                         */
+/* --------------------------------------------------------------------- */
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: translateY(-4px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* --------------------------------------------------------------------- */
 /* Shell: sticky sidebar + content column                                 */
 /* --------------------------------------------------------------------- */
 
@@ -23,10 +49,28 @@
   gap: 48px;
   align-items: start;
   padding: 0 24px;
+  transition: grid-template-columns var(--duration-base) var(--ease),
+    gap var(--duration-base) var(--ease);
 }
 
 .content-column {
   min-width: 0;
+}
+
+/* Desktop: collapsing the sidebar shrinks the grid track so the article
+   smoothly reclaims the space. Only applies above the mobile breakpoint,
+   where the sidebar is an off-canvas drawer instead. */
+
+@media (min-width: 1025px) {
+  body.sidebar-collapsed .page-shell {
+    grid-template-columns: 0 minmax(0, 1fr);
+    gap: 0;
+  }
+
+  body.sidebar-collapsed .sidebar {
+    overflow: hidden;
+    padding-right: 0;
+  }
 }
 
 /* --------------------------------------------------------------------- */
@@ -53,6 +97,20 @@
   padding: 0 12px;
 }
 
+.sidebar-group {
+  animation: fade-up var(--duration-base) var(--ease) backwards;
+}
+
+.sidebar-group:nth-of-type(1) { animation-delay: 20ms; }
+.sidebar-group:nth-of-type(2) { animation-delay: 60ms; }
+.sidebar-group:nth-of-type(3) { animation-delay: 100ms; }
+.sidebar-group:nth-of-type(4) { animation-delay: 140ms; }
+.sidebar-group:nth-of-type(5) { animation-delay: 180ms; }
+.sidebar-group:nth-of-type(6) { animation-delay: 220ms; }
+.sidebar-group:nth-of-type(7) { animation-delay: 260ms; }
+.sidebar-group:nth-of-type(8) { animation-delay: 300ms; }
+.sidebar-group:nth-of-type(9) { animation-delay: 340ms; }
+
 .sidebar-group + .sidebar-group {
   margin-top: 22px;
 }
@@ -78,12 +136,25 @@
   background: var(--color-surface);
 }
 
-.sidebar-group[aria-expanded="false"] .sidebar-items {
-  display: none;
+.sidebar-group[aria-expanded="false"] > .sidebar-collapse,
+.sidebar-subgroup[aria-expanded="false"] > .sidebar-collapse {
+  grid-template-rows: 0fr;
+  opacity: 0;
 }
 
-.sidebar-subgroup[aria-expanded="false"] .sidebar-subgroup-items {
-  display: none;
+/* Smooth height animation: the wrapper is a 1-row grid whose row track
+   animates between 1fr (open) and 0fr (closed), clipping the list inside. */
+
+.sidebar-collapse {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--duration-base) var(--ease),
+    opacity var(--duration-base) var(--ease);
+}
+
+.sidebar-collapse > * {
+  overflow: hidden;
+  min-height: 0;
 }
 
 .sidebar-group-icon {
@@ -125,12 +196,15 @@
   border-left: 2px solid transparent;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
   transition: color var(--duration-fast) var(--ease),
-    background var(--duration-fast) var(--ease);
+    background var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
 }
 
 .sidebar-link:hover {
   color: var(--color-text);
   background: var(--color-surface);
+  transform: translateX(2px);
 }
 
 .sidebar-link.active {
@@ -200,10 +274,10 @@
   padding-left: 56px;
 }
 
-/* Sidebar toggle (mobile drawer) */
+/* Sidebar toggle (mobile drawer + desktop collapse) */
 
 .sidebar-toggle {
-  display: none;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 36px;
@@ -213,12 +287,14 @@
   border-radius: var(--radius-sm);
   color: var(--color-muted);
   transition: color var(--duration-fast) var(--ease),
-    border-color var(--duration-fast) var(--ease);
+    border-color var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
 }
 
 .sidebar-toggle:hover {
   color: var(--color-text);
   border-color: var(--color-accent);
+  transform: translateY(-1px);
 }
 
 .sidebar-toggle svg {
@@ -263,6 +339,7 @@ body.sidebar-open .sidebar-backdrop {
 
 .search-wrap.is-open .search-dropdown {
   display: block;
+  animation: pop-in 160ms var(--ease) backwards;
 }
 
 .palette-group {
@@ -347,12 +424,26 @@ body.sidebar-open .sidebar-backdrop {
   border-radius: var(--radius-md);
   overflow: hidden;
   transition: border-color var(--duration-base) var(--ease),
-    box-shadow var(--duration-base) var(--ease);
+    box-shadow var(--duration-base) var(--ease),
+    transform var(--duration-base) var(--ease);
+  animation: fade-up var(--duration-base) var(--ease) backwards;
 }
+
+.learning-path:nth-of-type(1) { animation-delay: 20ms; }
+.learning-path:nth-of-type(2) { animation-delay: 60ms; }
+.learning-path:nth-of-type(3) { animation-delay: 100ms; }
+.learning-path:nth-of-type(4) { animation-delay: 140ms; }
+.learning-path:nth-of-type(5) { animation-delay: 180ms; }
+.learning-path:nth-of-type(6) { animation-delay: 220ms; }
+.learning-path:nth-of-type(7) { animation-delay: 260ms; }
+.learning-path:nth-of-type(8) { animation-delay: 300ms; }
+.learning-path:nth-of-type(9) { animation-delay: 340ms; }
 
 .learning-path:has(.path-header:hover),
 .learning-path:has(.path-header:focus-visible) {
   border-color: rgba(88, 166, 255, 0.4);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
 }
 
 .learning-path.flash {
@@ -383,11 +474,37 @@ body.sidebar-open .sidebar-backdrop {
   justify-content: center;
   color: var(--color-accent);
   flex-shrink: 0;
+  transition: transform var(--duration-fast) var(--ease),
+    background var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease);
+}
+
+.path-header:hover .path-icon {
+  transform: scale(1.08) rotate(-4deg);
+  background: rgba(88, 166, 255, 0.2);
+  border-color: rgba(88, 166, 255, 0.45);
 }
 
 .path-icon svg {
   width: 18px;
   height: 18px;
+}
+
+.path-step {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border: 1px solid rgba(88, 166, 255, 0.22);
+  border-radius: var(--radius-sm);
+  min-width: 28px;
+  height: 28px;
+  padding: 0 6px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
 }
 
 .path-name {
@@ -431,15 +548,30 @@ body.sidebar-open .sidebar-backdrop {
   flex-direction: column;
 }
 
-.learning-path.is-collapsed .path-items {
-  display: none;
+.learning-path.is-collapsed .path-items-wrap {
+  grid-template-rows: 0fr;
+  opacity: 0;
+}
+
+/* Same smooth-height trick as the sidebar, applied to the path items. */
+
+.path-items-wrap {
+  display: grid;
+  grid-template-rows: 1fr;
+  transition: grid-template-rows var(--duration-base) var(--ease),
+    opacity var(--duration-base) var(--ease);
+}
+
+.path-items-wrap > * {
+  overflow: hidden;
+  min-height: 0;
 }
 
 .path-item a {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  padding: 14px 20px 14px 68px;
+  padding: 14px 20px 14px 108px;
   border-top: 1px solid var(--color-border);
   transition: background var(--duration-fast) var(--ease);
 }
@@ -500,6 +632,7 @@ body.sidebar-open .sidebar-backdrop {
   width: 0;
   background: linear-gradient(90deg, var(--color-accent), #79c0ff);
   z-index: 60;
+  transition: width 120ms linear;
 }
 
 .tutorial-breadcrumb a {
@@ -721,10 +854,6 @@ body.sidebar-open .sidebar-backdrop {
     gap: 0;
   }
 
-  .sidebar-toggle {
-    display: inline-flex;
-  }
-
   .sidebar {
     position: fixed;
     top: 0;
@@ -760,7 +889,12 @@ body.sidebar-open .sidebar-backdrop {
   }
 
   .path-item a {
-    padding: 12px 16px 12px 64px;
+    padding: 12px 16px 12px 96px;
+  }
+
+  .path-step {
+    min-width: 24px;
+    height: 24px;
   }
 
   .path-count {

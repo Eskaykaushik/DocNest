@@ -41,10 +41,23 @@ async function init() {
     state.tutorials = await enrichWithReadingTime(index);
     search.setIndex(state.tutorials);
     renderPaths(state.tutorials);
+    renderHeroStats(index);
     scrollToPath(getQueryParam("category"));
   } catch (err) {
     renderError(err);
   }
+}
+
+/** Fill the hero with live numbers so it never goes stale. */
+function renderHeroStats(index) {
+  const statsEl = document.getElementById("hero-stats");
+  if (!statsEl) return;
+  const paths = new Set(index.map((t) => t.category)).size;
+  statsEl.innerHTML = [
+    `<span>${paths} learning paths</span>`,
+    `<span>${index.length} tutorials</span>`,
+    `<span>from Python to MLOps</span>`,
+  ].join("");
 }
 
 /**
@@ -144,9 +157,11 @@ function renderPath(group, index) {
         </span>
         <span class="path-chevron" aria-hidden="true">${chevronSvg()}</span>
       </button>
-      <ul class="path-items">
-        ${group.items.map(renderItem).join("")}
-      </ul>
+      <div class="path-items-wrap">
+        <ul class="path-items">
+          ${group.items.map(renderItem).join("")}
+        </ul>
+      </div>
     </section>
   `;
 }
