@@ -42,6 +42,17 @@ export function slugify(text) {
 }
 
 /**
+ * Format an ISO date string (YYYY-MM-DD) as a friendly label, e.g. "Aug 7, 2026".
+ * @param {string} iso
+ * @returns {string}
+ */
+export function formatDate(iso) {
+  const date = new Date(`${iso}T00:00:00`);
+  if (Number.isNaN(date.getTime())) return iso;
+  return date.toLocaleDateString(undefined, { year: "numeric", month: "short", day: "numeric" });
+}
+
+/**
  * Debounce a function so it only fires after `delay` ms of inactivity.
  * @param {Function} fn
  * @param {number} delay

@@ -76,6 +76,25 @@ export function calculateReadingTime(text, wordsPerMinute = 200) {
 }
 ```
 
+When the same idea needs to be shown in a few languages, add the `tabs` keyword to the
+fence. Consecutive `tabs` fences collapse into a single tabbed code block:
+
+```python tabs
+def reading_time(text: str, words_per_minute: int = 200) -> int:
+    """Estimate reading time in whole minutes, minimum of 1."""
+    word_count = len(text.split())
+    minutes = word_count / words_per_minute
+    return max(1, round(minutes))
+```
+
+```javascript tabs
+export function calculateReadingTime(text, wordsPerMinute = 200) {
+  const wordCount = text.trim().split(/\s+/).length;
+  const minutes = wordCount / wordsPerMinute;
+  return Math.max(1, Math.round(minutes));
+}
+```
+
 ### Lists
 
 Ordered lists are handy for sequential steps:

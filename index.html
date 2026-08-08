@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DocNest — Documentation, done simply</title>
-  <meta name="description" content="DocNest is a lightweight, dependency-free documentation engine powered by Markdown." />
+  <title>DocNest — Study place for AI enthusiasts</title>
+  <meta name="description" content="DocNest — a lightweight study place for AI enthusiasts. Search and explore docs, guides, and tutorials on anything AI." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -12,6 +12,7 @@
 
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/markdown.css" />
+  <link rel="stylesheet" href="css/portal.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
 </head>
 <body>
@@ -24,53 +25,41 @@
         DocNest
       </a>
       <nav class="nav-actions" aria-label="Primary">
-        <a class="back-link" href="https://github.com" target="_blank" rel="noopener">
-          GitHub
-        </a>
+        <a class="nav-link" href="#learning-paths">Learning Paths</a>
+        <div class="search-wrap" id="search-wrap">
+          <div class="search-input-group">
+            <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="7" cy="7" r="5" />
+              <path d="M11 11L14.5 14.5" stroke-linecap="round" />
+            </svg>
+            <input
+              type="search"
+              id="search-input"
+              placeholder="Search a topic…"
+              aria-label="Search tutorials"
+              autocomplete="off"
+            />
+            <span class="kbd-hint" aria-hidden="true">/</span>
+          </div>
+          <div class="search-dropdown" id="search-dropdown" role="listbox" aria-label="Search results"></div>
+        </div>
       </nav>
     </div>
   </header>
 
   <main id="main-content">
     <section class="hero">
-      <span class="hero-eyebrow">Markdown in, docs out</span>
-      <h1 class="hero-title">Documentation that writes<br /><span class="accent">itself into place</span></h1>
-      <p class="hero-subtitle">
-        Drop a Markdown file into <code>tutorials/</code>, add one line to
-        <code>tutorials.json</code>, and DocNest handles layout, search, and
-        navigation for you.
-      </p>
-
-      <div class="search-wrap">
-        <div class="search-input-group">
-          <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-            <circle cx="7" cy="7" r="5" />
-            <path d="M11 11L14.5 14.5" stroke-linecap="round" />
-          </svg>
-          <input
-            type="search"
-            id="search-input"
-            placeholder="Search tutorials…"
-            aria-label="Search tutorials"
-            autocomplete="off"
-          />
-          <span class="kbd-hint" aria-hidden="true">/</span>
-        </div>
-        <p class="search-empty-hint" id="search-empty-hint" role="status"></p>
-      </div>
+      <h1 class="hero-title">A nest for your<br /><span class="accent">AI curiosity</span></h1>
+      <p class="hero-subtitle">Lightweight docs on the AI tech you're learning.</p>
     </section>
 
-    <section class="categories-section" aria-label="Filter by category">
-      <div class="categories-row" id="categories-row"></div>
-    </section>
-
-    <section class="tutorials-section" aria-label="Tutorials">
-      <div class="tutorials-grid" id="tutorials-grid"></div>
-    </section>
+    <div class="home-content">
+      <div class="learning-paths" id="learning-paths"></div>
+    </div>
   </main>
 
   <footer class="site-footer">
-    Built with DocNest — HTML, CSS and vanilla JavaScript, nothing else.
+    DocNest — a nest for your AI curiosity.
   </footer>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>

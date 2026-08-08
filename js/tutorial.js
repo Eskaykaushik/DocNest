@@ -1,12 +1,22 @@
 /**
  * tutorial.js
  * Tutorial page controller: resolves the ?id= from the URL, loads the
- * matching Markdown file, renders the article, builds the table of
- * contents, and wires up previous/next navigation.
+ * matching Markdown file, renders the article, builds the sidebar + table
+ * of contents, and wires up reading progress, related tutorials, feedback,
+ * previous/next navigation, and language-tabbed code blocks.
  */
 
-import { fetchJson, fetchText, getQueryParam, calculateReadingTime, escapeHtml } from "./utils.js";
-import { renderMarkdown, initCopyButtons } from "./markdown.js";
+import {
+  fetchJson,
+  fetchText,
+  getQueryParam,
+  calculateReadingTime,
+  formatDate,
+  escapeHtml,
+} from "./utils.js";
+import { renderMarkdown, initCopyButtons, initCodeTabs } from "./markdown.js";
+import { buildSidebar, initSidebarDrawer } from "./sidebar.js";
+import { createSearch } from "./search.js";
 
 const contentEl = document.getElementById("markdown-content");
 const titleEl = document.getElementById("tutorial-title");
@@ -14,11 +24,20 @@ const breadcrumbEl = document.getElementById("tutorial-breadcrumb");
 const metaRowEl = document.getElementById("tutorial-meta-row");
 const tocEl = document.getElementById("toc");
 const paginationEl = document.getElementById("tutorial-pagination");
+const relatedSection = document.getElementById("related-section");
+const feedbackWidget = document.getElementById("feedback-widget");
+const sidebarEl = document.getElementById("sidebar");
+const progressBar = document.getElementById("reading-progress");
+
+const search = createSearch();
 
 init();
 
 async function init() {
   const id = getQueryParam("id");
+
+  initSidebarDrawer();
+  initReadingProgress();
 
   if (!id) {
     renderMissing("No tutorial was specified.");
@@ -37,12 +56,18 @@ async function init() {
 
     document.title = `${tutorial.title} · DocNest`;
 
+    search.setIndex(index);
+    buildSidebar(sidebarEl, index, tutorial.id);
+
     const markdownText = await fetchText(tutorial.file);
     renderHeader(tutorial, markdownText);
     renderArticle(markdownText);
     buildTableOfContents();
-    renderPagination(index, currentIndex);
+    initCodeTabs(contentEl);
     initCopyButtons(contentEl);
+    renderRelated(index, tutorial);
+    initFeedback(tutorial.id);
+    renderPagination(index, currentIndex);
     observeActiveSection();
   } catch (err) {
     renderMissing(err.message);
@@ -51,37 +76,124 @@ async function init() {
 }
 
 function renderHeader(tutorial, markdownText) {
-  breadcrumbEl.innerHTML = `Docs / <span class="accent">${escapeHtml(tutorial.category)}</span>`;
-  titleEl.textContent = tutorial.title;
-
+  const wordCount = markdownText.trim().split(/\s+/).filter(Boolean).length;
   const readingTime = calculateReadingTime(markdownText);
+
+  breadcrumbEl.innerHTML = `
+    <a href="index.html">Home</a>
+    / <a href="index.html?category=${encodeURIComponent(tutorial.category)}">${escapeHtml(tutorial.category)}</a>
+    / <span class="accent">${escapeHtml(tutorial.title)}</span>
+  `;
+  titleEl.textContent = tutorial.title;
 
   metaRowEl.innerHTML = `
     <span class="meta-chip">${clockIconSvg()} ${readingTime} min read</span>
-    <span class="meta-chip">${tutorial.difficulty}</span>
-    <span class="meta-chip">${tutorial.category}</span>
+    <span class="meta-chip">${escapeHtml(tutorial.difficulty)}</span>
+    <span class="meta-chip">${wordCount.toLocaleString()} words</span>
+    ${tutorial.subtopic ? `<span class="meta-chip subtopic-chip">${escapeHtml(tutorial.subtopic)}</span>` : ""}
+    ${tutorial.updated ? `<span class="meta-chip">Updated ${formatDate(tutorial.updated)}</span>` : ""}
   `;
+
+  feedbackWidget.hidden = false;
 }
 
 function renderArticle(markdownText) {
   contentEl.innerHTML = renderMarkdown(markdownText);
 }
 
-function renderMissing(message) {
-  titleEl.textContent = "Tutorial not found";
-  breadcrumbEl.textContent = "Docs";
-  metaRowEl.innerHTML = "";
-  tocEl.innerHTML = "";
-  contentEl.innerHTML = `
-    <div class="empty-state">
-      <h3>We couldn't load that tutorial</h3>
-      <p>${escapeHtml(message)}</p>
-      <p><a href="index.html" style="color: var(--color-accent);">← Back to all tutorials</a></p>
+/* --------------------------------------------------------------------- */
+/* Reading progress bar                                                   */
+/* --------------------------------------------------------------------- */
+
+function initReadingProgress() {
+  const update = () => {
+    const scrollable = document.documentElement;
+    const max = scrollable.scrollHeight - window.innerHeight;
+    const ratio = max > 0 ? Math.min(1, window.scrollY / max) : 0;
+    progressBar.style.width = `${ratio * 100}%`;
+  };
+
+  let ticking = false;
+  window.addEventListener(
+    "scroll",
+    () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(() => {
+        update();
+        ticking = false;
+      });
+    },
+    { passive: true }
+  );
+  window.addEventListener("resize", update, { passive: true });
+  update();
+}
+
+/* --------------------------------------------------------------------- */
+/* Related tutorials + feedback                                           */
+/* --------------------------------------------------------------------- */
+
+function renderRelated(index, current) {
+  const related = index
+    .filter((t) => t.category === current.category && t.id !== current.id)
+    .slice(0, 3);
+
+  if (related.length === 0) {
+    relatedSection.hidden = true;
+    return;
+  }
+
+  relatedSection.hidden = false;
+  relatedSection.innerHTML = `
+    <h2 class="related-title">More in ${escapeHtml(current.category)}</h2>
+    <div class="related-grid">
+      ${related
+        .map(
+          (tutorial) => `
+            <a class="related-card" href="tutorial.html?id=${encodeURIComponent(tutorial.id)}">
+              <span class="related-card-title">${escapeHtml(tutorial.title)}</span>
+              <span class="related-card-desc">${escapeHtml(tutorial.description)}</span>
+              <span class="related-card-meta">
+                <span>${escapeHtml(tutorial.difficulty)}</span>
+                ${tutorial.updated ? `<span>Updated ${formatDate(tutorial.updated)}</span>` : ""}
+              </span>
+            </a>
+          `
+        )
+        .join("")}
     </div>
   `;
 }
 
-/** Build the table of contents from the H2/H3 headings marked.js just rendered. */
+function initFeedback(tutorialId) {
+  const storageKey = `docnest.feedback.${tutorialId}`;
+  const buttons = feedbackWidget.querySelectorAll(".feedback-btn");
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => {
+      feedbackWidget.classList.add("voted");
+      try {
+        localStorage.setItem(storageKey, button.dataset.vote);
+      } catch {
+        /* storage unavailable — vote just won't persist */
+      }
+    });
+  });
+
+  try {
+    if (localStorage.getItem(storageKey)) {
+      feedbackWidget.classList.add("voted");
+    }
+  } catch {
+    /* ignore */
+  }
+}
+
+/* --------------------------------------------------------------------- */
+/* Table of contents + active section                                     */
+/* --------------------------------------------------------------------- */
+
 function buildTableOfContents() {
   const headings = contentEl.querySelectorAll("h2, h3");
 
@@ -125,6 +237,10 @@ function observeActiveSection() {
   headings.forEach((heading) => observer.observe(heading));
 }
 
+/* --------------------------------------------------------------------- */
+/* Prev / next                                                            */
+/* --------------------------------------------------------------------- */
+
 function renderPagination(index, currentIndex) {
   const prev = index[currentIndex - 1];
   const next = index[currentIndex + 1];
@@ -146,6 +262,24 @@ function renderPagination(index, currentIndex) {
           </a>`
         : `<span class="pagination-link pagination-placeholder"></span>`
     }
+  `;
+}
+
+/* --------------------------------------------------------------------- */
+/* Missing state                                                          */
+/* --------------------------------------------------------------------- */
+
+function renderMissing(message) {
+  titleEl.textContent = "Tutorial not found";
+  breadcrumbEl.textContent = "Docs";
+  metaRowEl.innerHTML = "";
+  tocEl.innerHTML = "";
+  contentEl.innerHTML = `
+    <div class="empty-state">
+      <h3>We couldn't load that tutorial</h3>
+      <p>${escapeHtml(message)}</p>
+      <p><a href="index.html" style="color: var(--color-accent);">← Back to all tutorials</a></p>
+    </div>
   `;
 }
 

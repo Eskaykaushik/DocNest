@@ -2,41 +2,141 @@
   {
     "id": "welcome",
     "title": "Welcome to DocNest",
-    "description": "A quick tour of every Markdown feature DocNest supports, from tables to task lists.",
-    "category": "General",
+    "description": "A quick orientation to DocNest — how to browse learning paths, search, and get the most out of each tutorial.",
+    "category": "Getting Started",
+    "subtopic": "",
     "difficulty": "Beginner",
+    "updated": "2026-08-01",
     "file": "tutorials/welcome.md"
+  },
+  {
+    "id": "python",
+    "title": "Python Fundamentals for Building with LLMs",
+    "description": "Type hints, dictionaries, TypedDict, decorators, and async — the core Python concepts behind LangChain and LangGraph code.",
+    "category": "Python",
+    "subtopic": "",
+    "difficulty": "Beginner",
+    "updated": "2026-08-07",
+    "file": "tutorials/python.md"
+  },
+  {
+    "id": "python-data",
+    "title": "Python Data Essentials",
+    "description": "NumPy for fast math, pandas for labeled tables, and matplotlib for seeing your data — the data toolkit every ML project starts from.",
+    "category": "Python",
+    "subtopic": "",
+    "difficulty": "Beginner",
+    "updated": "2026-08-08",
+    "file": "tutorials/python-data.md"
+  },
+  {
+    "id": "ml-fundamentals",
+    "title": "Machine Learning Fundamentals",
+    "description": "Features and labels, train/test splits, overfitting, and the split-fit-predict-score loop — with a working scikit-learn example.",
+    "category": "Machine Learning",
+    "subtopic": "",
+    "difficulty": "Beginner",
+    "updated": "2026-08-08",
+    "file": "tutorials/ml-fundamentals.md"
+  },
+  {
+    "id": "neural-networks",
+    "title": "Neural Networks from Scratch",
+    "description": "Weights, activations, forward pass, and gradient descent — build a network by hand in NumPy, then see the same loop in PyTorch.",
+    "category": "Deep Learning",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-08",
+    "file": "tutorials/neural-networks.md"
+  },
+  {
+    "id": "transformers",
+    "title": "Transformers Explained",
+    "description": "Attention, Query/Key/Value, multi-head heads, and why this architecture replaced RNNs — the foundation of every modern LLM.",
+    "category": "Deep Learning",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-08",
+    "file": "tutorials/transformers.md"
+  },
+  {
+    "id": "how-llms-work",
+    "title": "How LLMs Actually Work",
+    "description": "Tokens, next-token prediction, pretraining, and sampling — why models sound smart, why they hallucinate, and what it all means in practice.",
+    "category": "LLMs & Language Models",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-08",
+    "file": "tutorials/how-llms-work.md"
+  },
+  {
+    "id": "prompt-engineering",
+    "title": "Prompt Engineering Basics",
+    "description": "How models read prompts, system vs. user messages, and the few techniques — few-shot, chain-of-thought, delimiters — that carry most real-world value.",
+    "category": "LLMs & Language Models",
+    "subtopic": "",
+    "difficulty": "Beginner",
+    "updated": "2026-08-08",
+    "file": "tutorials/prompt-engineering.md"
+  },
+  {
+    "id": "function-calling",
+    "title": "Function Calling with LLM APIs",
+    "description": "The raw mechanism under every agent: how a model requests a structured call to your code, and the send-execute-feed-back loop that powers it.",
+    "category": "Agents",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-08",
+    "file": "tutorials/function-calling.md"
   },
   {
     "id": "langchain",
     "title": "Building Your First LangChain Agent",
     "description": "A deep, beginner-friendly walkthrough of tools, agents, and the reasoning loop in LangChain, from first principles to a working JavaScript client.",
-    "category": "AI & ML",
+    "category": "Agents",
+    "subtopic": "",
     "difficulty": "Intermediate",
+    "updated": "2026-08-07",
     "file": "tutorials/langchain.md"
   },
   {
     "id": "langgraph",
     "title": "Building Stateful Workflows with LangGraph",
     "description": "Learn how nodes, edges, and shared state let you build branching, looping workflows that go beyond a simple agent loop.",
-    "category": "AI & ML",
+    "category": "Agents",
+    "subtopic": "",
     "difficulty": "Intermediate",
+    "updated": "2026-08-07",
     "file": "tutorials/langgraph.md"
   },
   {
-    "id": "python",
-    "title": "Python Fundamentals for Building with LLMs",
-    "description": "Type hints, dictionaries, TypedDict, decorators, and async — the core Python concepts behind LangChain and LangGraph code.",
-    "category": "Programming",
-    "difficulty": "Beginner",
-    "file": "tutorials/python.md"
+    "id": "rag",
+    "title": "Building RAG Pipelines with Embeddings",
+    "description": "Chunk, embed, store, retrieve — a complete minimal RAG pipeline that lets an LLM answer from your documents instead of hallucinating.",
+    "category": "RAG & Retrieval",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-08",
+    "file": "tutorials/rag.md"
   },
   {
     "id": "agent-eval-techniques",
     "title": "Agent Evaluation Techniques",
     "description": "From golden datasets to LLM-as-judge — how to systematically measure whether an agent actually works, and catch regressions.",
-    "category": "AI & ML",
+    "category": "Evaluation",
+    "subtopic": "",
     "difficulty": "Intermediate",
+    "updated": "2026-08-07",
     "file": "tutorials/agent-eval-techniques.md"
+  },
+  {
+    "id": "serving-llm-apps",
+    "title": "Serving LLM Applications in Production",
+    "description": "Latency budgets, streaming, rate limits, caching, retries, and logging — what changes when real users start hitting your LLM app.",
+    "category": "MLOps",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-08",
+    "file": "tutorials/serving-llm-apps.md"
   }
 ]

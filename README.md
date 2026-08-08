@@ -11,12 +11,20 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 
 - **Pure HTML, CSS, and vanilla JavaScript.** No React, no bundler, no `node_modules`.
 - **Markdown-first content.** Every page is a `.md` file; layout and chrome are automatic.
-- **Instant client-side search** across tutorial titles and descriptions.
+- **Persistent sidebar tree** — tutorials grouped by category, with collapsible
+  subtopics and the current page highlighted; collapses to an off-canvas drawer on mobile.
+- **Sectioned homepage** with category headers, icons, and counts (GeeksforGeeks-style),
+  instead of a flat card grid.
+- **Search command palette** — press `/` or `Ctrl/⌘+K`, get grouped live results with
+  full keyboard navigation; sections filter in real time as you type.
 - **Category filtering** generated automatically from your content.
 - **Auto-generated table of contents** from `##`/`###` headings, with active-section
   highlighting as you scroll.
 - **Automatic reading-time estimates** from each tutorial's word count.
 - **Syntax-highlighted code blocks** (via highlight.js) with a one-click copy button.
+  Consecutive fences tagged `tabs` render as a single multi-language tabbed block.
+- **Related tutorials** under each article, plus a "Was this helpful?" feedback widget.
+- **Reading-progress bar** on every tutorial page.
 - **Previous / next navigation** based on tutorial order in `tutorials.json`.
 - **Dark, developer-focused UI** inspired by GitHub Docs, Stripe Docs, and MDN.
 - **Fully keyboard accessible**, with visible focus states and semantic HTML throughout.
@@ -30,13 +38,15 @@ DocNest/
 │
 ├── css/
 │   ├── style.css           Layout, navbar, cards, buttons, forms, responsive rules
-│   └── markdown.css        Typography and rendering rules for parsed Markdown
-│
+│   ├── markdown.css        Typography and rendering rules for parsed Markdown
+│   └── portal.css          GFG-style components: sidebar, palette, sections, tabs
+
 ├── js/
-│   ├── app.js               Homepage controller: load, search, filter, render cards
-│   ├── tutorial.js          Tutorial page controller: load, render, TOC, pagination
-│   ├── markdown.js          marked.js + highlight.js integration, copy buttons
-│   └── utils.js              Shared helpers (reading time, slugify, fetch wrappers…)
+│   ├── app.js               Homepage controller: sections, search palette
+│   ├── tutorial.js          Tutorial page controller: render, TOC, related, feedback
+│   ├── sidebar.js           Shared sidebar tree + drawer (both pages)
+│   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs
+│   └── utils.js             Shared helpers (reading time, slugify, fetch wrappers…)
 │
 ├── data/
 │   └── tutorials.json      The content index — one entry per tutorial
@@ -83,13 +93,21 @@ Adding a new tutorial never requires touching any JavaScript or CSS.
      "title": "Deploying a Static Site",
      "description": "Ship your site to any static host in under five minutes.",
      "category": "General",
+     "subtopic": "Hosting",
      "difficulty": "Beginner",
+     "updated": "2026-08-08",
      "file": "tutorials/deploying.md"
    }
    ```
 
-3. **Done.** The homepage card, search index, category filter, table of contents,
-   reading time, and previous/next links are all generated from that one entry.
+   Optional fields:
+   - `subtopic` — group a category into collapsible sub-sections in the sidebar
+     (e.g. `Frameworks`, `Evaluation` under "AI & ML").
+   - `updated` — ISO date (`YYYY-MM-DD`) shown as an "Updated …" chip.
+
+3. **Done.** The homepage sections, sidebar tree, search index, table of contents,
+   reading time, related tutorials, and previous/next links are all generated from
+   that one entry.
 
 The order of entries in `tutorials.json` determines the previous/next navigation
 on each tutorial page.
