@@ -711,6 +711,10 @@ body.sidebar-open .sidebar-backdrop {
 
 /* Feedback widget */
 
+.feedback-widget[hidden] {
+  display: none;
+}
+
 .feedback-widget {
   max-width: var(--max-width-reading);
   margin: 40px auto 0;

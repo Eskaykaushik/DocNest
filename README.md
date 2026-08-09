@@ -144,6 +144,4 @@ without a rewrite:
 ## License
 
 MIT — use, modify, and redistribute freely.
-=======
-# DocNest
 

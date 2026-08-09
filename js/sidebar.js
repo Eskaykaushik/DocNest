@@ -70,7 +70,7 @@ function renderGroup(group, activeId) {
     .map(
       (subtopic) => `
         <li class="sidebar-subgroup" aria-expanded="${isExpanded(subtopic.name)}">
-          <button type="button" class="sidebar-subgroup-header" aria-expanded="${isExpanded(subtopic.name)}">
+          <button type="button" class="sidebar-subgroup-header" data-key="${escapeHtml(subtopic.name)}" aria-expanded="${isExpanded(subtopic.name)}">
             ${chevronSvg()}
             ${escapeHtml(subtopic.name)}
           </button>
@@ -89,7 +89,7 @@ function renderGroup(group, activeId) {
 
   return `
     <div class="sidebar-group" aria-expanded="${isExpanded(group.name)}">
-      <button type="button" class="sidebar-group-header" aria-expanded="${isExpanded(group.name)}">
+      <button type="button" class="sidebar-group-header" data-key="${escapeHtml(group.name)}" aria-expanded="${isExpanded(group.name)}">
         ${categoryIcon(group.name)}
         <span>${escapeHtml(group.name)}</span>
         <span class="sidebar-group-count">${count}</span>
@@ -129,7 +129,7 @@ function bindCollapsibles(container) {
       const next = !expanded;
       holder.setAttribute("aria-expanded", String(next));
       button.setAttribute("aria-expanded", String(next));
-      const key = button.textContent.trim();
+      const key = button.dataset.key || button.textContent.trim();
       if (key) {
         const prefs = readPrefs();
         if (next) delete prefs[key];

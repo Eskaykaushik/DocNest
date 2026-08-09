@@ -133,21 +133,6 @@ button {
 }
 
 /* --------------------------------------------------------------------- */
-/* Layout primitives                                                      */
-/* --------------------------------------------------------------------- */
-
-.page-container {
-  max-width: var(--max-width-page);
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.reading-column {
-  max-width: var(--max-width-reading);
-  margin: 0 auto;
-}
-
-/* --------------------------------------------------------------------- */
 /* Navbar                                                                 */
 /* --------------------------------------------------------------------- */
 
@@ -416,45 +401,6 @@ button {
   font-family: var(--font-mono);
   font-size: 12px;
   flex-shrink: 0;
-}
-
-/* --------------------------------------------------------------------- */
-/* Categories                                                             */
-/* --------------------------------------------------------------------- */
-
-.categories-section {
-  padding: 40px 24px 8px;
-}
-
-.categories-row {
-  max-width: var(--max-width-page);
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-
-.category-pill {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-muted);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 999px;
-  transition: all var(--duration-fast) var(--ease);
-}
-
-.category-pill:hover {
-  color: var(--color-text);
-  border-color: var(--color-accent);
-}
-
-.category-pill[aria-pressed="true"] {
-  background: var(--color-accent-soft);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
 }
 
 /* --------------------------------------------------------------------- */

@@ -8,6 +8,7 @@
 import { slugify, escapeHtml } from "./utils.js";
 
 let renderer = null;
+let usedIds = null;
 
 /**
  * Build (once) a marked.js renderer customized for DocNest's markup:
@@ -18,8 +19,8 @@ let renderer = null;
 function getRenderer() {
   if (renderer) return renderer;
 
-  const usedIds = new Set();
   renderer = new marked.Renderer();
+  usedIds = new Set();
 
   renderer.heading = (text, level) => {
     const plainText = text.replace(/<[^>]+>/g, "").replace(/&#\d+;|&[a-z]+;/gi, "");
@@ -88,6 +89,7 @@ export function renderMarkdown(markdownText) {
     breaks: false,
     renderer: getRenderer(),
   });
+  usedIds = new Set();
   return marked.parse(markdownText);
 }
 
