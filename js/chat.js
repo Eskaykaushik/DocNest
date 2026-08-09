@@ -37,6 +37,11 @@ const el = {
 
 let history = [];
 let firstOpen = true;
+let streamTimer = null;
+
+const NEAR_BOTTOM_PX = 90;
+const STREAM_TICK_MS = 13;
+const STREAM_CHUNK = 3;
 
 if (el.launcher && el.panel) {
   init();
@@ -95,10 +100,12 @@ function closeChat() {
 }
 
 function resetConversation() {
+  clearStream();
   history = [];
   el.body.innerHTML = "";
   addMessage(TEACHER_NAME, WELCOME, "bot");
   renderChips();
+  el.send.disabled = false;
   el.input.focus();
 }
 
@@ -154,10 +161,9 @@ function addMessage(author, text, type) {
   return wrap;
 }
 
-function addTyping() {
+function addStreamingMessage() {
   const wrap = document.createElement("div");
-  wrap.className = "chat-msg bot typing-msg";
-  wrap.id = "chat-typing";
+  wrap.className = "chat-msg bot streaming";
 
   const stack = document.createElement("div");
   stack.className = "chat-msg-stack";
@@ -167,20 +173,55 @@ function addTyping() {
   label.textContent = TEACHER_NAME;
   stack.appendChild(label);
 
-  const dots = document.createElement("div");
-  dots.className = "typing";
-  dots.innerHTML = "<span></span><span></span><span></span>";
-  stack.appendChild(dots);
+  const content = document.createElement("div");
+  content.className = "chat-msg-content";
+  content.innerHTML =
+    '<span class="typing"><span></span><span></span><span></span></span>';
+  stack.appendChild(content);
 
   wrap.insertAdjacentHTML("afterbegin", avatarSvg());
   wrap.appendChild(stack);
 
   el.body.appendChild(wrap);
   scrollToBottom();
+  return { wrap, content };
 }
 
-function removeTyping() {
-  document.getElementById("chat-typing")?.remove();
+function streamResponse(bot, fullText) {
+  return new Promise((resolve) => {
+    if (!fullText) {
+      bot.content.innerHTML = renderMarkdown(fullText);
+      bot.wrap.classList.remove("streaming");
+      resolve();
+      return;
+    }
+
+    setTimeout(() => {
+      let index = 0;
+      streamTimer = setInterval(() => {
+        index += STREAM_CHUNK;
+        bot.content.textContent = fullText.slice(0, index);
+        scrollToBottom({ smooth: false });
+
+        if (index >= fullText.length) {
+          clearInterval(streamTimer);
+          streamTimer = null;
+          bot.content.innerHTML = renderMarkdown(fullText);
+          initCopyButtons(bot.wrap);
+          bot.wrap.classList.remove("streaming");
+          scrollToBottom();
+          resolve();
+        }
+      }, STREAM_TICK_MS);
+    }, 450);
+  });
+}
+
+function clearStream() {
+  if (streamTimer) {
+    clearInterval(streamTimer);
+    streamTimer = null;
+  }
 }
 
 function renderChips() {
@@ -201,8 +242,19 @@ function renderChips() {
   scrollToBottom();
 }
 
-function scrollToBottom() {
-  el.body.scrollTo({ top: el.body.scrollHeight, behavior: "smooth" });
+function scrollToBottom({ force = false, smooth = true } = {}) {
+  if (!force && !isNearBottom()) return;
+  el.body.scrollTo({
+    top: el.body.scrollHeight,
+    behavior: smooth ? "smooth" : "instant",
+  });
+}
+
+function isNearBottom() {
+  return (
+    el.body.scrollHeight - el.body.scrollTop - el.body.clientHeight <=
+    NEAR_BOTTOM_PX
+  );
 }
 
 /* --------------------------------------------------------------------- */
@@ -231,24 +283,25 @@ async function sendMessage(preset) {
 
   el.input.value = "";
   addMessage(USER_NAME, message, "user");
+  scrollToBottom({ force: true });
   history.push({ role: "user", content: message });
 
   el.send.disabled = true;
-  addTyping();
+  const bot = addStreamingMessage();
 
   try {
     const answer = await askTeacher(message);
     history.push({ role: "assistant", content: answer });
-    removeTyping();
-    addMessage(TEACHER_NAME, answer, "bot");
+    await streamResponse(bot, answer);
   } catch (error) {
     console.error("Teacher chat error:", error);
-    removeTyping();
-    addMessage(
-      TEACHER_NAME,
-      `! Couldn't reach the teacher — ${error.message}. Check your connection and try again in a moment.`,
-      "error"
-    );
+    clearStream();
+    bot.wrap.classList.remove("streaming");
+    bot.wrap.classList.add("error");
+    bot.content.textContent =
+      `! Couldn't reach the teacher — ${error.message}. ` +
+      "Check your connection and try again in a moment.";
+    scrollToBottom();
   } finally {
     el.send.disabled = false;
     el.input.focus();
