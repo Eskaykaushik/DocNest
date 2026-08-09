@@ -11,6 +11,7 @@ const API_URL = "https://kaushix-api-service.onrender.com";
 const ENDPOINT = "/api/teacher";
 
 const TEACHER_NAME = "k-mentor";
+const USER_NAME = "you";
 
 const WELCOME =
   "Hi, I'm k-mentor — your AI teacher. Ask me anything about AI: how a " +
@@ -24,9 +25,10 @@ const SUGGESTIONS = [
 ];
 
 const el = {
-  widget: document.getElementById("chat-widget"),
   launcher: document.getElementById("chat-launcher"),
+  badge: document.getElementById("chat-badge"),
   panel: document.getElementById("chat-panel"),
+  clear: document.getElementById("chat-clear"),
   close: document.getElementById("chat-close"),
   body: document.getElementById("chat-body"),
   input: document.getElementById("chat-input"),
@@ -47,6 +49,8 @@ function init() {
   });
 
   el.close.addEventListener("click", closeChat);
+
+  el.clear.addEventListener("click", resetConversation);
 
   el.send.addEventListener("click", () => sendMessage());
 
@@ -76,6 +80,7 @@ function openChat() {
 
   if (firstOpen) {
     firstOpen = false;
+    hideBadge();
     addMessage(TEACHER_NAME, WELCOME, "bot");
     renderChips();
   }
@@ -89,31 +94,60 @@ function closeChat() {
   el.launcher.classList.remove("active");
 }
 
+function resetConversation() {
+  history = [];
+  el.body.innerHTML = "";
+  addMessage(TEACHER_NAME, WELCOME, "bot");
+  renderChips();
+  el.input.focus();
+}
+
+function hideBadge() {
+  if (el.badge) el.badge.hidden = true;
+}
+
 /* --------------------------------------------------------------------- */
 /* Rendering                                                              */
 /* --------------------------------------------------------------------- */
+
+function avatarSvg() {
+  return `
+    <span class="chat-avatar" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 9L12 4 2 9l10 5 10-5z"/>
+        <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/>
+        <path d="M22 9v5"/>
+      </svg>
+    </span>`;
+}
 
 function addMessage(author, text, type) {
   const wrap = document.createElement("div");
   wrap.className = `chat-msg ${type}`;
 
+  const stack = document.createElement("div");
+  stack.className = "chat-msg-stack";
+
   const label = document.createElement("span");
   label.className = "chat-msg-label";
   label.textContent = author;
-  wrap.appendChild(label);
+  stack.appendChild(label);
+
+  const content = document.createElement("div");
+  content.className = "chat-msg-content";
 
   if (type === "bot") {
-    const content = document.createElement("div");
-    content.className = "chat-msg-content";
     content.innerHTML = renderMarkdown(text);
-    wrap.appendChild(content);
     initCopyButtons(wrap);
   } else {
-    const content = document.createElement("div");
-    content.className = "chat-msg-content";
     content.textContent = text;
-    wrap.appendChild(content);
   }
+  stack.appendChild(content);
+
+  if (type === "bot") {
+    wrap.insertAdjacentHTML("afterbegin", avatarSvg());
+  }
+  wrap.appendChild(stack);
 
   el.body.appendChild(wrap);
   scrollToBottom();
@@ -122,18 +156,24 @@ function addMessage(author, text, type) {
 
 function addTyping() {
   const wrap = document.createElement("div");
-  wrap.className = "chat-msg bot";
+  wrap.className = "chat-msg bot typing-msg";
   wrap.id = "chat-typing";
+
+  const stack = document.createElement("div");
+  stack.className = "chat-msg-stack";
 
   const label = document.createElement("span");
   label.className = "chat-msg-label";
   label.textContent = TEACHER_NAME;
-  wrap.appendChild(label);
+  stack.appendChild(label);
 
   const dots = document.createElement("div");
   dots.className = "typing";
   dots.innerHTML = "<span></span><span></span><span></span>";
-  wrap.appendChild(dots);
+  stack.appendChild(dots);
+
+  wrap.insertAdjacentHTML("afterbegin", avatarSvg());
+  wrap.appendChild(stack);
 
   el.body.appendChild(wrap);
   scrollToBottom();
@@ -147,10 +187,11 @@ function renderChips() {
   const wrap = document.createElement("div");
   wrap.className = "chat-chips";
 
-  SUGGESTIONS.forEach((suggestion) => {
+  SUGGESTIONS.forEach((suggestion, index) => {
     const chip = document.createElement("button");
     chip.type = "button";
     chip.className = "chat-chip";
+    chip.style.setProperty("--i", index);
     chip.textContent = suggestion;
     chip.addEventListener("click", () => sendMessage(suggestion));
     wrap.appendChild(chip);
@@ -161,7 +202,7 @@ function renderChips() {
 }
 
 function scrollToBottom() {
-  el.body.scrollTop = el.body.scrollHeight;
+  el.body.scrollTo({ top: el.body.scrollHeight, behavior: "smooth" });
 }
 
 /* --------------------------------------------------------------------- */
@@ -189,7 +230,7 @@ async function sendMessage(preset) {
   if (!message || el.send.disabled) return;
 
   el.input.value = "";
-  addMessage("you", message, "user");
+  addMessage(USER_NAME, message, "user");
   history.push({ role: "user", content: message });
 
   el.send.disabled = true;

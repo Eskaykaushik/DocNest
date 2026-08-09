@@ -72,12 +72,13 @@
   <div class="chat-widget" id="chat-widget">
     <button
       type="button"
-      class="chat-launcher"
+      class="chat-launcher attention"
       id="chat-launcher"
       aria-label="Ask the AI teacher"
       aria-expanded="false"
       aria-controls="chat-panel"
     >
+      <span class="chat-badge" id="chat-badge">1</span>
       <svg class="chat-launcher-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
         <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.3c-1.2 0-2.3-.2-3.4-.6L4 21l1.2-3.6A8.38 8.38 0 1 1 21 11.5z"/>
       </svg>
@@ -89,17 +90,33 @@
     <div class="chat-panel" id="chat-panel" role="dialog" aria-hidden="true" aria-label="Ask the AI teacher">
       <header class="chat-panel-header">
         <div class="chat-panel-heading">
-          <span class="chat-title">k-mentor</span>
-          <span class="chat-subtitle">Your AI teacher · online</span>
+          <span class="chat-avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 9L12 4 2 9l10 5 10-5z"/>
+              <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/>
+              <path d="M22 9v5"/>
+            </svg>
+          </span>
+          <div class="chat-panel-heading-text">
+            <span class="chat-title">k-mentor</span>
+            <span class="chat-subtitle">Your AI teacher · online</span>
+          </div>
         </div>
-        <button type="button" class="chat-close" id="chat-close" aria-label="Close chat">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
-            <path d="M6 6l12 12M18 6L6 18"/>
-          </svg>
-        </button>
+        <div class="chat-header-actions">
+          <button type="button" class="chat-clear" id="chat-clear" aria-label="Clear conversation" title="Clear conversation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/>
+            </svg>
+          </button>
+          <button type="button" class="chat-close" id="chat-close" aria-label="Close chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+          </button>
+        </div>
       </header>
 
-      <div class="chat-body" id="chat-body"></div>
+      <div class="chat-body" id="chat-body" aria-live="polite"></div>
 
       <div class="chat-input-row">
         <input
