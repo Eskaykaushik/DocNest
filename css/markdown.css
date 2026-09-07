@@ -320,3 +320,58 @@
 .hljs-deletion {
   color: #ffa198;
 }
+
+/* --------------------------------------------------------------------- */
+/* Light theme overrides for parsed Markdown                              */
+/* --------------------------------------------------------------------- */
+
+:root[data-theme="light"] .markdown-content code {
+  color: #953800;
+  background: rgba(175, 184, 193, 0.25);
+  border-color: rgba(208, 215, 222, 0.5);
+}
+
+:root[data-theme="light"] .markdown-content .code-block {
+  background: #f6f8fa;
+}
+
+:root[data-theme="light"] .markdown-content .hljs-keyword,
+:root[data-theme="light"] .markdown-content .hljs-selector-tag,
+:root[data-theme="light"] .markdown-content .hljs-literal,
+:root[data-theme="light"] .markdown-content .hljs-section,
+:root[data-theme="light"] .markdown-content .hljs-link {
+  color: #cf222e;
+}
+
+:root[data-theme="light"] .markdown-content .hljs-string,
+:root[data-theme="light"] .markdown-content .hljs-attr,
+:root[data-theme="light"] .markdown-content .hljs-addition {
+  color: #0a3069;
+}
+
+:root[data-theme="light"] .markdown-content .hljs-title,
+:root[data-theme="light"] .markdown-content .hljs-name,
+:root[data-theme="light"] .markdown-content .hljs-built_in,
+:root[data-theme="light"] .markdown-content .hljs-type {
+  color: #8250df;
+}
+
+:root[data-theme="light"] .markdown-content .hljs-number,
+:root[data-theme="light"] .markdown-content .hljs-symbol {
+  color: #0550ae;
+}
+
+:root[data-theme="light"] .markdown-content .hljs-comment,
+:root[data-theme="light"] .markdown-content .hljs-quote {
+  color: #6e7781;
+}
+
+:root[data-theme="light"] .markdown-content .hljs-variable,
+:root[data-theme="light"] .markdown-content .hljs-template-variable,
+:root[data-theme="light"] .markdown-content .hljs-attribute {
+  color: #953800;
+}
+
+:root[data-theme="light"] .markdown-content .hljs-deletion {
+  color: #82071e;
+}
