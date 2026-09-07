@@ -44,7 +44,7 @@
 .page-shell {
   width: 100%;
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
+  grid-template-columns: 300px minmax(0, 1fr);
   gap: 40px;
   align-items: start;
   padding-right: 32px;
@@ -195,10 +195,23 @@
   color: var(--color-muted);
   border-left: 2px solid transparent;
   border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  white-space: nowrap;
   transition: color var(--duration-fast) var(--ease),
     background var(--duration-fast) var(--ease),
     border-color var(--duration-fast) var(--ease),
     transform var(--duration-fast) var(--ease);
+}
+
+.sidebar-link span {
+  white-space: nowrap;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sidebar-group-header,
+.sidebar-subgroup-header {
+  white-space: nowrap;
 }
 
 .sidebar-link:hover {
