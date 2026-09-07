@@ -365,10 +365,10 @@ button {
 
 .hero-title .accent {
   color: var(--color-accent);
-  background: linear-gradient(90deg, var(--color-accent), #79c0ff);
-  -webkit-background-clip: text;
+  background-image: linear-gradient(90deg, var(--color-accent), #79c0ff);
   background-clip: text;
-  color: transparent;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 .hero-subtitle {
@@ -559,14 +559,14 @@ button {
 /* --------------------------------------------------------------------- */
 
 .tutorial-header {
-  padding: 40px 24px 28px;
+  padding: 40px 32px 28px;
   border-bottom: 1px solid var(--color-border);
   animation: fade-in var(--duration-base) var(--ease) backwards;
 }
 
 .tutorial-header-inner {
   max-width: var(--max-width-reading);
-  margin: 0 auto;
+  margin: 0;
 }
 
 @keyframes fade-in {
@@ -872,7 +872,11 @@ button {
 }
 
 :root[data-theme="light"] .hero-title .accent {
-  background: linear-gradient(90deg, #0a3069, #0969da);
+  color: var(--color-accent);
+  background-image: linear-gradient(90deg, #0a3069, #0969da);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 
 :root[data-theme="light"] .hero {
