@@ -99,6 +99,14 @@ function renderHeader(tutorial, markdownText) {
 
 function renderArticle(markdownText) {
   contentEl.innerHTML = renderMarkdown(markdownText);
+
+  // The title is already shown in the page header; the article's first <h1>
+  // mirrors it, so drop it to avoid rendering the same title twice.
+  const first = contentEl.firstElementChild;
+  const title = titleEl.textContent.trim();
+  if (first && first.tagName === "H1" && first.textContent.trim() === title) {
+    first.remove();
+  }
 }
 
 /* --------------------------------------------------------------------- */

@@ -12,7 +12,22 @@
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/markdown.css" />
   <link rel="stylesheet" href="css/portal.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" id="hljs-theme" />
+  <script>
+    (function () {
+      var theme = "dark";
+      try {
+        var stored = localStorage.getItem("docnest.theme");
+        var dark = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches;
+        theme = stored || (dark ? "dark" : "light");
+      } catch (e) { /* keep dark */ }
+      document.documentElement.setAttribute("data-theme", theme);
+      if (theme !== "dark") {
+        var hl = document.getElementById("hljs-theme");
+        if (hl) hl.href = hl.href.replace("atom-one-dark", "atom-one-light");
+      }
+    })();
+  </script>
 </head>
 <body>
   <a class="visually-hidden" href="#main-content">Skip to content</a>
@@ -51,6 +66,10 @@
           </div>
           <div class="search-dropdown" id="search-dropdown" role="listbox" aria-label="Search results"></div>
         </div>
+        <button type="button" class="theme-toggle" aria-label="Toggle theme" aria-pressed="true">
+          <svg class="theme-toggle-icon theme-toggle-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/></svg>
+          <svg class="theme-toggle-icon theme-toggle-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
       </nav>
     </div>
   </header>
@@ -108,8 +127,76 @@
     </p>
   </footer>
 
+  <div class="chat-widget" id="chat-widget">
+    <button
+      type="button"
+      class="chat-launcher attention"
+      id="chat-launcher"
+      aria-label="Ask the AI teacher"
+      aria-expanded="false"
+      aria-controls="chat-panel"
+    >
+      <span class="chat-badge" id="chat-badge">1</span>
+      <svg class="chat-launcher-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.3c-1.2 0-2.3-.2-3.4-.6L4 21l1.2-3.6A8.38 8.38 0 1 1 21 11.5z"/>
+      </svg>
+      <svg class="chat-launcher-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+
+    <div class="chat-panel" id="chat-panel" role="dialog" aria-hidden="true" aria-label="Ask the AI teacher">
+      <header class="chat-panel-header">
+        <div class="chat-panel-heading">
+          <span class="chat-avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 9L12 4 2 9l10 5 10-5z"/>
+              <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/>
+              <path d="M22 9v5"/>
+            </svg>
+          </span>
+          <div class="chat-panel-heading-text">
+            <span class="chat-title">k-mentor</span>
+            <span class="chat-subtitle">Your AI teacher · online</span>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button type="button" class="chat-clear" id="chat-clear" aria-label="Clear conversation" title="Clear conversation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/>
+            </svg>
+          </button>
+          <button type="button" class="chat-close" id="chat-close" aria-label="Close chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="chat-body" id="chat-body" aria-live="polite"></div>
+
+      <div class="chat-input-row">
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="Ask anything about AI…"
+          autocomplete="off"
+          aria-label="Message the AI teacher"
+        />
+        <button type="button" class="chat-send" id="chat-send" aria-label="Send message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script type="module" src="js/tutorial.js"></script>
+  <script type="module" src="js/chat.js"></script>
+  <script type="module" src="js/theme.js"></script>
 </body>
 </html>
