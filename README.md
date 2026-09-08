@@ -13,12 +13,15 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 - **Markdown-first content.** Every page is a `.md` file; layout and chrome are automatic.
 - **Persistent sidebar tree** — tutorials grouped by category, with collapsible
   subtopics and the current page highlighted; collapses to an off-canvas drawer on mobile.
-- **Scalable card-grid homepage** — a responsive tutorial-card grid with live category,
-  difficulty, and tag filters, plus a curated "featured" spotlight band. Scales from a
-  handful of tutorials to hundreds across many subjects (GATE, CS, general topics, …).
+- **Editorial, minimal homepage** — a calm centered hero (text-only: overline,
+  Inter-bold headline with a shimmering accent, one muted line, single CTA) with
+  a soft summoning glow. Everything below the fold — section heading, filters,
+  and each card — is *summoned* into view as you scroll by a slow, cinematic
+  IntersectionObserver reveal (staggered, respects `prefers-reduced-motion`).
 - **Search command palette** — press `/` or `Ctrl/⌘+K`, get grouped live results with
-  full keyboard navigation; cards filter in real time as you type.
-- **Category, difficulty, and tag filtering** generated automatically from your content
+  full keyboard navigation; cards filter in real time as you type (search also
+  matches tutorial `tags`).
+- **Category and difficulty chip filters** — generated automatically from your content
   (optional `tags` / `featured` fields in `tutorials.json`).
 - **Auto-generated table of contents** from `##`/`###` headings, with active-section
   highlighting as you scroll.
@@ -28,8 +31,14 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 - **Related tutorials** under each article, plus a "Was this helpful?" feedback widget.
 - **Reading-progress bar** on every tutorial page.
 - **Previous / next navigation** based on tutorial order in `tutorials.json`.
-- **Dark + light themes** — developer-focused defaults inspired by GitHub Docs, Stripe
-  Docs, and MDN, with a navbar toggle and OS-preference following.
+- **Hidden easter eggs** — small surprises scattered across the homepage
+  (click the D mark five times, type `docnest`, search for a certain game
+  character, rapid theme-flipping, the Konami sequence, and a starfield when
+  you've summoned every card).
+- **Dark + light themes** — developer palette (near-black `#0d1117` + `#58a6ff`
+  in dark, `#fff` + `#0969da` in light), all-Inter typography, JetBrains Mono for
+  code; navbar toggle sits rightmost in the nav and its icon color reflects the
+  current mode; OS-preference following.
 - **Research-papers library** — a dedicated `papers.html` hub + `paper.html` reader for
   reading landmark AI papers as tutorials: paper header with authors/venue/year, arXiv
   and code links, one-click citation, TL;DR callouts, LaTeX math via KaTeX, related
@@ -40,7 +49,7 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 
 ```
 DocNest/
-├── index.html            Homepage: hero, featured band, search, card grid
+├── index.html            Homepage: minimal hero, summon-on-scroll card grid
 ├── tutorial.html          Tutorial page: article, TOC, prev/next
 ├── papers.html            Papers hub: hero, topic/difficulty filters, local search
 ├── paper.html             Paper reader: paper header, KaTeX article, citation
@@ -51,13 +60,15 @@ DocNest/
 │   └── portal.css          Portal components: sidebar, palette, card grid, tabs, papers
 │
 ├── js/
-│   ├── app.js               Homepage controller: card grid, filters, featured, search palette
+│   ├── app.js               Homepage controller: card grid, topic/level filters, search palette
 │   ├── tutorial.js          Tutorial page controller: render, TOC, related, feedback
 │   ├── papers.js            Papers hub controller: stats, chips, local search, cards
 │   ├── paper.js             Paper reader controller: header, KaTeX, related, citation
 │   ├── sidebar.js           Shared sidebar tree + drawer (both pages)
 │   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs, callouts, math
 │   ├── theme.js             Dark/light theme manager + navbar toggle
+│   ├── reveal.js            IntersectionObserver "summon" reveal system (homepage)
+│   ├── easter.js            Homepage easter eggs (brand ×5, docnest, search, Konami, …)
 │   └── utils.js             Shared helpers (reading time, slugify, fetch wrappers…)
 │
 ├── data/
@@ -119,15 +130,13 @@ Adding a new tutorial never requires touching any JavaScript or CSS.
    Optional fields:
    - `subtopic` — group a category into collapsible sub-sections in the sidebar
      (e.g. `Frameworks`, `Evaluation` under "AI & ML").
-   - `tags` — an array of keywords shown as chips on cards and used in the
-     tag filter, e.g. `["GATE", "Data Structures"]`. Great for cross-cutting
-     subjects that aren't a single category.
-   - `featured` — set `true` to surface the tutorial in the homepage spotlight
-     band ("Popular right now"). If none are flagged, the "Getting Started"
-     category is shown instead.
+   - `tags` — an array of keywords matched by the search palette and used to
+     cross-link topics, e.g. `["GATE", "Data Structures"]`. Not rendered as chips.
+   - `featured` — reserved for future use; the homepage no longer renders a
+     featured spotlight band.
    - `updated` — ISO date (`YYYY-MM-DD`) shown as an "Updated …" chip.
 
-3. **Done.** The homepage card grid, filters, featured band, sidebar tree,
+3. **Done.** The homepage card grid, filters, sidebar tree,
    search index, table of contents, reading time, related tutorials, and
    previous/next links are all generated from that one entry.
 

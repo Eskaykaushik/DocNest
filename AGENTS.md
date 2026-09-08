@@ -47,7 +47,7 @@ google-chrome --headless=new --no-sandbox --disable-gpu \
 ## Architecture & file map
 
 ```
-index.html            Homepage: hero, featured spot band, search, card grid
+index.html            Homepage: minimal summoned-hero + scroll-reveal card grid
 tutorial.html          Tutorial reader: sidebar tree, TOC, prev/next
 papers.html            Papers hub: hero stats, topic/difficulty chips, local search
 paper.html             Paper reader: paper header, KaTeX article, citation copy
@@ -56,7 +56,7 @@ css/style.css          Layout, navbar, cards, buttons, theme tokens (dark + ligh
 css/markdown.css       Typography + rules for parsed Markdown
 css/portal.css         Portal components: sidebar, palette, grids, chips, papers, chat
 
-js/app.js              Homepage controller (card grid, filters, featured)
+js/app.js              Homepage controller (card grid, topic/level filters)
 js/tutorial.js         Tutorial reader controller
 js/papers.js           Papers hub controller
 js/paper.js            Paper reader controller
@@ -65,6 +65,8 @@ js/search.js           Search command palette (tutorials) — "/" or Ctrl/⌘+K
 js/markdown.js         marked.js + highlight.js wrapper; code tabs, callouts, KaTeX hook
 js/chat.js             k-mentor chat widget
 js/theme.js            Dark/light theme manager (localStorage "docnest.theme")
+js/reveal.js           IntersectionObserver "summon" reveal system (homepage only)
+js/easter.js           Homepage easter eggs (logo ×5, "docnest", search wink, Konami, …)
 js/utils.js            Shared helpers (reading time, slugify, fetch wrappers, debounce)
 
 data/tutorials.json    Tutorial index  (one entry per tutorial)
@@ -77,6 +79,12 @@ images/                Static images (docnest-diagram.svg, etc.)
 
 Runtimes: marked.js + highlight.js (CDN) on tutorial-ish pages; plus KaTeX on
 `paper.html`. All loaded by `<script>` in the HTML `<head>`/`<body>`.
+Fonts: all pages use Inter; JetBrains Mono for code. Colors come from a
+developer token palette (see `--color-*` in `style.css`) — never hard-code
+colors. The homepage uses a `[data-reveal]` summon-on-scroll system
+(`js/reveal.js`): elements start invisible and fade/rise in via
+IntersectionObserver with a `--reveal-delay` stagger; `prefers-reduced-motion`
+renders them instantly. Homepage easter eggs live in `js/easter.js`.
 
 Key shared modules:
 
@@ -107,8 +115,9 @@ Key shared modules:
 }
 ```
 
-Optional: `subtopic` (sidebar subgroups), `tags` (chips + filter), `featured`
-(homepage spotlight), `updated` (chip). Entry order in the JSON sets
+Optional: `subtopic` (sidebar subgroups), `tags` (keywords searchable from the
+palette — not rendered as chips), `featured` (reserved; homepage has no
+spotlight band anymore), `updated` (chip). Entry order in the JSON sets
 prev/next navigation.
 
 ### Adding a paper
@@ -164,8 +173,10 @@ prev/next navigation.
 
 Done:
 
-- [x] Card-grid homepage with category/difficulty/tag filters + featured spot band
-  (vertically scalable: GATE, CS topics, etc.)
+- [x] Card-grid homepage: minimal text-only hero (Inter-bold, shimmer accent),
+      "summoned" content — slow staggered scroll-reveals (`js/reveal.js`),
+      topic/level chips + search (tags included in search matches), easter eggs
+      (`js/easter.js`)
 - [x] Dark + light themes with navbar toggle + OS preference following
 - [x] Tagging (`tags` / `featured` fields)
 - [x] Research-papers library (papers.json, hub + reader, 4 papers: Attention,

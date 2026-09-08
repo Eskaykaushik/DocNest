@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/markdown.css" />
@@ -16,7 +16,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
   <script src="js/theme.js"></script>
 </head>
-<body>
+<body class="home">
   <a class="visually-hidden" href="#main-content">Skip to content</a>
 
   <header class="navbar">
@@ -28,21 +28,6 @@
       <nav class="nav-actions" aria-label="Primary">
         <a class="nav-link" href="#learning-paths">Learning Paths</a>
         <a class="nav-link" href="papers.html">Papers</a>
-        <button
-          type="button"
-          class="theme-toggle"
-          data-theme-toggle
-          aria-label="Switch theme"
-          aria-pressed="false"
-        >
-          <svg data-theme-icon="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle cx="12" cy="12" r="4" />
-            <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-          </svg>
-          <svg data-theme-icon="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-        </button>
         <div class="search-wrap" id="search-wrap">
           <div class="search-input-group">
             <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -60,37 +45,40 @@
           </div>
           <div class="search-dropdown" id="search-dropdown" role="listbox" aria-label="Search results"></div>
         </div>
+        <button
+          type="button"
+          class="theme-toggle"
+          data-theme-toggle
+          aria-label="Switch theme"
+          aria-pressed="false"
+        >
+          <svg data-theme-icon="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle class="sun-path" cx="12" cy="12" r="4" />
+            <path class="sun-path" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          <svg data-theme-icon="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path class="moon-path" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
       </nav>
     </div>
   </header>
 
   <main id="main-content">
-    <section class="hero">
-      <h1 class="hero-title">A nest for your<br /><span class="accent">AI curiosity</span></h1>
-      <p class="hero-subtitle">Lightweight docs on the AI tech you're learning.</p>
-      <p class="hero-stats" id="hero-stats" aria-hidden="true"></p>
+    <section class="hero hero--home">
+      <p class="eyebrow" data-reveal style="--reveal-delay: 40ms">Nest · Explore · Level up</p>
+      <h1 class="hero-title" data-reveal style="--reveal-delay: 80ms">A nest for your<br /><span class="accent">AI curiosity</span></h1>
+      <p class="hero-subtitle" data-reveal style="--reveal-delay: 200ms">
+        Beginner-friendly docs across Python, ML fundamentals, LLMs, and agents —
+        pick a tutorial and start nesting.
+      </p>
+      <div class="hero-actions" data-reveal style="--reveal-delay: 340ms">
+        <a class="btn btn-primary" href="#tutorial-grid">Browse tutorials</a>
+      </div>
     </section>
 
     <div class="home-content">
-      <section class="featured" id="featured" aria-label="Getting started">
-        <div class="featured-text">
-          <p class="eyebrow">Start here</p>
-          <h2 class="featured-title">Go from zero to building AI apps</h2>
-          <p class="featured-desc">
-            A beginner-friendly roadmap across Python, ML fundamentals, LLMs,
-            and agents — pick a path and start nesting.
-          </p>
-          <div class="featured-actions">
-            <a class="btn btn-primary" href="#tutorial-grid">Browse tutorials</a>
-            <a class="btn btn-ghost" href="#chat-launcher" data-chat-scroll>Ask k-mentor</a>
-          </div>
-        </div>
-        <div class="featured-visual" aria-hidden="true">
-          <img src="images/docnest-diagram.svg" alt="" width="640" height="360" loading="lazy" />
-        </div>
-      </section>
-
-      <div class="grid-heading" id="learning-paths">
+      <div class="grid-heading" id="learning-paths" data-reveal>
         <div>
           <h2 class="grid-title">Tutorials</h2>
           <p class="grid-subtitle">All tutorials across every topic, subject, and level.</p>
@@ -98,7 +86,7 @@
         <p class="grid-results" id="grid-results" aria-live="polite"></p>
       </div>
 
-      <div class="path-filters" id="path-filters" hidden></div>
+      <div class="path-filters" id="path-filters" hidden data-reveal></div>
       <div class="tutorial-grid" id="tutorial-grid"></div>
     </div>
   </main>
@@ -182,6 +170,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script type="module" src="js/app.js"></script>
+  <script type="module" src="js/easter.js"></script>
   <script type="module" src="js/chat.js"></script>
 </body>
 </html>
