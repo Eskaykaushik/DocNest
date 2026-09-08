@@ -13,11 +13,13 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 - **Markdown-first content.** Every page is a `.md` file; layout and chrome are automatic.
 - **Persistent sidebar tree** — tutorials grouped by category, with collapsible
   subtopics and the current page highlighted; collapses to an off-canvas drawer on mobile.
-- **Sectioned homepage** with category headers, icons, and counts (GeeksforGeeks-style),
-  instead of a flat card grid.
+- **Scalable card-grid homepage** — a responsive tutorial-card grid with live category,
+  difficulty, and tag filters, plus a curated "featured" spotlight band. Scales from a
+  handful of tutorials to hundreds across many subjects (GATE, CS, general topics, …).
 - **Search command palette** — press `/` or `Ctrl/⌘+K`, get grouped live results with
-  full keyboard navigation; sections filter in real time as you type.
-- **Category filtering** generated automatically from your content.
+  full keyboard navigation; cards filter in real time as you type.
+- **Category, difficulty, and tag filtering** generated automatically from your content
+  (optional `tags` / `featured` fields in `tutorials.json`).
 - **Auto-generated table of contents** from `##`/`###` headings, with active-section
   highlighting as you scroll.
 - **Automatic reading-time estimates** from each tutorial's word count.
@@ -26,26 +28,28 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 - **Related tutorials** under each article, plus a "Was this helpful?" feedback widget.
 - **Reading-progress bar** on every tutorial page.
 - **Previous / next navigation** based on tutorial order in `tutorials.json`.
-- **Dark, developer-focused UI** inspired by GitHub Docs, Stripe Docs, and MDN.
+- **Dark + light themes** — developer-focused defaults inspired by GitHub Docs, Stripe
+  Docs, and MDN, with a navbar toggle and OS-preference following.
 - **Fully keyboard accessible**, with visible focus states and semantic HTML throughout.
 
 ## Folder structure
 
 ```
 DocNest/
-├── index.html            Homepage: hero, search, categories, tutorial grid
+├── index.html            Homepage: hero, featured band, search, card grid
 ├── tutorial.html          Tutorial page: article, TOC, prev/next
 │
 ├── css/
-│   ├── style.css           Layout, navbar, cards, buttons, forms, responsive rules
+│   ├── style.css           Layout, navbar, cards, buttons, forms, responsive rules, theme tokens
 │   ├── markdown.css        Typography and rendering rules for parsed Markdown
-│   └── portal.css          GFG-style components: sidebar, palette, sections, tabs
-
+│   └── portal.css          Portal components: sidebar, palette, card grid, tabs
+│
 ├── js/
-│   ├── app.js               Homepage controller: sections, search palette
+│   ├── app.js               Homepage controller: card grid, filters, featured, search palette
 │   ├── tutorial.js          Tutorial page controller: render, TOC, related, feedback
 │   ├── sidebar.js           Shared sidebar tree + drawer (both pages)
 │   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs
+│   ├── theme.js             Dark/light theme manager + navbar toggle
 │   └── utils.js             Shared helpers (reading time, slugify, fetch wrappers…)
 │
 ├── data/
@@ -103,11 +107,17 @@ Adding a new tutorial never requires touching any JavaScript or CSS.
    Optional fields:
    - `subtopic` — group a category into collapsible sub-sections in the sidebar
      (e.g. `Frameworks`, `Evaluation` under "AI & ML").
+   - `tags` — an array of keywords shown as chips on cards and used in the
+     tag filter, e.g. `["GATE", "Data Structures"]`. Great for cross-cutting
+     subjects that aren't a single category.
+   - `featured` — set `true` to surface the tutorial in the homepage spotlight
+     band ("Popular right now"). If none are flagged, the "Getting Started"
+     category is shown instead.
    - `updated` — ISO date (`YYYY-MM-DD`) shown as an "Updated …" chip.
 
-3. **Done.** The homepage sections, sidebar tree, search index, table of contents,
-   reading time, related tutorials, and previous/next links are all generated from
-   that one entry.
+3. **Done.** The homepage card grid, filters, featured band, sidebar tree,
+   search index, table of contents, reading time, related tutorials, and
+   previous/next links are all generated from that one entry.
 
 The order of entries in `tutorials.json` determines the previous/next navigation
 on each tutorial page.
@@ -132,10 +142,10 @@ without a rewrite:
 
 - [ ] Mermaid diagrams inside Markdown code fences
 - [ ] KaTeX for inline and block math
-- [ ] A light theme alongside the current dark theme
+- [x] A light theme alongside the current dark theme
 - [ ] Blog mode (dated posts, an archive view, pagination)
 - [ ] RSS/Atom feed generation
-- [ ] Tagging, in addition to single-category classification
+- [x] Tagging, in addition to single-category classification
 - [ ] Versioned documentation (multiple `tutorials.json` indexes)
 - [ ] A small plugin hook system around the render pipeline
 - [ ] PWA manifest + service worker for offline reading
@@ -144,6 +154,4 @@ without a rewrite:
 ## License
 
 MIT — use, modify, and redistribute freely.
-=======
-# DocNest
 

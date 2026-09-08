@@ -4,8 +4,9 @@
    Typography and rendering rules for Markdown content live in markdown.css.
    ========================================================================== */
 
-:root {
-  /* Color tokens */
+:root,
+[data-theme="dark"] {
+  /* Color tokens — dark theme (default) */
   --color-bg: #0d1117;
   --color-surface: #161b22;
   --color-surface-hover: #1c2330;
@@ -13,9 +14,25 @@
   --color-text: #f0f6fc;
   --color-muted: #8b949e;
   --color-accent: #58a6ff;
+  --color-accent-strong: #79c0ff;
   --color-accent-soft: rgba(88, 166, 255, 0.12);
+  --color-accent-border: rgba(88, 166, 255, 0.4);
   --color-danger: #f85149;
+  --color-danger-soft: rgba(248, 81, 73, 0.14);
   --color-success: #3fb950;
+  --color-success-soft: rgba(63, 185, 80, 0.14);
+
+  /* Code surface */
+  --code-bg: #0a0d12;
+  --code-header-bg: #100f12;
+
+  /* Navbar */
+  --nav-bg: rgba(13, 17, 23, 0.85);
+
+  /* Hero glows */
+  --hero-glow-core: rgba(88, 166, 255, 0.14);
+  --hero-glow-a: rgba(88, 166, 255, 0.16);
+  --hero-glow-b: rgba(121, 192, 255, 0.12);
 
   /* Typography */
   --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -38,6 +55,70 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-glow: 0 0 0 1px var(--color-accent-soft), 0 8px 24px rgba(0, 0, 0, 0.4);
+}
+
+/* Light theme — applied via [data-theme="light"] on <html>. The color names
+   stay the same so all components adapt without any per-component overrides. */
+[data-theme="light"] {
+  --color-bg: #ffffff;
+  --color-surface: #f6f8fa;
+  --color-surface-hover: #eef1f4;
+  --color-border: #d0d7de;
+  --color-text: #1f2328;
+  --color-muted: #656d76;
+  --color-accent: #0969da;
+  --color-accent-strong: #1f6feb;
+  --color-accent-soft: rgba(9, 105, 218, 0.1);
+  --color-accent-border: rgba(9, 105, 218, 0.4);
+  --color-danger: #cf222e;
+  --color-danger-soft: rgba(207, 34, 46, 0.12);
+  --color-success: #1a7f37;
+  --color-success-soft: rgba(26, 127, 55, 0.12);
+
+  --code-bg: #0d1117;
+  --code-header-bg: #161b22;
+  --nav-bg: rgba(255, 255, 255, 0.85);
+
+  --hero-glow-core: rgba(9, 105, 218, 0.1);
+  --hero-glow-a: rgba(9, 105, 218, 0.12);
+  --hero-glow-b: rgba(31, 111, 235, 0.1);
+
+  --shadow-sm: 0 1px 2px rgba(31, 35, 40, 0.12);
+  --shadow-md: 0 8px 24px rgba(31, 35, 40, 0.12);
+  --shadow-glow: 0 0 0 1px var(--color-accent-soft), 0 8px 24px rgba(31, 35, 40, 0.12);
+}
+
+/* No explicit preference → follow the OS. Deliberately scoped to :root so it
+   only applies when .js/theme.js hasn't set an explicit [data-theme]. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --color-bg: #ffffff;
+    --color-surface: #f6f8fa;
+    --color-surface-hover: #eef1f4;
+    --color-border: #d0d7de;
+    --color-text: #1f2328;
+    --color-muted: #656d76;
+    --color-accent: #0969da;
+    --color-accent-strong: #1f6feb;
+    --color-accent-soft: rgba(9, 105, 218, 0.1);
+    --color-accent-border: rgba(9, 105, 218, 0.4);
+    --color-danger: #cf222e;
+    --color-danger-soft: rgba(207, 34, 46, 0.12);
+    --color-success: #1a7f37;
+    --color-success-soft: rgba(26, 127, 55, 0.12);
+
+    --code-bg: #0d1117;
+    --code-header-bg: #161b22;
+    --nav-bg: rgba(255, 255, 255, 0.85);
+
+    --hero-glow-core: rgba(9, 105, 218, 0.1);
+    --hero-glow-a: rgba(9, 105, 218, 0.12);
+    --hero-glow-b: rgba(31, 111, 235, 0.1);
+
+    --shadow-sm: 0 1px 2px rgba(31, 35, 40, 0.12);
+    --shadow-md: 0 8px 24px rgba(31, 35, 40, 0.12);
+    --shadow-glow: 0 0 0 1px var(--color-accent-soft), 0 8px 24px rgba(31, 35, 40, 0.12);
+  }
 }
 
 /* --------------------------------------------------------------------- */
@@ -133,21 +214,6 @@ button {
 }
 
 /* --------------------------------------------------------------------- */
-/* Layout primitives                                                      */
-/* --------------------------------------------------------------------- */
-
-.page-container {
-  max-width: var(--max-width-page);
-  margin: 0 auto;
-  padding: 0 24px;
-}
-
-.reading-column {
-  max-width: var(--max-width-reading);
-  margin: 0 auto;
-}
-
-/* --------------------------------------------------------------------- */
 /* Navbar                                                                 */
 /* --------------------------------------------------------------------- */
 
@@ -158,7 +224,7 @@ button {
   height: var(--nav-height);
   display: flex;
   align-items: center;
-  background: rgba(13, 17, 23, 0.85);
+  background: var(--nav-bg);
   backdrop-filter: blur(10px);
   border-bottom: 1px solid var(--color-border);
 }
@@ -187,14 +253,14 @@ button {
   width: 28px;
   height: 28px;
   border-radius: 8px;
-  background: linear-gradient(135deg, var(--color-accent), #79c0ff);
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-strong));
   display: flex;
   align-items: center;
   justify-content: center;
   font-family: var(--font-mono);
   font-size: 13px;
   font-weight: 700;
-  color: #0d1117;
+  color: var(--color-bg);
 }
 
 .nav-actions {
@@ -219,6 +285,36 @@ button {
 .nav-link:hover {
   color: var(--color-text);
   background: var(--color-surface);
+}
+
+/* Theme toggle */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
+}
+
+.theme-toggle:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+  transform: translateY(-1px);
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
 }
 
 /* Navbar search */
@@ -264,7 +360,7 @@ button {
   text-align: center;
   border-bottom: 1px solid var(--color-border);
   background:
-    radial-gradient(circle at 50% -10%, rgba(88, 166, 255, 0.14), transparent 55%);
+    radial-gradient(circle at 50% -10%, var(--hero-glow-core), transparent 55%);
 }
 
 .hero::before {
@@ -272,8 +368,8 @@ button {
   position: absolute;
   inset: -40% -20%;
   background:
-    radial-gradient(circle at 22% 40%, rgba(88, 166, 255, 0.16), transparent 45%),
-    radial-gradient(circle at 78% 55%, rgba(121, 192, 255, 0.12), transparent 42%);
+    radial-gradient(circle at 22% 40%, var(--hero-glow-a), transparent 45%),
+    radial-gradient(circle at 78% 55%, var(--hero-glow-b), transparent 42%);
   filter: blur(36px);
   z-index: -1;
   pointer-events: none;
@@ -300,7 +396,7 @@ button {
 
 .hero-title .accent {
   color: var(--color-accent);
-  background: linear-gradient(90deg, var(--color-accent), #79c0ff);
+  background: linear-gradient(90deg, var(--color-accent), var(--color-accent-strong));
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -419,45 +515,6 @@ button {
 }
 
 /* --------------------------------------------------------------------- */
-/* Categories                                                             */
-/* --------------------------------------------------------------------- */
-
-.categories-section {
-  padding: 40px 24px 8px;
-}
-
-.categories-row {
-  max-width: var(--max-width-page);
-  margin: 0 auto;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  justify-content: center;
-}
-
-.category-pill {
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  color: var(--color-muted);
-  font-size: 13px;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 999px;
-  transition: all var(--duration-fast) var(--ease);
-}
-
-.category-pill:hover {
-  color: var(--color-text);
-  border-color: var(--color-accent);
-}
-
-.category-pill[aria-pressed="true"] {
-  background: var(--color-accent-soft);
-  border-color: var(--color-accent);
-  color: var(--color-accent);
-}
-
-/* --------------------------------------------------------------------- */
 /* Empty state                                                             */
 /* --------------------------------------------------------------------- */
 
@@ -473,6 +530,23 @@ button {
   color: var(--color-text);
   margin: 0 0 8px;
   font-size: 18px;
+}
+
+.empty-reset {
+  margin-top: 12px;
+  font-size: 12.5px;
+  font-family: var(--font-mono);
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border: 1px solid rgba(88, 166, 255, 0.3);
+  border-radius: 999px;
+  padding: 6px 14px;
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease);
+}
+
+.empty-reset:hover {
+  border-color: rgba(88, 166, 255, 0.55);
 }
 
 /* --------------------------------------------------------------------- */

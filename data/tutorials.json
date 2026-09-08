@@ -6,6 +6,8 @@
     "category": "Getting Started",
     "subtopic": "",
     "difficulty": "Beginner",
+    "tags": ["Onboarding"],
+    "featured": true,
     "updated": "2026-08-01",
     "file": "tutorials/welcome.md"
   },
@@ -16,6 +18,8 @@
     "category": "Python",
     "subtopic": "",
     "difficulty": "Beginner",
+    "tags": ["Python", "Fundamentals"],
+    "featured": true,
     "updated": "2026-08-07",
     "file": "tutorials/python.md"
   },
@@ -26,6 +30,8 @@
     "category": "Python",
     "subtopic": "",
     "difficulty": "Beginner",
+    "tags": ["Python", "Data"],
+    "featured": false,
     "updated": "2026-08-08",
     "file": "tutorials/python-data.md"
   },
@@ -36,6 +42,8 @@
     "category": "Machine Learning",
     "subtopic": "",
     "difficulty": "Beginner",
+    "tags": ["ML", "Basics"],
+    "featured": true,
     "updated": "2026-08-08",
     "file": "tutorials/ml-fundamentals.md"
   },
@@ -46,6 +54,8 @@
     "category": "Deep Learning",
     "subtopic": "",
     "difficulty": "Intermediate",
+    "tags": ["Deep Learning", "NumPy"],
+    "featured": false,
     "updated": "2026-08-08",
     "file": "tutorials/neural-networks.md"
   },
@@ -56,6 +66,8 @@
     "category": "Deep Learning",
     "subtopic": "",
     "difficulty": "Intermediate",
+    "tags": ["Deep Learning", "LLMs"],
+    "featured": false,
     "updated": "2026-08-08",
     "file": "tutorials/transformers.md"
   },
@@ -66,6 +78,8 @@
     "category": "LLMs & Language Models",
     "subtopic": "",
     "difficulty": "Intermediate",
+    "tags": ["LLMs", "Fundamentals"],
+    "featured": true,
     "updated": "2026-08-08",
     "file": "tutorials/how-llms-work.md"
   },
@@ -76,6 +90,8 @@
     "category": "LLMs & Language Models",
     "subtopic": "",
     "difficulty": "Beginner",
+    "tags": ["LLMs", "Prompting"],
+    "featured": false,
     "updated": "2026-08-08",
     "file": "tutorials/prompt-engineering.md"
   },
@@ -86,6 +102,8 @@
     "category": "Agents",
     "subtopic": "",
     "difficulty": "Intermediate",
+    "tags": ["Agents", "LLMs"],
+    "featured": false,
     "updated": "2026-08-08",
     "file": "tutorials/function-calling.md"
   },
@@ -96,6 +114,8 @@
     "category": "Agents",
     "subtopic": "",
     "difficulty": "Intermediate",
+    "tags": ["Agents", "LangChain"],
+    "featured": true,
     "updated": "2026-08-07",
     "file": "tutorials/langchain.md"
   },
@@ -106,6 +126,8 @@
     "category": "Agents",
     "subtopic": "",
     "difficulty": "Intermediate",
+    "tags": ["Agents", "LangGraph"],
+    "featured": false,
     "updated": "2026-08-07",
     "file": "tutorials/langgraph.md"
   },
@@ -116,6 +138,8 @@
     "category": "RAG & Retrieval",
     "subtopic": "",
     "difficulty": "Intermediate",
+    "tags": ["RAG", "Embeddings"],
+    "featured": false,
     "updated": "2026-08-08",
     "file": "tutorials/rag.md"
   },
@@ -124,10 +148,48 @@
     "title": "Agent Evaluation Techniques",
     "description": "From golden datasets to LLM-as-judge — how to systematically measure whether an agent actually works, and catch regressions.",
     "category": "Evaluation",
-    "subtopic": "",
+    "subtopic": "Agent Evals",
     "difficulty": "Intermediate",
+    "tags": ["Evals", "Agents"],
+    "featured": false,
     "updated": "2026-08-07",
     "file": "tutorials/agent-eval-techniques.md"
+  },
+  {
+    "id": "eval-golden-datasets",
+    "title": "Designing Golden Datasets for Evals",
+    "description": "How to curate a golden dataset that actually catches regressions: coverage, edge cases, negative cases, and keeping it maintainable as your agent grows.",
+    "category": "Evaluation",
+    "subtopic": "Agent Evals",
+    "difficulty": "Intermediate",
+    "tags": ["Evals", "Datasets"],
+    "featured": false,
+    "updated": "2026-08-07",
+    "file": "tutorials/eval-golden-datasets.md"
+  },
+  {
+    "id": "eval-llm-judge",
+    "title": "LLM-as-Judge, Done Right",
+    "description": "Designing rubrics, calibrating judges, aggregating scores, and knowing when to use (and skip) an LLM judge for open-ended evals.",
+    "category": "Evaluation",
+    "subtopic": "Agent Evals",
+    "difficulty": "Intermediate",
+    "tags": ["Evals", "LLMs"],
+    "featured": false,
+    "updated": "2026-08-07",
+    "file": "tutorials/eval-llm-judge.md"
+  },
+  {
+    "id": "eval-harness-ci",
+    "title": "Building an Eval Harness and CI",
+    "description": "Turning ad-hoc scoring into a repeatable harness that runs in CI on every change — golden datasets, deterministic settings, gates, and reports.",
+    "category": "Evaluation",
+    "subtopic": "Agent Evals",
+    "difficulty": "Advanced",
+    "tags": ["Evals", "CI", "MLOps"],
+    "featured": false,
+    "updated": "2026-08-07",
+    "file": "tutorials/eval-harness-ci.md"
   },
   {
     "id": "serving-llm-apps",
@@ -136,6 +198,8 @@
     "category": "MLOps",
     "subtopic": "",
     "difficulty": "Intermediate",
+    "tags": ["MLOps", "Production"],
+    "featured": false,
     "updated": "2026-08-08",
     "file": "tutorials/serving-llm-apps.md"
   }
