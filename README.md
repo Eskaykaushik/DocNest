@@ -30,6 +30,10 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 - **Previous / next navigation** based on tutorial order in `tutorials.json`.
 - **Dark + light themes** — developer-focused defaults inspired by GitHub Docs, Stripe
   Docs, and MDN, with a navbar toggle and OS-preference following.
+- **Research-papers library** — a dedicated `papers.html` hub + `paper.html` reader for
+  reading landmark AI papers as tutorials: paper header with authors/venue/year, arXiv
+  and code links, one-click citation, TL;DR callouts, LaTeX math via KaTeX, related
+  papers, and the same TOC/progress/prev-next chrome as tutorials.
 - **Fully keyboard accessible**, with visible focus states and semantic HTML throughout.
 
 ## Folder structure
@@ -38,26 +42,34 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 DocNest/
 ├── index.html            Homepage: hero, featured band, search, card grid
 ├── tutorial.html          Tutorial page: article, TOC, prev/next
+├── papers.html            Papers hub: hero, topic/difficulty filters, local search
+├── paper.html             Paper reader: paper header, KaTeX article, citation
 │
 ├── css/
 │   ├── style.css           Layout, navbar, cards, buttons, forms, responsive rules, theme tokens
 │   ├── markdown.css        Typography and rendering rules for parsed Markdown
-│   └── portal.css          Portal components: sidebar, palette, card grid, tabs
+│   └── portal.css          Portal components: sidebar, palette, card grid, tabs, papers
 │
 ├── js/
 │   ├── app.js               Homepage controller: card grid, filters, featured, search palette
 │   ├── tutorial.js          Tutorial page controller: render, TOC, related, feedback
+│   ├── papers.js            Papers hub controller: stats, chips, local search, cards
+│   ├── paper.js             Paper reader controller: header, KaTeX, related, citation
 │   ├── sidebar.js           Shared sidebar tree + drawer (both pages)
-│   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs
+│   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs, callouts, math
 │   ├── theme.js             Dark/light theme manager + navbar toggle
 │   └── utils.js             Shared helpers (reading time, slugify, fetch wrappers…)
 │
 ├── data/
-│   └── tutorials.json      The content index — one entry per tutorial
+│   ├── tutorials.json      The content index — one entry per tutorial
+│   └── papers.json         The papers index — one entry per paper
 │
 ├── tutorials/
 │   ├── welcome.md            Feature tour / Markdown reference
 │   └── langchain.md          Longer technical example
+│
+├── papers/
+│   └── attention-is-all-you-need.md   Example: a paper written as a tutorial
 │
 ├── images/                 Images referenced from tutorials
 └── libs/                   Reserved for local vendoring, if you choose not to use a CDN
@@ -81,8 +93,8 @@ Then open `http://localhost:8000` in a browser.
 > is enough.
 
 Markdown parsing and syntax highlighting are loaded from a CDN (marked.js and
-highlight.js) via `<script>` tags in `index.html` and `tutorial.html` — there is
-nothing to install locally.
+highlight.js) via `<script>` tags in `index.html` and `tutorial.html`; KaTeX for
+paper math is loaded on `paper.html`. There is nothing to install locally.
 
 ## Adding a tutorial
 
@@ -122,6 +134,42 @@ Adding a new tutorial never requires touching any JavaScript or CSS.
 The order of entries in `tutorials.json` determines the previous/next navigation
 on each tutorial page.
 
+## Adding a paper
+
+The research-papers library (`papers.html`) works the same way as tutorials.
+
+1. **Write the content.** Create a file in `papers/`, e.g. `papers/attention-is-all-you-need.md`.
+   A paper tutorial usually follows: opening TL;DR callout, *Before you read*, the
+   *problem*, *key idea*, *math* (LaTeX delimited by `$…$` / `$$…$$`, rendered via
+   KaTeX), a *code walkthrough*, *why it works*, *key takeaways*, and a *cite this*
+   block. Wrap a highlighted TL;DR in a `callout` code fence:
+   ```` ```callout ```` … ```` ``` ````
+2. **Register it.** Add one entry to `data/papers.json`:
+
+   ```json
+   {
+     "id": "attention-is-all-you-need",
+     "title": "Attention Is All You Need",
+     "description": "The Transformer: pure self-attention instead of recurrence.",
+     "authors": ["Ashish Vaswani", "Noam Shazeer", "…"],
+     "year": 2017,
+     "venue": "NeurIPS",
+     "links": { "arxiv": "https://arxiv.org/abs/1706.03762", "code": "…" },
+     "tags": ["Transformers", "LLMs"],
+     "difficulty": "Intermediate",
+     "featured": true,
+     "updated": "2026-08-08",
+     "file": "papers/attention-is-all-you-need.md"
+   }
+   ```
+
+   Optional fields: `featured` (star on the card), `links.code` (repository/tutorial
+   link; `links.arxiv` is always shown).
+3. **Done.** Cards, topic/difficulty filter chips, local search, hero stats, related
+   papers, and prev/next navigation are generated from that entry. Order in
+   `papers.json` sets prev/next. Cross-link to matching tutorials with relative
+   links like `../tutorials/rag.md`.
+
 ## Deployment
 
 Because DocNest has no server-side logic, it can be deployed to any static host:
@@ -141,7 +189,7 @@ single-responsibility modules — is designed so the following can be layered in
 without a rewrite:
 
 - [ ] Mermaid diagrams inside Markdown code fences
-- [ ] KaTeX for inline and block math
+- [x] KaTeX for inline and block math (used by the papers library)
 - [x] A light theme alongside the current dark theme
 - [ ] Blog mode (dated posts, an archive view, pagination)
 - [ ] RSS/Atom feed generation

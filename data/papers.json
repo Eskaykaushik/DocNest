@@ -1,0 +1,125 @@
+[
+  {
+    "id": "attention-is-all-you-need",
+    "title": "Attention Is All You Need",
+    "authors": [
+      "Ashish Vaswani",
+      "Noam Shazeer",
+      "Niki Parmar",
+      "Jakob Uszkoreit",
+      "Llion Jones",
+      "Aidan N. Gomez",
+      "Lukasz Kaiser",
+      "Illia Polosukhin"
+    ],
+    "year": 2017,
+    "venue": "NeurIPS",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/1706.03762",
+      "code": "https://nlp.seas.harvard.edu/2018/04/03/attention.html"
+    },
+    "tags": [
+      "Transformers",
+      "LLMs",
+      "Attention"
+    ],
+    "difficulty": "Intermediate",
+    "featured": true,
+    "updated": "2026-08-08",
+    "file": "papers/attention-is-all-you-need.md",
+    "description": "The Transformer: pure self-attention instead of recurrence. The architecture that launched the modern LLM era."
+  },
+  {
+    "id": "rag-for-knowledge-intensive-tasks",
+    "title": "Retrieval-Augmented Generation for Knowledge-Intensive NLP Tasks",
+    "authors": [
+      "Patrick Lewis",
+      "Ethan Perez",
+      "Aleksandra Piktus",
+      "Fabio Petroni",
+      "Vladimir Karpukhin",
+      "Naman Goyal",
+      "Heinrich Küttler",
+      "Mike Lewis",
+      "Wen-tau Yih",
+      "Tim Rocktäschel",
+      "Sebastian Riedel",
+      "Douwe Kiela"
+    ],
+    "year": 2020,
+    "venue": "NeurIPS",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/2005.11401",
+      "code": "https://github.com/huggingface/transformers/tree/main/examples/research_projects/rag"
+    },
+    "tags": [
+      "RAG",
+      "Retrieval",
+      "LLMs"
+    ],
+    "difficulty": "Intermediate",
+    "featured": true,
+    "updated": "2026-08-08",
+    "file": "papers/rag-for-knowledge-intensive-tasks.md",
+    "description": "Retrieval-augmented generation pairs a dense retriever with a generator, updating knowledge without retraining."
+  },
+  {
+    "id": "chain-of-thought-prompting",
+    "title": "Chain-of-Thought Prompting Elicits Reasoning in Large Language Models",
+    "authors": [
+      "Jason Wei",
+      "Xuezhi Wang",
+      "Dale Schuurmans",
+      "Maarten Bosma",
+      "Brian Ichter",
+      "Fei Xia",
+      "Ed Chi",
+      "Quoc V. Le",
+      "Denny Zhou"
+    ],
+    "year": 2022,
+    "venue": "NeurIPS",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/2201.11903"
+    },
+    "tags": [
+      "Prompting",
+      "LLMs",
+      "Reasoning"
+    ],
+    "difficulty": "Beginner",
+    "featured": false,
+    "updated": "2026-08-08",
+    "file": "papers/chain-of-thought-prompting.md",
+    "description": "Show an LLM an example that reasons step-by-step and large models follow the pattern — no retraining required."
+  },
+  {
+    "id": "react-synergizing-reasoning-and-acting",
+    "title": "ReAct: Synergizing Reasoning and Acting in Language Models",
+    "authors": [
+      "Shunyu Yao",
+      "Jeffrey Zhao",
+      "Dian Yu",
+      "Nan Du",
+      "Izhak Shafran",
+      "Karthik Narasimhan",
+      "Yuan Cao"
+    ],
+    "year": 2023,
+    "venue": "ICLR",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/2210.03629",
+      "code": "https://github.com/princeton-nlp/ReAct"
+    },
+    "tags": [
+      "Agents",
+      "Reasoning",
+      "Tool Use"
+    ],
+    "difficulty": "Intermediate",
+    "featured": true,
+    "updated": "2026-08-08",
+    "file": "papers/react-synergizing-reasoning-and-acting.md",
+    "description": "Interleave written reasoning with tool calls in a single loop, letting modeling think-and-act to solve multi-hop tasks."
+  }
+]
