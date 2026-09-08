@@ -36,6 +36,12 @@ function getRenderer() {
 
   renderer.code = (code, infoString) => {
     const tokens = (infoString || "").trim().split(/\s+/);
+    if (tokens[0] === "callout") {
+      const variant = tokens[1] || "tl-dr";
+      return `<div class="callout callout-${escapeHtml(variant)}">
+        ${marked.parse(code.trim())}
+      </div>\n`;
+    }
     const language = tokens[0] || "text";
     const isTabbed = tokens.includes("tabs");
     const langInfo = hljs.getLanguage(language);
@@ -207,5 +213,24 @@ function activateTab(tabs, index) {
   });
   tabs.querySelectorAll(".code-block").forEach((block, i) => {
     block.hidden = i !== index;
+  });
+}
+
+/**
+ * Render LaTeX math inside a container using KaTeX's auto-renderer, which is
+ * loaded on-demand from the CDN (see <head> of paper.html). Scoped to a
+ * single container so chat or other widgets are unaffected.
+ * @param {HTMLElement} container
+ */
+export function initMath(container) {
+  if (typeof window.renderMathInElement !== "function") return;
+
+  window.renderMathInElement(container, {
+    delimiters: [
+      { left: "$$", right: "$$", display: true },
+      { left: "\\(", right: "\\)", display: false },
+      { left: "$", right: "$", display: false },
+    ],
+    throwOnError: false,
   });
 }
