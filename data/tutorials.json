@@ -120,6 +120,76 @@
     "file": "tutorials/rag.md"
   },
   {
+    "id": "agent-evaluation-fundamentals",
+    "title": "Agent Evaluation Fundamentals",
+    "description": "What agent evaluation is, why it differs from software testing, the components worth measuring, and judging final answers vs. the path an agent took.",
+    "category": "Evaluation",
+    "subtopic": "",
+    "difficulty": "Beginner",
+    "updated": "2026-08-09",
+    "file": "tutorials/agent-evaluation-fundamentals.md"
+  },
+  {
+    "id": "evaluation-datasets",
+    "title": "Building Evaluation Datasets for AI Agents",
+    "description": "How to build the eval set itself — case structure, golden data, positive/negative/edge cases, representative tasks, and versioning the dataset like code.",
+    "category": "Evaluation",
+    "subtopic": "",
+    "difficulty": "Beginner",
+    "updated": "2026-08-09",
+    "file": "tutorials/evaluation-datasets.md"
+  },
+  {
+    "id": "agent-evaluation-metrics",
+    "title": "Agent Evaluation Metrics",
+    "description": "Task success rate, precision/recall, relevance, groundedness, tool-call accuracy, latency and cost — and how to choose which metrics matter for your agent.",
+    "category": "Evaluation",
+    "subtopic": "",
+    "difficulty": "Beginner",
+    "updated": "2026-08-09",
+    "file": "tutorials/agent-evaluation-metrics.md"
+  },
+  {
+    "id": "tool-call-evaluation",
+    "title": "Evaluating Agent Tool Calls",
+    "description": "Correct tool selection, argument matching, call order, error recovery, and the hidden trap of unnecessary calls — with concrete good and bad examples.",
+    "category": "Evaluation",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-09",
+    "file": "tutorials/tool-call-evaluation.md"
+  },
+  {
+    "id": "trajectory-evaluation",
+    "title": "Evaluating Agent Trajectories",
+    "description": "How to judge the plan/act/observe loop itself: intermediate steps, efficiency, failure patterns, and how trajectory evaluation differs from final-answer evaluation.",
+    "category": "Evaluation",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-09",
+    "file": "tutorials/trajectory-evaluation.md"
+  },
+  {
+    "id": "llm-as-judge",
+    "title": "LLM-as-a-Judge for Agent Evaluation",
+    "description": "Designing judge prompts and rubrics, structured JSON scoring, and the biases that make LLM judges unreliable — with calibration and deterministic-check combinations.",
+    "category": "Evaluation",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-09",
+    "file": "tutorials/llm-as-judge.md"
+  },
+  {
+    "id": "agent-regression-testing",
+    "title": "Agent Evaluation and Regression Testing",
+    "description": "Re-running a frozen eval suite after every change to catch regressions, comparing baselines without chasing noise, and wiring agent evals into CI/CD.",
+    "category": "Evaluation",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-09",
+    "file": "tutorials/agent-regression-testing.md"
+  },
+  {
     "id": "agent-eval-techniques",
     "title": "Agent Evaluation Techniques",
     "description": "From golden datasets to LLM-as-judge — how to systematically measure whether an agent actually works, and catch regressions.",
@@ -128,6 +198,16 @@
     "difficulty": "Intermediate",
     "updated": "2026-08-07",
     "file": "tutorials/agent-eval-techniques.md"
+  },
+  {
+    "id": "agent-evaluation-in-production",
+    "title": "Evaluating Agents in Production",
+    "description": "Offline vs online evaluation, monitoring live quality, user feedback, sampling conversations, cost and latency, and privacy rules for evaluating on real user data.",
+    "category": "Evaluation",
+    "subtopic": "",
+    "difficulty": "Intermediate",
+    "updated": "2026-08-09",
+    "file": "tutorials/agent-evaluation-in-production.md"
   },
   {
     "id": "serving-llm-apps",
