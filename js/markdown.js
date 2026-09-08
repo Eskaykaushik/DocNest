@@ -42,6 +42,9 @@ function getRenderer() {
         ${marked.parse(code.trim())}
       </div>\n`;
     }
+    if (tokens[0] === "mermaid") {
+      return `<div class="mermaid-diagram">${escapeHtml(code)}</div>\n`;
+    }
     const language = tokens[0] || "text";
     const isTabbed = tokens.includes("tabs");
     const langInfo = hljs.getLanguage(language);
@@ -232,5 +235,135 @@ export function initMath(container) {
       { left: "$", right: "$", display: false },
     ],
     throwOnError: false,
+  });
+}
+
+/**
+ * Render Mermaid diagrams inside a container. Mermaid is loaded from the CDN
+ * as a global non-module script (see <head> of the reader pages). Each
+ * ```mermaid fence becomes a `.mermaid-diagram` div holding the raw source;
+ * this initializes Mermaid once with theme-aware tokens, renders every diagram
+ * in the container, and re-renders on theme toggles so diagrams match the
+ * active dark/light palette.
+ * @param {HTMLElement} container
+ */
+export function initMermaid(container) {
+  if (typeof window.mermaid !== "object") return;
+
+  window.mermaid.initialize(mermaidConfig());
+  window.mermaid.run({ nodes: container.querySelectorAll(".mermaid-diagram") });
+  watchMermaidTheme();
+}
+
+function mermaidConfig() {
+  return {
+    startOnLoad: false,
+    securityLevel: "loose",
+    theme: "base",
+    themeVariables: mermaidThemeVars(),
+    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+    flowchart: { nodeSpacing: 42, rankSpacing: 42, padding: 12 },
+    sequence: { useMaxWidth: true },
+  };
+}
+
+function mermaidThemeVars() {
+  const dark = document.documentElement.getAttribute("data-theme") !== "light";
+  return dark
+    ? {
+        primaryColor: "#161b22",
+        primaryTextColor: "#e6edf3",
+        primaryBorderColor: "#30363d",
+        lineColor: "#58a6ff",
+        secondaryColor: "#1c2128",
+        tertiaryColor: "#0d1117",
+        clusterBkg: "#0d1117",
+        clusterBorder: "#30363d",
+        labelTextColor: "#e6edf3",
+        edgeLabelBackground: "#161b22",
+        nodeBorder: "#58a6ff",
+        nodeTextColor: "#e6edf3",
+        actorBkg: "#161b22",
+        actorBorder: "#30363d",
+        actorTextColor: "#e6edf3",
+        activationBkgColor: "#1c2128",
+        sequenceNumberColor: "#e6edf3",
+        notesBkgColor: "#161b22",
+        notesBorderColor: "#30363d",
+        pie1: "#58a6ff",
+        pie2: "#a371f7",
+        pie3: "#d29922",
+        pie4: "#3fb950",
+        pie5: "#f778ba",
+        pie6: "#db6d28",
+        pie7: "#39c5cf",
+        pie8: "#ff7b72",
+        pie9: "#8b949e",
+        pie10: "#e6edf3",
+        pieStrokeWidth: "1.5px",
+        pieTitleTextSize: "15px",
+        pieSectionTextSize: "12px",
+      }
+    : {
+        primaryColor: "#f6f8fa",
+        primaryTextColor: "#1f2328",
+        primaryBorderColor: "#d0d7de",
+        lineColor: "#0969da",
+        secondaryColor: "#f3f4f6",
+        tertiaryColor: "#ffffff",
+        clusterBkg: "#ffffff",
+        clusterBorder: "#d0d7de",
+        labelTextColor: "#1f2328",
+        edgeLabelBackground: "#f6f8fa",
+        nodeBorder: "#0969da",
+        nodeTextColor: "#1f2328",
+        actorBkg: "#f6f8fa",
+        actorBorder: "#d0d7de",
+        actorTextColor: "#1f2328",
+        activationBkgColor: "#f3f4f6",
+        sequenceNumberColor: "#1f2328",
+        notesBkgColor: "#f6f8fa",
+        notesBorderColor: "#d0d7de",
+        pie1: "#0969da",
+        pie2: "#8250df",
+        pie3: "#9a6700",
+        pie4: "#1a7f37",
+        pie5: "#bf3989",
+        pie6: "#bc4c00",
+        pie7: "#1b7c83",
+        pie8: "#cf222e",
+        pie9: "#656d76",
+        pie10: "#1f2328",
+        pieStrokeWidth: "1.5px",
+        pieTitleTextSize: "15px",
+        pieSectionTextSize: "12px",
+      };
+}
+
+function watchMermaidTheme() {
+  const root = document.documentElement;
+  if (root.dataset.mermaidWatched === "true") return;
+  root.dataset.mermaidWatched = "true";
+
+  const sources = new Map();
+  document.querySelectorAll(".mermaid-diagram").forEach((node) => {
+    sources.set(node, node.textContent);
+  });
+
+  const rerender = () => {
+    if (typeof window.mermaid !== "object") return;
+    window.mermaid.initialize(mermaidConfig());
+    document.querySelectorAll(".mermaid-diagram").forEach((node) => {
+      const source = sources.get(node) ?? node.dataset.mermaidSrc;
+      if (source === undefined) return;
+      node.replaceChildren(document.createTextNode(source));
+    });
+    window.mermaid.run({ nodes: document.querySelectorAll(".mermaid-diagram") });
+  };
+
+  new MutationObserver(rerender).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+
+  document.querySelectorAll(".mermaid-diagram").forEach((node) => {
+    node.dataset.mermaidSrc = node.textContent;
   });
 }

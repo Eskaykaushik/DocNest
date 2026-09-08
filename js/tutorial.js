@@ -14,7 +14,7 @@ import {
   formatDate,
   escapeHtml,
 } from "./utils.js";
-import { renderMarkdown, initCopyButtons, initCodeTabs } from "./markdown.js";
+import { renderMarkdown, initCopyButtons, initCodeTabs, initMermaid } from "./markdown.js";
 import { buildSidebar, initSidebarDrawer } from "./sidebar.js";
 import { createSearch } from "./search.js";
 
@@ -63,6 +63,7 @@ async function init() {
     renderHeader(tutorial, markdownText);
     renderArticle(markdownText);
     buildTableOfContents();
+    initMermaid(contentEl);
     initCodeTabs(contentEl);
     initCopyButtons(contentEl);
     renderRelated(index, tutorial);

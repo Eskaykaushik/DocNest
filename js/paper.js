@@ -14,7 +14,7 @@ import {
   formatDate,
   escapeHtml,
 } from "./utils.js";
-import { renderMarkdown, initCopyButtons, initCodeTabs, initMath } from "./markdown.js";
+import { renderMarkdown, initCopyButtons, initCodeTabs, initMath, initMermaid } from "./markdown.js";
 import { createSearch } from "./search.js";
 
 const contentEl = document.getElementById("markdown-content");
@@ -66,6 +66,7 @@ async function init() {
     renderArticle(markdownText);
     buildTableOfContents();
     initMath(contentEl);
+    initMermaid(contentEl);
     initCodeTabs(contentEl);
     initCopyButtons(contentEl);
     renderRelated(index, paper);

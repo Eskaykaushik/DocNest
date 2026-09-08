@@ -89,7 +89,8 @@ renders them instantly. Homepage easter eggs live in `js/easter.js`.
 Key shared modules:
 
 - `js/markdown.js` exposes `renderMarkdown`, `initCopyButtons`, `initCodeTabs`,
-  `initMath` (KaTeX auto-render, scoped to the article element).
+  `initMath` (KaTeX auto-render, scoped to the article element), and
+  `initMermaid` (Mermaid render, theme-aware + re-renders on toggle).
 - `js/search.js` `createSearch()` indexes tutorials only (per design decision —
   papers have their own hub-local search box in `papers.js`).
 
@@ -144,6 +145,9 @@ prev/next navigation.
 - **Math** — LaTeX with `$…$` (inline) / `$$…$$` (display); rendered by KaTeX
   on paper pages only. Avoid stray `_` underlines inside `$…$` (marked parses
   emphasis before KaTeX; single `_` is safe, pairs are not).
+- **Mermaid diagrams** — a fenced block tagged `mermaid` renders a themed
+  diagram (flowchart/sequence/etc.) on tutorial and paper pages; re-renders
+  automatically on theme toggle. Uses Mermaid v11 from CDN.
 - **Internal links** are relative to the page URL (the site root), so from any
   content file use `../tutorials/rag.md` or `../papers/react-synergizing-reasoning-and-acting.md`.
   Verify targets actually exist — filenames must match exactly.
@@ -186,7 +190,7 @@ Done:
 
 Planned / ideas:
 
-- [ ] Mermaid diagrams inside Markdown code fences
+- [x] Mermaid diagrams inside Markdown code fences
 - [ ] Blog mode (dated posts, archive, pagination)
 - [ ] RSS/Atom feed generation
 - [ ] Versioned docs (multiple `tutorials.json` indexes)

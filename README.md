@@ -65,7 +65,7 @@ DocNest/
 │   ├── papers.js            Papers hub controller: stats, chips, local search, cards
 │   ├── paper.js             Paper reader controller: header, KaTeX, related, citation
 │   ├── sidebar.js           Shared sidebar tree + drawer (both pages)
-│   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs, callouts, math
+│   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs, callouts, math, Mermaid diagrams
 │   ├── theme.js             Dark/light theme manager + navbar toggle
 │   ├── reveal.js            IntersectionObserver "summon" reveal system (homepage)
 │   ├── easter.js            Homepage easter eggs (brand ×5, docnest, search, Konami, …)
@@ -105,7 +105,8 @@ Then open `http://localhost:8000` in a browser.
 
 Markdown parsing and syntax highlighting are loaded from a CDN (marked.js and
 highlight.js) via `<script>` tags in `index.html` and `tutorial.html`; KaTeX for
-paper math is loaded on `paper.html`. There is nothing to install locally.
+paper math is loaded on `paper.html`; Mermaid v11 for diagrams is loaded on
+`tutorial.html` and `paper.html`. There is nothing to install locally.
 
 ## Adding a tutorial
 
@@ -197,7 +198,7 @@ DocNest's architecture — a Markdown renderer, a content index, and small,
 single-responsibility modules — is designed so the following can be layered in
 without a rewrite:
 
-- [ ] Mermaid diagrams inside Markdown code fences
+- [x] Mermaid diagrams inside Markdown code fences
 - [x] KaTeX for inline and block math (used by the papers library)
 - [x] A light theme alongside the current dark theme
 - [ ] Blog mode (dated posts, an archive view, pagination)
