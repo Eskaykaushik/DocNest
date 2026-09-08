@@ -72,6 +72,16 @@ function init() {
       el.launcher.focus();
     }
   });
+
+  // "Ask k-mentor" calls-to-action elsewhere on the page open the widget.
+  document.querySelectorAll("[data-chat-scroll]").forEach((trigger) => {
+    trigger.addEventListener("click", (event) => {
+      event.preventDefault();
+      if (el.panel.getAttribute("aria-hidden") !== "false") {
+        openChat();
+      }
+    });
+  });
 }
 
 /* --------------------------------------------------------------------- */

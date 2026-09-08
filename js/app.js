@@ -1,8 +1,8 @@
 /**
  * app.js
- * Homepage controller: loads the tutorial index, renders AI-focused learning
- * paths (grouped by category), and wires the navbar search so that typing
- * filters paths live and opens the command-palette dropdown.
+ * Homepage controller: loads the tutorial index, renders the scalable
+ * card-grid landing (with tag + difficulty filters), spotlights featured
+ * tutorials, and wires the navbar search so typing filters cards live.
  */
 
 import {
@@ -18,10 +18,13 @@ import { createSearch } from "./search.js";
 const state = {
   tutorials: [], // full index, enriched with readingTime
   query: "",
-  collapsedPaths: new Set(),
+  category: "all",
+  difficulty: "all",
+  tags: new Set(),
 };
 
-const learningPaths = document.getElementById("learning-paths");
+const grid = document.getElementById("tutorial-grid");
+const resultsEl = document.getElementById("grid-results");
 
 const search = createSearch({
   onQueryChange: (query) => {
@@ -33,16 +36,18 @@ const search = createSearch({
 init();
 
 async function init() {
-  renderSkeletons(3);
+  renderSkeletons(8);
   bindNavLinks();
 
   try {
     const index = await fetchJson("data/tutorials.json");
     state.tutorials = await enrichWithReadingTime(index);
     search.setIndex(state.tutorials);
-    renderPaths(state.tutorials);
+    renderFilters(index);
+    renderGrid(state.tutorials);
+    renderFeatured(index);
     renderHeroStats(index);
-    scrollToPath(getQueryParam("category"));
+    scrollToCategory(getQueryParam("category"));
   } catch (err) {
     renderError(err);
   }
@@ -54,10 +59,59 @@ function renderHeroStats(index) {
   if (!statsEl) return;
   const paths = new Set(index.map((t) => t.category)).size;
   statsEl.innerHTML = [
-    `<span>${paths} learning paths</span>`,
+    `<span>${paths} topics</span>`,
     `<span>${index.length} tutorials</span>`,
     `<span>from Python to MLOps</span>`,
   ].join("");
+}
+
+/**
+ * Featured tutorials are surfaced in the spotlight band. If none are
+ * flagged yet, fall back to the "Getting Started" category.
+ */
+function renderFeatured(index) {
+  const container = document.getElementById("featured");
+  if (!container) return;
+
+  const explicit = index.filter((t) => t.featured).slice(0, 3);
+  const fallback = index.filter((t) => t.category === "Getting Started");
+  const picks = (explicit.length ? explicit : fallback).slice(0, 3);
+  if (picks.length === 0) {
+    container.hidden = true;
+    return;
+  }
+  container.hidden = false;
+
+  let html = "";
+  if (picks.length > 0) {
+    html = `
+      <div class="featured-picks">
+        <h3 class="featured-picks-label">Popular right now</h3>
+        <ul>
+          ${picks
+            .map(
+              (tutorial) => `
+                <li>
+                  <a class="featured-link" href="tutorial.html?id=${encodeURIComponent(tutorial.id)}">
+                    <span class="featured-link-icon" aria-hidden="true">${categoryIcon(tutorial.category)}</span>
+                    <span class="featured-link-body">
+                      <span class="featured-link-title">${escapeHtml(tutorial.title)}</span>
+                      <span class="featured-link-meta">
+                        <span>${escapeHtml(tutorial.category)}</span>
+                        ${tutorial.readingTime ? `<span>${tutorial.readingTime} min</span>` : ""}
+                      </span>
+                    </span>
+                  </a>
+                </li>
+              `
+            )
+            .join("")}
+        </ul>
+      </div>
+    `;
+  }
+
+  container.insertAdjacentHTML("beforeend", html);
 }
 
 /**
@@ -78,8 +132,8 @@ async function enrichWithReadingTime(index) {
 }
 
 function renderSkeletons(count) {
-  learningPaths.innerHTML = Array.from({ length: count })
-    .map(() => `<div class="skeleton-path" aria-hidden="true"></div>`)
+  grid.innerHTML = Array.from({ length: count })
+    .map(() => `<div class="skeleton-card" aria-hidden="true"></div>`)
     .join("");
 }
 
@@ -87,168 +141,222 @@ function renderSkeletons(count) {
 /* Navbar                                                                 */
 /* --------------------------------------------------------------------- */
 
-/** "Learning Paths" clears any active filter so the scroll shows everything. */
+/** "Learning Paths" clears any active filter so the grid shows everything. */
 function bindNavLinks() {
   document.querySelectorAll('a[href="#learning-paths"]').forEach((link) => {
-    link.addEventListener("click", () => {
-      if (search.input.value) {
-        search.input.value = "";
-        state.query = "";
-        applyFilters();
-      }
-    });
+    link.addEventListener("click", () => clearFilters());
   });
 }
 
 /* --------------------------------------------------------------------- */
-/* Learning paths                                                         */
+/* Filter chips                                                           */
 /* --------------------------------------------------------------------- */
 
-function groupByCategory(tutorials) {
-  const order = [];
-  const byName = new Map();
-  for (const tutorial of tutorials) {
-    if (!byName.has(tutorial.category)) {
-      byName.set(tutorial.category, []);
-      order.push(tutorial.category);
-    }
-    byName.get(tutorial.category).push(tutorial);
-  }
-  return order.map((name) => ({ name, items: byName.get(name) }));
-}
+function renderFilters(index) {
+  const container = document.getElementById("path-filters");
+  if (!container) return;
 
-/** Scroll to (and briefly highlight) a learning path from ?category=. */
-function scrollToPath(category) {
-  if (!category) return;
-  const path = learningPaths.querySelector(
-    `.learning-path[data-category="${CSS.escape(category)}"]`
+  const categories = [...new Set(index.map((t) => t.category))].sort();
+  const difficulties = [...new Set(index.map((t) => t.difficulty))].sort();
+  const tags = [...new Set(index.flatMap((t) => t.tags || []))].sort();
+
+  let chips = chipGroup(
+    "Filter by topic",
+    [{ value: "all", label: "All topics" }].concat(
+      categories.map((name) => ({ value: name, label: name }))
+    ),
+    "category",
+    state.category
   );
-  if (!path) return;
-  setPathExpanded(path, true);
-  path.scrollIntoView({ behavior: "smooth", block: "start" });
-  path.classList.add("flash");
-  setTimeout(() => path.classList.remove("flash"), 1600);
-}
 
-function renderPaths(tutorials) {
-  const groups = groupByCategory(tutorials);
+  if (tags.length > 0) {
+    chips += chipGroup(
+      "Filter by tag",
+      tags.map((name) => ({ value: name, label: name })),
+      "tag",
+      ""
+    );
+  }
 
-  learningPaths.innerHTML = groups.map((group, index) => renderPath(group, index)).join("");
-  bindPathToggles();
-}
+  chips += chipGroup(
+    "Filter by level",
+    [{ value: "all", label: "All levels" }].concat(
+      difficulties.map((name) => ({ value: name, label: name }))
+    ),
+    "difficulty",
+    state.difficulty
+  );
 
-function renderPath(group, index) {
-  const isCollapsed = state.collapsedPaths.has(group.name);
-  const step = String(index + 1).padStart(2, "0");
+  container.innerHTML = chips;
+  container.hidden = false;
 
-  return `
-    <section class="learning-path" data-category="${escapeHtml(group.name)}">
-      <button
-        type="button"
-        class="path-header"
-        aria-expanded="${String(!isCollapsed)}"
-        data-path="${escapeHtml(group.name)}"
-      >
-        <span class="path-step" aria-hidden="true">${step}</span>
-        <span class="path-icon" aria-hidden="true">${categoryIcon(group.name)}</span>
-        <span class="path-name">${escapeHtml(group.name)}</span>
-        <span class="path-count">
-          ${group.items.length} tutorial${group.items.length === 1 ? "" : "s"}
-        </span>
-        <span class="path-chevron" aria-hidden="true">${chevronSvg()}</span>
-      </button>
-      <div class="path-items-wrap">
-        <ul class="path-items">
-          ${group.items.map(renderItem).join("")}
-        </ul>
-      </div>
-    </section>
-  `;
-}
-
-function renderItem(tutorial) {
-  return `
-    <li class="path-item">
-      <a
-        href="tutorial.html?id=${encodeURIComponent(tutorial.id)}"
-        data-searchable="${escapeHtml(
-          `${tutorial.title} ${tutorial.description} ${tutorial.category} ${tutorial.difficulty}`
-        ).toLowerCase()}"
-      >
-        <span class="path-item-title">${escapeHtml(tutorial.title)}</span>
-        <span class="path-item-desc">${escapeHtml(tutorial.description)}</span>
-        <span class="path-item-meta">
-          ${tutorial.readingTime ? `<span>${tutorial.readingTime} min read</span>` : ""}
-          <span>${escapeHtml(tutorial.difficulty)}</span>
-        </span>
-      </a>
-    </li>
-  `;
-}
-
-function bindPathToggles() {
-  learningPaths.querySelectorAll(".path-header").forEach((button) => {
-    button.addEventListener("click", () => {
-      const path = button.closest(".learning-path");
-      const isExpanded = button.getAttribute("aria-expanded") === "true";
-      setPathExpanded(path, !isExpanded);
-      const name = button.dataset.path;
-      if (isExpanded) state.collapsedPaths.add(name);
-      else state.collapsedPaths.delete(name);
+  container.querySelectorAll(".filter-chip").forEach((chip) => {
+    chip.addEventListener("click", () => {
+      if (chip.dataset.tag) {
+        const tag = chip.dataset.tag;
+        if (state.tags.has(tag)) state.tags.delete(tag);
+        else state.tags.add(tag);
+      } else if (chip.dataset.category) {
+        state.category = chip.dataset.category;
+      } else {
+        state.difficulty = chip.dataset.difficulty;
+      }
+      updateChipStates();
+      applyFilters();
     });
   });
 }
 
-function setPathExpanded(path, expanded) {
-  const header = path.querySelector(".path-header");
-  header?.setAttribute("aria-expanded", String(expanded));
-  path.classList.toggle("is-expanded", expanded);
-  path.classList.toggle("is-collapsed", !expanded);
+function chipGroup(label, items, key, activeValue) {
+  const buttons = items
+    .map((item) => {
+      const isActive =
+        key === "tag"
+          ? state.tags.has(item.value)
+          : item.value === activeValue;
+      const binding =
+        key === "tag" ? `data-tag="${escapeHtml(item.value)}"` : `data-${key}="${escapeHtml(item.value)}"`;
+      return `
+        <button
+          type="button"
+          class="filter-chip${isActive ? " active" : ""}"
+          ${binding}
+        >${escapeHtml(item.label)}</button>
+      `;
+    })
+    .join("");
+  return `
+    <div class="chip-group" role="group" aria-label="${label}">
+      ${buttons}
+    </div>
+  `;
+}
+
+function updateChipStates() {
+  document.querySelectorAll("#path-filters .filter-chip").forEach((chip) => {
+    if (chip.dataset.tag) {
+      chip.classList.toggle("active", state.tags.has(chip.dataset.tag));
+    } else if (chip.dataset.category) {
+      chip.classList.toggle("active", chip.dataset.category === state.category);
+    } else {
+      chip.classList.toggle("active", chip.dataset.difficulty === state.difficulty);
+    }
+  });
+}
+
+function clearFilters() {
+  state.query = "";
+  state.category = "all";
+  state.difficulty = "all";
+  state.tags.clear();
+  if (search.input) search.input.value = "";
+  updateChipStates();
+  applyFilters();
+}
+
+/** Scroll offset for cross-page deep links (?category=). */
+function scrollToCategory(category) {
+  if (!category) return;
+  const target = document.getElementById("tutorial-grid");
+  const anchor = document.querySelector(`#path-filters [data-category="${CSS.escape(category)}"]`);
+  if (anchor) {
+    anchor.classList.add("active");
+    state.category = category;
+    updateChipStates();
+    applyFilters();
+  }
+  if (target) {
+    target.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
 }
 
 /* --------------------------------------------------------------------- */
-/* Live filtering across paths                                            */
+/* Card grid                                                              */
+/* --------------------------------------------------------------------- */
+
+function renderGrid(tutorials) {
+  grid.innerHTML = tutorials.map(renderCard).join("");
+}
+
+function renderCard(tutorial) {
+  return `
+    <article
+      class="tutorial-card"
+      data-category="${escapeHtml(tutorial.category)}"
+      data-difficulty="${escapeHtml(tutorial.difficulty)}"
+      data-tags="${escapeHtml((tutorial.tags || []).join(" "))}"
+      data-searchable="${escapeHtml(
+        `${tutorial.title} ${tutorial.description} ${tutorial.category} ${tutorial.difficulty} ${(tutorial.tags || []).join(" ")}`
+      ).toLowerCase()}"
+    >
+      <a href="tutorial.html?id=${encodeURIComponent(tutorial.id)}">
+        <div class="card-top">
+          <span class="card-icon" aria-hidden="true">${categoryIcon(tutorial.category)}</span>
+          <span class="card-category">${escapeHtml(tutorial.category)}</span>
+        </div>
+        <h3 class="card-title">${escapeHtml(tutorial.title)}</h3>
+        <p class="card-desc">${escapeHtml(tutorial.description)}</p>
+        <div class="card-meta">
+          <span class="card-difficulty badge-${escapeHtml(
+            tutorial.difficulty.toLowerCase()
+          )}">${escapeHtml(tutorial.difficulty)}</span>
+          ${tutorial.readingTime ? `<span class="card-minread">${tutorial.readingTime} min</span>` : ""}
+        </div>
+        ${tutorial.tags && tutorial.tags.length ? `<div class="card-tags">${tutorial.tags
+          .map((tag) => `<span class="card-tag">${escapeHtml(tag)}</span>`)
+          .join("")}</div>` : ""}
+      </a>
+    </article>
+  `;
+}
+
+/* --------------------------------------------------------------------- */
+/* Live filtering across cards                                            */
 /* --------------------------------------------------------------------- */
 
 function applyFilters() {
   const query = state.query;
+  const category = state.category;
+  const difficulty = state.difficulty;
+  const tags = state.tags;
+  const hasFilters =
+    query !== "" || category !== "all" || difficulty !== "all" || tags.size > 0;
   let matchCount = 0;
 
-  learningPaths.querySelectorAll(".learning-path").forEach((section) => {
-    let visible = 0;
-    section.querySelectorAll(".path-item").forEach((item) => {
-      const matches = !query || item.dataset.searchable.includes(query);
-      item.hidden = !matches;
-      if (matches) visible++;
-    });
-    section.hidden = visible === 0;
-
-    if (query && visible > 0) {
-      setPathExpanded(section, true);
-    } else if (!query) {
-      const name = section.querySelector(".path-header")?.dataset.path;
-      setPathExpanded(section, !(name && state.collapsedPaths.has(name)));
-    }
-
-    matchCount += visible;
+  grid.querySelectorAll(".tutorial-card").forEach((card) => {
+    const matchesQuery = !query || card.dataset.searchable.includes(query);
+    const matchesCategory = category === "all" || card.dataset.category === category;
+    const matchesDifficulty =
+      difficulty === "all" || card.dataset.difficulty === difficulty;
+    const matchesTags =
+      tags.size === 0 || Array.from(tags).every((tag) => card.dataset.tags.split(" ").includes(tag));
+    const matches = matchesQuery && matchesCategory && matchesDifficulty && matchesTags;
+    card.hidden = !matches;
+    if (matches) matchCount++;
   });
 
+  resultsEl.textContent = hasFilters || matchCount !== state.tutorials.length
+    ? `${matchCount} tutorial${matchCount === 1 ? "" : "s"}`
+    : "";
+
   if (matchCount === 0 && state.tutorials.length > 0) {
-    ensureEmptyState(query);
+    ensureEmptyState();
   } else {
     document.getElementById("empty-state")?.remove();
   }
 }
 
-function ensureEmptyState(query) {
+function ensureEmptyState() {
   document.getElementById("empty-state")?.remove();
-  learningPaths.insertAdjacentHTML(
+  grid.insertAdjacentHTML(
     "beforeend",
     `<div class="empty-state" id="empty-state">
-      <h3>No tutorials match that search</h3>
-      <p>Try a different keyword, like "agent" or "python".</p>
+      <h3>No tutorials match your filters</h3>
+      <p>Try a different topic, level, or keyword.</p>
+      <button type="button" class="empty-reset" id="empty-reset">Clear filters</button>
     </div>`
   );
+  document.getElementById("empty-reset")?.addEventListener("click", clearFilters);
 }
 
 /* --------------------------------------------------------------------- */
@@ -256,13 +364,9 @@ function ensureEmptyState(query) {
 /* --------------------------------------------------------------------- */
 
 function renderError(err) {
-  learningPaths.innerHTML = `<div class="empty-state">
+  grid.innerHTML = `<div class="empty-state">
     <h3>Couldn't load tutorials</h3>
     <p>${escapeHtml(err.message)}</p>
   </div>`;
   console.error(err);
-}
-
-function chevronSvg() {
-  return `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M4 6l4 4 4-4" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
 }
