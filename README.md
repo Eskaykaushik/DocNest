@@ -44,6 +44,18 @@ get a fast, searchable docs site — no build step, no framework, no backend.
   and code links, one-click citation, TL;DR callouts, LaTeX math via KaTeX, related
   papers, and the same TOC/progress/prev-next chrome as tutorials.
 - **Fully keyboard accessible**, with visible focus states and semantic HTML throughout.
+- **Annotate workspace** — an Xournal++-style ink page at `annotate.html`: start
+  from a blank/grid/ruled page or drop in a PDF or image, then write and draw with
+  a pen, highlighter, eraser, text, and shapes (line, rectangle, ellipse, arrow).
+  Pressure-sensitive strokes, two-finger pan/pinch zoom, undo/redo, multi-page
+  notebooks, per-doc thumbnails. Everything is stored locally in the browser
+  (IndexedDB) — no upload, no account — and can be exported as PNG, printed to PDF,
+  or backed up as a portable `.docnest.json` file. PDF rendering uses PDF.js
+  (cdnjs, loaded on demand).
+- **Open in notebook** — every tutorial and paper has an *Open in notebook* button
+  that rasterizes the rendered article into page-sized images and opens it in the
+  Annotate workspace, so you can highlight, write margin notes, and solve problems
+  directly on top of the reading. Uses html2canvas (cdnjs, loaded on demand).
 
 ## Folder structure
 
@@ -53,17 +65,23 @@ DocNest/
 ├── tutorial.html          Tutorial page: article, TOC, prev/next
 ├── papers.html            Papers hub: hero, topic/difficulty filters, local search
 ├── paper.html             Paper reader: paper header, KaTeX article, citation
+├── annotate.html           Annotate workspace: notebook library + ink editor
 │
 ├── css/
 │   ├── style.css           Layout, navbar, cards, buttons, forms, responsive rules, theme tokens
 │   ├── markdown.css        Typography and rendering rules for parsed Markdown
-│   └── portal.css          Portal components: sidebar, palette, card grid, tabs, papers
+│   ├── portal.css          Portal components: sidebar, palette, card grid, tabs, papers
+│   └── annotate.css        Annotate workspace: toolbar, page rail, stage, print rules
 │
 ├── js/
 │   ├── app.js               Homepage controller: card grid, topic/level filters, search palette
 │   ├── tutorial.js          Tutorial page controller: render, TOC, related, feedback
 │   ├── papers.js            Papers hub controller: stats, chips, local search, cards
 │   ├── paper.js             Paper reader controller: header, KaTeX, related, citation
+│   ├── annotate.js          Annotate controller: library, import, toolbar, pages, export
+│   ├── draw.js              Canvas ink engine: pen/highlighter/eraser/shapes, gestures
+│   ├── annotator-store.js   IndexedDB store + .docnest.json export/import
+│   ├── to-notebook.js       Rasterizes a tutorial/paper into a new notebook (html2canvas)
 │   ├── sidebar.js           Shared sidebar tree + drawer (both pages)
 │   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs, callouts, math, Mermaid diagrams
 │   ├── theme.js             Dark/light theme manager + navbar toggle
@@ -106,7 +124,10 @@ Then open `http://localhost:8000` in a browser.
 Markdown parsing and syntax highlighting are loaded from a CDN (marked.js and
 highlight.js) via `<script>` tags in `index.html` and `tutorial.html`; KaTeX for
 paper math is loaded on `paper.html`; Mermaid v11 for diagrams is loaded on
-`tutorial.html` and `paper.html`. There is nothing to install locally.
+`tutorial.html` and `paper.html`; PDF.js is loaded on demand on `annotate.html`
+only when a PDF is opened or imported, and html2canvas is loaded on demand on
+tutorial/paper pages when you click *Open in notebook*. There is nothing to
+install locally.
 
 ## Adding a tutorial
 
@@ -201,6 +222,7 @@ without a rewrite:
 - [x] Mermaid diagrams inside Markdown code fences
 - [x] KaTeX for inline and block math (used by the papers library)
 - [x] A light theme alongside the current dark theme
+- [x] Annotate workspace (stylus ink over PDFs/images, IndexedDB library, PNG/print/JSON export)
 - [ ] Blog mode (dated posts, an archive view, pagination)
 - [ ] RSS/Atom feed generation
 - [x] Tagging, in addition to single-category classification

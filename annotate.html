@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Annotate — DocNest</title>
+  <meta name="description" content="Upload a PDF or image and write on it with a stylus, pen, or finger. A lightweight Xournal-style annotation board that saves in your browser." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="css/markdown.css" />
+  <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/annotate.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
+  <script src="js/theme.js"></script>
+</head>
+<body class="annotate">
+  <a class="visually-hidden" href="#main-content">Skip to content</a>
+
+  <header class="navbar">
+    <div class="navbar-inner">
+      <a href="index.html" class="brand">
+        <span class="brand-mark" aria-hidden="true">D</span>
+        DocNest
+      </a>
+      <nav class="nav-actions" aria-label="Primary">
+        <a class="nav-link" href="index.html#learning-paths">Learning Paths</a>
+        <a class="nav-link" href="papers.html">Papers</a>
+        <a class="nav-link" href="annotate.html">Annotate</a>
+        <button
+          type="button"
+          class="theme-toggle"
+          data-theme-toggle
+          aria-label="Switch theme"
+          aria-pressed="false"
+        >
+          <svg data-theme-icon="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle class="sun-path" cx="12" cy="12" r="4" />
+            <path class="sun-path" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+          </svg>
+          <svg data-theme-icon="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path class="moon-path" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main-content">
+    <section id="annot-library" class="annot-library">
+      <div class="annot-hero">
+        <p class="eyebrow">Annotate · Xournal-style</p>
+        <h1 class="hero-title">Write on <span class="accent">anything</span></h1>
+        <p class="hero-subtitle">
+          Upload a PDF or an image — or start a blank page — then ink it with a stylus,
+          pen, or finger. Notebooks save in this browser; export a PNG, print to PDF, or
+          save a portable <code>.docnest.json</code>.
+        </p>
+        <div class="hero-actions">
+          <button type="button" class="btn btn-primary" id="annot-upload-btn">Upload PDF or image</button>
+          <button type="button" class="btn btn-ghost" id="annot-new-blank">Blank page</button>
+          <button type="button" class="btn btn-ghost" id="annot-new-grid">Dot grid</button>
+          <button type="button" class="btn btn-ghost" id="annot-new-lines">Ruled</button>
+        </div>
+        <input type="file" id="annot-file-input" accept="application/pdf,image/*" multiple hidden />
+      </div>
+
+      <button type="button" class="annot-dropzone" id="annot-dropzone">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M12 16V4M7 9l5-5 5 5M4 16v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+        </svg>
+        <span>Drop a PDF or image here</span>
+      </button>
+
+      <div class="grid-heading">
+        <div>
+          <h2 class="grid-title">Your notebooks</h2>
+          <p class="grid-subtitle">Saved locally, offline-first, in this browser.</p>
+        </div>
+        <p class="grid-results" id="annot-lib-count" aria-live="polite"></p>
+      </div>
+
+      <div class="annot-doc-grid" id="annot-doc-grid"></div>
+      <p class="annot-empty" id="annot-empty">No notebooks yet — upload a file or start a blank page.</p>
+    </section>
+
+    <section id="annot-editor" class="annot-editor" hidden>
+      <div class="annot-topbar">
+        <button type="button" class="annot-icon-btn annot-back" id="annot-back" title="Back to notebooks" aria-label="Back to notebooks">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6" /></svg>
+        </button>
+        <input type="text" id="annot-name" class="annot-name" aria-label="Notebook name" spellcheck="false" />
+        <span class="annot-save-status" id="annot-save-status" aria-live="polite"></span>
+        <div class="annot-topbar-actions">
+          <button type="button" class="annot-icon-btn" id="annot-export-png" title="Export this page as PNG" aria-label="Export PNG">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v14H4zM4 15l4-4 5 5M14 13l3 3M15 8h.01" /></svg>
+          </button>
+          <button type="button" class="annot-icon-btn" id="annot-print-btn" title="Print / save as PDF" aria-label="Print">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4a2 2 0 0 1-2-2v-4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v4a2 2 0 0 1-2 2h-2M6 14h12v7H6z" /></svg>
+          </button>
+          <button type="button" class="annot-icon-btn" id="annot-export-json" title="Save notebook file (.docnest.json)" aria-label="Save notebook file">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M4 21h16" /></svg>
+          </button>
+          <button type="button" class="annot-icon-btn" id="annot-import-json" title="Open notebook file" aria-label="Open notebook file">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M7 8l5-5 5 5M4 21h16" /></svg>
+          </button>
+          <input type="file" id="annot-import-input" accept="application/json,.json" hidden />
+        </div>
+      </div>
+
+      <div class="annot-body">
+        <aside class="annot-rail" aria-label="Pages">
+          <div class="annot-thumbs" id="annot-thumbs"></div>
+          <div class="annot-rail-actions">
+            <div class="annot-add-page" id="annot-add-page">
+              <span class="annot-add-label">Add page</span>
+              <button type="button" data-add="blank" title="Insert blank page">+ Blank</button>
+              <button type="button" data-add="grid" title="Insert dot grid page">+ Grid</button>
+              <button type="button" data-add="lines" title="Insert ruled page">+ Ruled</button>
+            </div>
+            <button type="button" class="annot-rail-delete" id="annot-delete-page" title="Delete this page">Delete page</button>
+          </div>
+        </aside>
+
+        <div class="annot-main">
+          <div class="annot-toolbar" role="toolbar" aria-label="Drawing tools">
+            <div class="annot-group" id="annot-tools">
+              <button type="button" class="annot-tool" data-tool="pen" title="Pen (P)" aria-label="Pen">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19l7-7 3 3-7 7-3-3zM18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5zM2 2l7.586 7.586" /><circle cx="11" cy="11" r="2" /></svg>
+              </button>
+              <button type="button" class="annot-tool" data-tool="highlight" title="Highlighter (H)" aria-label="Highlighter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 11l-6 6v3h3l6-6M9 11l7-7a2.1 2.1 0 0 1 3 3l-7 7M9 11l3 3" /></svg>
+              </button>
+              <button type="button" class="annot-tool" data-tool="eraser" title="Eraser (E)" aria-label="Eraser">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 20H7L3 16a2 2 0 0 1 0-2.8L11.2 5a2 2 0 0 1 2.8 0l6 6a2 2 0 0 1 0 2.8L13 20M7 20l7-7" /></svg>
+              </button>
+              <button type="button" class="annot-tool" data-tool="text" title="Text (T)" aria-label="Text">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6V4h16v2M12 4v16M9 20h6" /></svg>
+              </button>
+              <button type="button" class="annot-tool" data-tool="line" title="Line (L)" aria-label="Line">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true"><path d="M4 20L20 4" /></svg>
+              </button>
+              <button type="button" class="annot-tool" data-tool="rect" title="Rectangle (R)" aria-label="Rectangle">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="5" width="16" height="14" rx="1.5" /></svg>
+              </button>
+              <button type="button" class="annot-tool" data-tool="ellipse" title="Ellipse (O)" aria-label="Ellipse">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><ellipse cx="12" cy="12" rx="8" ry="6" /></svg>
+              </button>
+              <button type="button" class="annot-tool" data-tool="arrow" title="Arrow (A)" aria-label="Arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20L20 4M20 4h-7M20 4v7" /></svg>
+              </button>
+            </div>
+
+            <div class="annot-group annot-colors" id="annot-colors" role="group" aria-label="Colour">
+              <input type="color" id="annot-color-input" class="annot-color-input" aria-label="Custom colour" value="#111827" />
+            </div>
+
+            <div class="annot-group" id="annot-widths" role="group" aria-label="Stroke width"></div>
+
+            <div class="annot-group">
+              <button type="button" class="annot-tool" id="annot-undo" title="Undo (Ctrl+Z)" aria-label="Undo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 14L4 9l5-5M4 9h11a5 5 0 0 1 0 10h-3" /></svg>
+              </button>
+              <button type="button" class="annot-tool" id="annot-redo" title="Redo (Ctrl+Shift+Z)" aria-label="Redo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 14l5-5-5-5M20 9H9a5 5 0 0 0 0 10h3" /></svg>
+              </button>
+              <button type="button" class="annot-tool" id="annot-clear" title="Clear page" aria-label="Clear page">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" /></svg>
+              </button>
+            </div>
+
+            <div class="annot-group annot-group-end">
+              <button type="button" class="annot-tool" id="annot-zoom-out" title="Zoom out" aria-label="Zoom out">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M5 12h14" /></svg>
+              </button>
+              <button type="button" class="annot-zoom-label" id="annot-zoom-label" title="Fit to width">100%</button>
+              <button type="button" class="annot-tool" id="annot-zoom-in" title="Zoom in" aria-label="Zoom in">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14" /></svg>
+              </button>
+              <button type="button" class="annot-tool" id="annot-fit" title="Fit to width (0)" aria-label="Fit to width">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9V5h4M20 9V5h-4M4 15v4h4M20 15v4h-4" /></svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="annot-stage" id="annot-stage">
+            <div class="annot-page" id="annot-page">
+              <canvas id="annot-canvas"></canvas>
+            </div>
+          </div>
+
+          <div class="annot-statusbar">
+            <button type="button" class="annot-soft" id="annot-prev">Prev page</button>
+            <span id="annot-page-label">Page 1 / 1</span>
+            <button type="button" class="annot-soft" id="annot-next">Next page</button>
+            <span class="annot-hint">Pen P · Highlighter H · Eraser E · Text T · Undo ⌘Z · Zoom ⌘/Ctrl + scroll</span>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>DocNest — a nest for your AI curiosity.</p>
+    <p class="footer-links">
+      Built by
+      <a href="https://kaushixlabs.eskaykaushik14.workers.dev/" target="_blank" rel="noopener">Kaushix Labs</a>
+      ·
+      <a href="https://eskaykaushik.github.io/myProfile/" target="_blank" rel="noopener">Shubham Kaushik</a>
+    </p>
+  </footer>
+
+  <div class="chat-widget" id="chat-widget">
+    <button
+      type="button"
+      class="chat-launcher attention"
+      id="chat-launcher"
+      aria-label="Ask the AI teacher"
+      aria-expanded="false"
+      aria-controls="chat-panel"
+    >
+      <span class="chat-badge" id="chat-badge">1</span>
+      <svg class="chat-launcher-open" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.3c-1.2 0-2.3-.2-3.4-.6L4 21l1.2-3.6A8.38 8.38 0 1 1 21 11.5z"/>
+      </svg>
+      <svg class="chat-launcher-close" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+        <path d="M6 6l12 12M18 6L6 18"/>
+      </svg>
+    </button>
+
+    <div class="chat-panel" id="chat-panel" role="dialog" aria-hidden="true" aria-label="Ask the AI teacher">
+      <header class="chat-panel-header">
+        <div class="chat-panel-heading">
+          <span class="chat-avatar" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 9L12 4 2 9l10 5 10-5z"/>
+              <path d="M6 11.5V16c0 1.5 2.7 3 6 3s6-1.5 6-3v-4.5"/>
+              <path d="M22 9v5"/>
+            </svg>
+          </span>
+          <div class="chat-panel-heading-text">
+            <span class="chat-title">k-mentor</span>
+            <span class="chat-subtitle">Your AI teacher · online</span>
+          </div>
+        </div>
+        <div class="chat-header-actions">
+          <button type="button" class="chat-clear" id="chat-clear" aria-label="Clear conversation" title="Clear conversation">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"/>
+            </svg>
+          </button>
+          <button type="button" class="chat-close" id="chat-close" aria-label="Close chat">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" aria-hidden="true">
+              <path d="M6 6l12 12M18 6L6 18"/>
+            </svg>
+          </button>
+        </div>
+      </header>
+
+      <div class="chat-body" id="chat-body" aria-live="polite"></div>
+
+      <div class="chat-input-row">
+        <input
+          type="text"
+          id="chat-input"
+          placeholder="Ask anything about AI…"
+          autocomplete="off"
+          aria-label="Message the AI teacher"
+        />
+        <button type="button" class="chat-send" id="chat-send" aria-label="Send message">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="annot-toast" id="annot-toast" role="status" aria-live="polite"></div>
+  <div class="annot-print" id="annot-print" aria-hidden="true"></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script type="module" src="js/annotate.js"></script>
+  <script type="module" src="js/chat.js"></script>
+</body>
+</html>

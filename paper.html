@@ -31,6 +31,7 @@
       <nav class="nav-actions" aria-label="Primary">
         <a class="nav-link" href="index.html#learning-paths">Learning Paths</a>
         <a class="nav-link" href="papers.html">Papers</a>
+        <a class="nav-link" href="annotate.html">Annotate</a>
         <div class="search-wrap" id="search-wrap">
           <div class="search-input-group">
             <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -95,6 +96,13 @@
                   <path d="M5 4H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h5" stroke-linecap="round" />
                 </svg>
                 Cite
+              </button>
+              <button type="button" class="btn btn-ghost notebook-open-btn" id="paper-notebook-btn">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="width:14px;height:14px;">
+                  <path d="M11.4 2.6l2 2L6 12l-2.6.6L4 10l7.4-7.4z" stroke-linejoin="round" />
+                  <path d="M10 4l2 2" stroke-linecap="round" />
+                </svg>
+                Open in notebook
               </button>
             </div>
           </div>
@@ -210,6 +218,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/contrib/auto-render.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
   <script type="module" src="js/paper.js"></script>
+  <script type="module" src="js/pen.js"></script>
   <script type="module" src="js/chat.js"></script>
 </body>
 </html>

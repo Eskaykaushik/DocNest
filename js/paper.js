@@ -16,6 +16,7 @@ import {
 } from "./utils.js";
 import { renderMarkdown, initCopyButtons, initCodeTabs, initMath, initMermaid } from "./markdown.js";
 import { createSearch } from "./search.js";
+import { openInNotebook } from "./to-notebook.js";
 
 const contentEl = document.getElementById("markdown-content");
 const titleEl = document.getElementById("paper-title");
@@ -29,6 +30,7 @@ const paginationEl = document.getElementById("paper-pagination");
 const relatedSection = document.getElementById("related-section");
 const feedbackWidget = document.getElementById("feedback-widget");
 const progressBar = document.getElementById("reading-progress");
+const notebookBtn = document.getElementById("paper-notebook-btn");
 
 const search = createSearch();
 
@@ -71,6 +73,7 @@ async function init() {
     initCopyButtons(contentEl);
     renderRelated(index, paper);
     initFeedback(paper.id);
+    initNotebookButton(paper);
     renderPagination(index, currentIndex);
     observeActiveSection();
   } catch (err) {
@@ -277,6 +280,15 @@ function initFeedback(paperId) {
   } catch {
     /* ignore */
   }
+}
+
+function initNotebookButton(paper) {
+  if (!notebookBtn) return;
+  notebookBtn.addEventListener("click", () => {
+    openInNotebook({ title: paper.title, sourceEl: contentEl, button: notebookBtn }).catch((error) => {
+      window.alert(error.message || "Could not open this paper in the notebook.");
+    });
+  });
 }
 
 /* --------------------------------------------------------------------- */

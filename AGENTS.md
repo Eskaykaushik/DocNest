@@ -51,15 +51,21 @@ index.html            Homepage: minimal summoned-hero + scroll-reveal card grid
 tutorial.html          Tutorial reader: sidebar tree, TOC, prev/next
 papers.html            Papers hub: hero stats, topic/difficulty chips, local search
 paper.html             Paper reader: paper header, KaTeX article, citation copy
+annotate.html          Annotate workspace: notebook library + ink editor
 
 css/style.css          Layout, navbar, cards, buttons, theme tokens (dark + light)
 css/markdown.css       Typography + rules for parsed Markdown
 css/portal.css         Portal components: sidebar, palette, grids, chips, papers, chat
+css/annotate.css       Annotate workspace: topbar, toolbars, page rail, stage, print rules
 
 js/app.js              Homepage controller (card grid, topic/level filters)
 js/tutorial.js         Tutorial reader controller
 js/papers.js           Papers hub controller
 js/paper.js            Paper reader controller
+js/annotate.js         Annotate controller: library, import, tools, pages, export, print
+js/draw.js             Canvas ink engine: pen/highlighter/eraser/shapes/text, gestures
+js/annotator-store.js  IndexedDB store (docs + files) and .docnest.json export/import
+js/to-notebook.js      Rasterizes a tutorial/paper article into a new notebook (html2canvas)
 js/sidebar.js          Shared category sidebar tree + mobile drawer
 js/search.js           Search command palette (tutorials) — "/" or Ctrl/⌘+K
 js/markdown.js         marked.js + highlight.js wrapper; code tabs, callouts, KaTeX hook
@@ -78,7 +84,11 @@ images/                Static images (docnest-diagram.svg, etc.)
 ```
 
 Runtimes: marked.js + highlight.js (CDN) on tutorial-ish pages; plus KaTeX on
-`paper.html`. All loaded by `<script>` in the HTML `<head>`/`<body>`.
+`paper.html`. `annotate.html` dynamically loads PDF.js 3.11.174 (UMD) from cdnjs
+only when a PDF is opened or imported (see `ensurePdfLib` in `js/annotate.js`).
+Tutorial/paper pages load html2canvas 1.4.1 from cdnjs on demand when the user
+clicks *Open in notebook* (see `js/to-notebook.js`). All loaded by `<script>` in
+the HTML `<head>`/`<body>`.
 Fonts: all pages use Inter; JetBrains Mono for code. Colors come from a
 developer token palette (see `--color-*` in `style.css`) — never hard-code
 colors. The homepage uses a `[data-reveal]` summon-on-scroll system
@@ -93,6 +103,42 @@ Key shared modules:
   `initMermaid` (Mermaid render, theme-aware + re-renders on toggle).
 - `js/search.js` `createSearch()` indexes tutorials only (per design decision —
   papers have their own hub-local search box in `papers.js`).
+
+The annotate workspace is its own three-module stack, isolated from the
+render/reader code:
+
+- `js/draw.js` `createSurface({ canvas, stage, onBeforeChange, onChange, onTap,
+  onZoom })` is the canvas ink engine. It owns two offscreen ink caches
+  (`inkCache` source-over, `hlCache` multiply for the highlighter) plus a
+  `bgCache`, and composes them onto the visible canvas. Public API:
+  `setPage`, `setZoom`, `getZoom`, `setTool`, `getTool`, `refreshInk`,
+  `flattenPage` (used by export + print). `onTap` fires with a `{ x, y }` point
+  in unzoomed page coordinates — note `openTextInput` in `js/annotate.js` takes
+  that single point object, not `(x, y)`.
+- `js/annotator-store.js` is the IndexedDB layer (`docnest-annotator` DB, `docs`
+  + `files` stores) with an in-memory fallback; also handles `.docnest.json`
+  export/import (doc graph + original PDF/image blobs as base64).
+- `js/annotate.js` is the controller: library + editor views, blank/grid/ruled
+  creation, image + PDF import, page rail, zoom, undo/redo, text overlay, PNG
+  export, print prep (`#annot-print`), import/export, toasts, shortcuts.
+- `js/to-notebook.js` backs the *Open in notebook* button on tutorial/paper
+  pages. It clones the rendered article into an 840px-wide light-themed wrapper,
+  rasterizes it with html2canvas, slices it into A4-ratio page-sized images, and
+  saves a new doc (`pages[].background.type === "image"`) before redirecting to
+  `annotate.html?id=<id>`. Page aspect must match the slice so the engine's
+  "contain" background fit fills each page exactly.
+
+Data model (`js/annotator-store.js` / `js/annotate.js`):
+
+```
+Doc  { id, name, created, updated, pages[], thumb, fileName?, fileType?, hasFile? }
+Page { id, width, height, background: {type:"blank"|"grid"|"lines"|"image"|"pdf", dataUrl?, index?}, strokes[] }
+Stroke { id, tool, color, width, points[{x,y,p}], text?, fontSize? }
+```
+
+Paper surfaces are always light ("paper is content, not theme") — the canvas
+hardcodes `PAPER_LINE`/`PAPER_DOT`, so do not wire annotate surfaces to theme
+tokens.
 
 ## Content authoring conventions
 
@@ -187,6 +233,12 @@ Done:
       RAG, Chain-of-Thought, ReAct)
 - [x] KaTeX math rendering (papers)
 - [x] Agent-eval companion series (eval-golden-datasets, eval-llm-judge, eval-harness-ci)
+- [x] Annotate workspace (`annotate.html` + `js/draw.js` + `js/annotator-store.js`
+      + `js/annotate.js`): stylus ink over PDFs/images/blank pages, IndexedDB
+      library, PNG / print-to-PDF / `.docnest.json` export — see the module notes
+      above
+- [x] "Open in notebook" on tutorials and papers (`js/to-notebook.js`): rasterize
+      the article into background pages and jump straight into the Annotate editor
 
 Planned / ideas:
 

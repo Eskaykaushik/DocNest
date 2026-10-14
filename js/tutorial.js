@@ -17,6 +17,7 @@ import {
 import { renderMarkdown, initCopyButtons, initCodeTabs, initMermaid } from "./markdown.js";
 import { buildSidebar, initSidebarDrawer } from "./sidebar.js";
 import { createSearch } from "./search.js";
+import { openInNotebook } from "./to-notebook.js";
 
 const contentEl = document.getElementById("markdown-content");
 const titleEl = document.getElementById("tutorial-title");
@@ -28,6 +29,7 @@ const relatedSection = document.getElementById("related-section");
 const feedbackWidget = document.getElementById("feedback-widget");
 const sidebarEl = document.getElementById("sidebar");
 const progressBar = document.getElementById("reading-progress");
+const notebookBtn = document.getElementById("tutorial-notebook-btn");
 
 const search = createSearch();
 
@@ -68,6 +70,7 @@ async function init() {
     initCopyButtons(contentEl);
     renderRelated(index, tutorial);
     initFeedback(tutorial.id);
+    initNotebookButton(tutorial);
     renderPagination(index, currentIndex);
     observeActiveSection();
   } catch (err) {
@@ -189,6 +192,15 @@ function initFeedback(tutorialId) {
   } catch {
     /* ignore */
   }
+}
+
+function initNotebookButton(tutorial) {
+  if (!notebookBtn) return;
+  notebookBtn.addEventListener("click", () => {
+    openInNotebook({ title: tutorial.title, sourceEl: contentEl, button: notebookBtn }).catch((error) => {
+      window.alert(error.message || "Could not open this tutorial in the notebook.");
+    });
+  });
 }
 
 /* --------------------------------------------------------------------- */

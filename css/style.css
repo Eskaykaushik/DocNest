@@ -4,9 +4,55 @@
    Typography and rendering rules for Markdown content live in markdown.css.
    ========================================================================== */
 
-:root,
+:root {
+  /* Terminal theme — default */
+  --color-bg: #0a0e14;
+  --color-surface: #0d1117;
+  --color-surface-hover: #131920;
+  --color-border: #1e2a35;
+  --color-text: #c5cdd8;
+  --color-muted: #5c6a75;
+  --color-accent: #00e5ff;
+  --color-accent-strong: #18ffff;
+  --color-accent-soft: rgba(0, 229, 255, 0.1);
+  --color-accent-border: rgba(0, 229, 255, 0.35);
+  --color-danger: #ff5370;
+  --color-danger-soft: rgba(255, 83, 112, 0.12);
+  --color-success: #00ff9c;
+  --color-success-soft: rgba(0, 255, 156, 0.12);
+
+  --code-bg: #060a0f;
+  --code-header-bg: #0a0e14;
+  --nav-bg: rgba(10, 14, 20, 0.9);
+
+  --hero-glow-core: rgba(0, 229, 255, 0.08);
+  --hero-glow-a: rgba(0, 229, 255, 0.1);
+  --hero-glow-b: rgba(0, 255, 156, 0.06);
+
+  --font-ui: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+  --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
+
+  --max-width-reading: 850px;
+  --max-width-page: 1200px;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --nav-height: 56px;
+
+  --ease: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 120ms;
+  --duration-base: 180ms;
+  --duration-slow: 700ms;
+  --duration-slower: 900ms;
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.5);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.45);
+  --shadow-glow: 0 0 0 1px var(--color-accent-soft), 0 8px 24px rgba(0, 0, 0, 0.5);
+}
+
+/* Dark theme (GitHub-inspired) */
 [data-theme="dark"] {
-  /* Color tokens — dark theme (default), developer palette */
   --color-bg: #0d1117;
   --color-surface: #161b22;
   --color-surface-hover: #1c2330;
@@ -22,39 +68,22 @@
   --color-success: #3fb950;
   --color-success-soft: rgba(63, 185, 80, 0.14);
 
-  /* Code surface */
   --code-bg: #0a0d12;
   --code-header-bg: #100f12;
-
-  /* Navbar */
   --nav-bg: rgba(13, 17, 23, 0.85);
 
-  /* Hero glows */
   --hero-glow-core: rgba(88, 166, 255, 0.14);
   --hero-glow-a: rgba(88, 166, 255, 0.16);
   --hero-glow-b: rgba(121, 192, 255, 0.12);
 
-  /* Typography */
   --font-ui: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-mono: "JetBrains Mono", "SFMono-Regular", Consolas, monospace;
 
-  /* Layout */
-  --max-width-reading: 850px;
-  --max-width-page: 1200px;
   --radius-sm: 6px;
   --radius-md: 10px;
   --radius-lg: 16px;
   --nav-height: 64px;
 
-  /* Motion */
-  --ease: cubic-bezier(0.4, 0, 0.2, 1);
-  --ease-out-smooth: cubic-bezier(0.22, 1, 0.36, 1);
-  --duration-fast: 150ms;
-  --duration-base: 220ms;
-  --duration-slow: 900ms;
-  --duration-slower: 1150ms;
-
-  /* Shadows */
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.35);
   --shadow-glow: 0 0 0 1px var(--color-accent-soft), 0 8px 24px rgba(0, 0, 0, 0.4);
@@ -91,38 +120,7 @@
   --shadow-glow: 0 0 0 1px var(--color-accent-soft), 0 8px 24px rgba(31, 35, 40, 0.1);
 }
 
-/* No explicit preference → follow the OS. Deliberately scoped to :root so it
-   only applies when .js/theme.js hasn't set an explicit [data-theme]. */
-@media (prefers-color-scheme: light) {
-  :root:not([data-theme]) {
-    --color-bg: #ffffff;
-    --color-surface: #f6f8fa;
-    --color-surface-hover: #eef1f4;
-    --color-border: #d0d7de;
-    --color-text: #1f2328;
-    --color-muted: #656d76;
-    --color-accent: #0969da;
-    --color-accent-strong: #1f6feb;
-    --color-accent-soft: rgba(9, 105, 218, 0.1);
-    --color-accent-border: rgba(9, 105, 218, 0.4);
-    --color-danger: #cf222e;
-    --color-danger-soft: rgba(207, 34, 46, 0.12);
-    --color-success: #1a7f37;
-    --color-success-soft: rgba(26, 127, 55, 0.12);
-
-    --code-bg: #0d1117;
-    --code-header-bg: #161b22;
-    --nav-bg: rgba(255, 255, 255, 0.85);
-
-    --hero-glow-core: rgba(9, 105, 218, 0.1);
-    --hero-glow-a: rgba(9, 105, 218, 0.12);
-    --hero-glow-b: rgba(31, 111, 235, 0.1);
-
-    --shadow-sm: 0 1px 2px rgba(31, 35, 40, 0.04);
-    --shadow-md: 0 8px 24px rgba(31, 35, 40, 0.1);
-    --shadow-glow: 0 0 0 1px var(--color-accent-soft), 0 8px 24px rgba(31, 35, 40, 0.1);
-  }
-}
+/* No explicit theme choice → terminal is the default. */
 
 /* --------------------------------------------------------------------- */
 /* Reset                                                                  */
@@ -290,67 +288,59 @@ button {
   background: var(--color-surface);
 }
 
-/* Theme toggle */
+/* Theme switcher */
 
-.theme-toggle {
+.theme-switcher-wrap {
   display: inline-flex;
   align-items: center;
-  justify-content: center;
-  width: 36px;
-  height: 36px;
-  flex-shrink: 0;
-  border-radius: var(--radius-sm);
+  gap: 6px;
+  font-family: var(--font-mono);
+}
+
+.theme-switcher-label {
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-muted);
+}
+
+.theme-switcher {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 132px;
   background: var(--color-surface);
   border: 1px solid var(--color-border);
-  color: var(--color-muted);
+  color: var(--color-text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 6px 26px 6px 10px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
-  transition: color var(--duration-fast) var(--ease),
-    border-color var(--duration-fast) var(--ease),
-    transform var(--duration-fast) var(--ease);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease),
+    box-shadow var(--duration-fast) var(--ease),
+    background var(--duration-fast) var(--ease);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' fill='none' stroke='%235c6a75' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l3.5 4 3.5-4'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 7px center;
 }
 
-.theme-toggle:hover {
-  color: var(--color-text);
+.theme-switcher::-webkit-calendar-picker-interface {
+  opacity: 0;
+}
+
+.theme-switcher:focus {
   border-color: var(--color-accent);
   box-shadow: var(--shadow-glow);
-  transform: translateY(-1px);
 }
 
-.theme-toggle svg {
-  width: 18px;
-  height: 18px;
-}
-
-.theme-toggle svg[data-theme-icon="sun"] {
-  color: #e3b341;
-}
-
-.theme-toggle svg[data-theme-icon="moon"] {
-  color: var(--color-accent);
-}
-
-.theme-toggle .sun-path {
-  filter: drop-shadow(0 0 3px rgba(227, 179, 65, 0.55));
-}
-
-.theme-toggle .moon-path {
-  filter: drop-shadow(0 0 3px rgba(88, 166, 255, 0.5));
-}
-
-.brand.pulse {
-  animation: brand-pulse 0.7s var(--ease-out-smooth);
-}
-
-@keyframes brand-pulse {
-  0% {
-    transform: scale(1);
-  }
-  40% {
-    transform: scale(1.12);
-  }
-  100% {
-    transform: scale(1);
-  }
+.theme-switcher:hover {
+  border-color: var(--color-accent-border);
+  background: var(--color-surface-hover);
 }
 
 /* Navbar search */

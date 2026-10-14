@@ -1,0 +1,801 @@
+/* ==========================================================================
+   DocNest — annotate.css
+   The Xournal-style upload-and-ink board: document library + editor chrome.
+   Colours come from the shared --color-* tokens; "paper" (the page itself) is
+   intentionally always light, like a printed sheet.
+   ========================================================================== */
+
+body.annotate {
+  overflow-x: hidden;
+}
+
+.annotate #main-content {
+  padding: 0;
+}
+
+.annot-editor[hidden],
+.annot-library[hidden] {
+  display: none;
+}
+
+/* ------------------------------------------------------------------ */
+/* Library                                                            */
+/* ------------------------------------------------------------------ */
+
+.annot-library {
+  max-width: var(--max-width-page);
+  margin: 0 auto;
+  padding: 72px 24px 96px;
+}
+
+.annot-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  gap: 4px;
+}
+
+.annot-hero .hero-subtitle {
+  max-width: 640px;
+}
+
+.annot-hero code {
+  font-family: var(--font-mono);
+  font-size: 0.9em;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  padding: 1px 5px;
+}
+
+.annot-dropzone {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 100%;
+  margin: 36px 0 8px;
+  padding: 22px;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  border: 1px dashed var(--color-border);
+  border-radius: var(--radius-lg);
+  cursor: pointer;
+  transition: border-color var(--duration-base) var(--ease), color var(--duration-base) var(--ease);
+}
+
+.annot-dropzone:hover {
+  border-color: var(--color-accent);
+  color: var(--color-text);
+}
+
+.annot-dropzone svg {
+  width: 20px;
+  height: 20px;
+}
+
+.annot-doc-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+  gap: 16px;
+  margin-top: 12px;
+}
+
+.annot-doc-card {
+  position: relative;
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  transition: transform var(--duration-base) var(--ease), border-color var(--duration-base) var(--ease);
+}
+
+.annot-doc-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--color-accent-border);
+}
+
+.annot-doc-open {
+  display: flex;
+  flex-direction: column;
+  text-decoration: none;
+  color: inherit;
+}
+
+.annot-doc-thumb {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 148px;
+  background: #ffffff;
+  border-bottom: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.annot-doc-thumb img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: top center;
+}
+
+.annot-doc-initial {
+  font-size: 44px;
+  font-weight: 700;
+  color: #c9d2dd;
+}
+
+.annot-doc-body {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 12px 14px;
+}
+
+.annot-doc-name {
+  font-weight: 600;
+  color: var(--color-text);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.annot-doc-meta {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.annot-doc-delete {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  padding: 0;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  opacity: 0;
+  cursor: pointer;
+  transition: opacity var(--duration-fast) var(--ease), color var(--duration-fast) var(--ease);
+}
+
+.annot-doc-card:hover .annot-doc-delete,
+.annot-doc-delete:focus-visible {
+  opacity: 1;
+}
+
+.annot-doc-delete:hover {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.annot-doc-delete svg {
+  width: 16px;
+  height: 16px;
+}
+
+.annot-empty {
+  margin: 40px 0;
+  text-align: center;
+  color: var(--color-muted);
+}
+
+/* ------------------------------------------------------------------ */
+/* Editor shell                                                       */
+/* ------------------------------------------------------------------ */
+
+.annot-editor {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - var(--nav-height));
+}
+
+body.annot-editing {
+  overflow: hidden;
+}
+
+body.annot-editing .site-footer {
+  display: none;
+}
+
+.annot-topbar {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 16px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.annot-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: var(--color-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease), background var(--duration-fast) var(--ease);
+}
+
+.annot-icon-btn:hover {
+  color: var(--color-text);
+  background: var(--color-surface-hover);
+}
+
+.annot-icon-btn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.annot-back {
+  flex: none;
+}
+
+.annot-name {
+  flex: 1;
+  min-width: 0;
+  max-width: 420px;
+  padding: 6px 10px;
+  font-family: var(--font-ui);
+  font-size: 15px;
+  font-weight: 600;
+  color: var(--color-text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  outline: none;
+  transition: border-color var(--duration-fast) var(--ease), background var(--duration-fast) var(--ease);
+}
+
+.annot-name:hover {
+  border-color: var(--color-border);
+}
+
+.annot-name:focus {
+  border-color: var(--color-accent);
+  background: var(--color-bg);
+}
+
+.annot-save-status {
+  font-size: 12px;
+  color: var(--color-muted);
+}
+
+.annot-topbar-actions {
+  display: flex;
+  gap: 2px;
+  margin-left: auto;
+}
+
+/* ------------------------------------------------------------------ */
+/* Body: page rail + canvas column                                    */
+/* ------------------------------------------------------------------ */
+
+.annot-body {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  flex: 1;
+  min-height: 0;
+}
+
+.annot-rail {
+  display: flex;
+  flex-direction: column;
+  width: 132px;
+  background: var(--color-surface);
+  border-right: 1px solid var(--color-border);
+  overflow: hidden;
+}
+
+.annot-thumbs {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 12px;
+  overflow-y: auto;
+}
+
+.annot-thumb {
+  position: relative;
+  flex: none;
+  aspect-ratio: 3 / 4;
+  padding: 0;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
+}
+
+.annot-thumb:hover {
+  border-color: var(--color-accent-border);
+}
+
+.annot-thumb.is-active {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 1px var(--color-accent);
+}
+
+.annot-thumb-num {
+  position: absolute;
+  top: 4px;
+  left: 6px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: #8a95a3;
+}
+
+.annot-thumb-lines {
+  position: absolute;
+  inset: auto 10px 12px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.annot-thumb-lines i {
+  height: 2px;
+  background: #e3e8ee;
+  border-radius: 1px;
+}
+
+.annot-thumb-lines i:nth-child(2) {
+  width: 80%;
+}
+
+.annot-thumb-lines i:nth-child(3) {
+  width: 60%;
+}
+
+.annot-thumb.is-active .annot-thumb-num {
+  color: var(--color-accent);
+}
+
+.annot-rail-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 12px;
+  border-top: 1px solid var(--color-border);
+}
+
+.annot-add-label {
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-muted);
+}
+
+.annot-add-page {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.annot-add-page button,
+.annot-rail-delete {
+  padding: 6px 8px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  text-align: left;
+  color: var(--color-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease), border-color var(--duration-fast) var(--ease);
+}
+
+.annot-add-page button:hover,
+.annot-rail-delete:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.annot-rail-delete {
+  text-align: center;
+}
+
+.annot-rail-delete:hover {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.annot-rail-delete:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* ------------------------------------------------------------------ */
+/* Toolbar                                                            */
+/* ------------------------------------------------------------------ */
+
+.annot-main {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+}
+
+.annot-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.annot-group {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  padding-right: 8px;
+  margin-right: 2px;
+  border-right: 1px solid var(--color-border);
+}
+
+.annot-group-end {
+  margin-left: auto;
+  padding-right: 0;
+  margin-right: 0;
+  border-right: none;
+}
+
+.annot-tool {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  padding: 0;
+  color: var(--color-muted);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease), background var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease);
+}
+
+.annot-tool:hover {
+  color: var(--color-text);
+  background: var(--color-surface-hover);
+}
+
+.annot-tool.is-active {
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-border);
+}
+
+.annot-tool svg {
+  width: 18px;
+  height: 18px;
+}
+
+.annot-colors {
+  flex-wrap: wrap;
+  max-width: 320px;
+}
+
+.annot-swatch {
+  width: 22px;
+  height: 22px;
+  padding: 0;
+  background: var(--swatch);
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  cursor: pointer;
+  transition: transform var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
+}
+
+.annot-swatch:hover {
+  transform: scale(1.12);
+}
+
+.annot-swatch.is-active {
+  box-shadow: 0 0 0 2px var(--color-bg), 0 0 0 4px var(--color-accent);
+}
+
+.annot-color-input {
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.annot-color-input::-webkit-color-swatch-wrapper {
+  padding: 2px;
+}
+
+.annot-color-input::-webkit-color-swatch {
+  border: none;
+  border-radius: 50%;
+}
+
+.annot-width {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.annot-width span {
+  display: block;
+  background: var(--color-text);
+  border-radius: 50%;
+}
+
+.annot-width:hover {
+  background: var(--color-surface-hover);
+}
+
+.annot-width.is-active {
+  background: var(--color-accent-soft);
+  border-color: var(--color-accent-border);
+}
+
+.annot-width.is-active span {
+  background: var(--color-accent);
+}
+
+.annot-zoom-label {
+  min-width: 52px;
+  padding: 0 4px;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-muted);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.annot-zoom-label:hover {
+  color: var(--color-text);
+}
+
+/* ------------------------------------------------------------------ */
+/* Stage + paper                                                      */
+/* ------------------------------------------------------------------ */
+
+.annot-stage {
+  position: relative;
+  flex: 1;
+  min-height: 0;
+  padding: 24px;
+  overflow: auto;
+  background: var(--color-bg);
+  background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
+  background-size: 22px 22px;
+  overscroll-behavior: contain;
+}
+
+.annot-page {
+  position: relative;
+  margin: 0 auto;
+  background: #ffffff;
+  border-radius: 2px;
+  box-shadow: var(--shadow-md);
+  width: max-content;
+}
+
+.annot-page canvas {
+  display: block;
+  touch-action: none;
+  border-radius: 2px;
+}
+
+.annot-text-input {
+  position: absolute;
+  min-width: 120px;
+  padding: 0;
+  font-family: var(--font-ui);
+  line-height: 1.2;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px dashed var(--color-accent);
+  border-radius: 2px;
+  outline: none;
+}
+
+.annot-statusbar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  font-size: 12px;
+  color: var(--color-muted);
+  background: var(--color-surface);
+  border-top: 1px solid var(--color-border);
+}
+
+.annot-soft {
+  padding: 4px 10px;
+  font-family: var(--font-ui);
+  font-size: 12px;
+  color: var(--color-muted);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+}
+
+.annot-soft:hover:not(:disabled) {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.annot-soft:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.annot-hint {
+  margin-left: auto;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  opacity: 0.8;
+}
+
+/* ------------------------------------------------------------------ */
+/* Toast, drop overlay, print                                         */
+/* ------------------------------------------------------------------ */
+
+.annot-toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 60;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 10px 16px;
+  font-size: 13px;
+  color: var(--color-text);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  opacity: 0;
+  transform: translate(-50%, 12px);
+  pointer-events: none;
+  transition: opacity var(--duration-base) var(--ease), transform var(--duration-base) var(--ease-out-smooth);
+}
+
+.annot-toast.is-visible {
+  opacity: 1;
+  transform: translate(-50%, 0);
+}
+
+.annot-toast.is-error {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+body.is-dropping::after {
+  content: "Drop to open in Annotate";
+  position: fixed;
+  inset: 14px;
+  z-index: 90;
+  display: grid;
+  place-items: center;
+  font-weight: 600;
+  color: var(--color-accent);
+  background: var(--color-accent-soft);
+  border: 2px dashed var(--color-accent);
+  border-radius: var(--radius-lg);
+  pointer-events: none;
+}
+
+.annot-print {
+  display: none;
+}
+
+@media print {
+  body > * {
+    display: none !important;
+  }
+
+  body > .annot-print {
+    display: block !important;
+  }
+
+  .annot-print-page {
+    display: block;
+    width: 100%;
+    page-break-after: always;
+  }
+}
+
+/* ------------------------------------------------------------------ */
+/* Responsive                                                         */
+/* ------------------------------------------------------------------ */
+
+@media (max-width: 900px) {
+  .annot-body {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .annot-rail {
+    flex-direction: row;
+    width: auto;
+    border-right: none;
+    border-bottom: 1px solid var(--color-border);
+    overflow-x: auto;
+  }
+
+  .annot-thumbs {
+    flex-direction: row;
+    overflow-x: auto;
+    overflow-y: hidden;
+  }
+
+  .annot-thumb {
+    width: 62px;
+  }
+
+  .annot-rail-actions {
+    flex-direction: row;
+    align-items: center;
+    border-top: none;
+    border-left: 1px solid var(--color-border);
+  }
+
+  .annot-add-page {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .annot-add-label {
+    display: none;
+  }
+
+  .annot-hint {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .annot-topbar {
+    flex-wrap: wrap;
+  }
+
+  .annot-name {
+    max-width: none;
+  }
+
+  .annot-statusbar {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .annot-library {
+    padding: 48px 16px 72px;
+  }
+
+  .annot-colors {
+    max-width: 220px;
+  }
+}

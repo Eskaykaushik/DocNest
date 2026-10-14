@@ -37,6 +37,7 @@
       <nav class="nav-actions" aria-label="Primary">
         <a class="nav-link" href="index.html#learning-paths">Learning Paths</a>
         <a class="nav-link" href="papers.html">Papers</a>
+        <a class="nav-link" href="annotate.html">Annotate</a>
         <div class="search-wrap" id="search-wrap">
           <div class="search-input-group">
             <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
@@ -83,6 +84,15 @@
             <p class="tutorial-breadcrumb" id="tutorial-breadcrumb">Docs</p>
             <h1 class="tutorial-title" id="tutorial-title">Loading…</h1>
             <div class="tutorial-meta-row" id="tutorial-meta-row"></div>
+            <div class="tutorial-actions">
+              <button type="button" class="btn btn-ghost notebook-open-btn" id="tutorial-notebook-btn">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="width:14px;height:14px;">
+                  <path d="M11.4 2.6l2 2L6 12l-2.6.6L4 10l7.4-7.4z" stroke-linejoin="round" />
+                  <path d="M10 4l2 2" stroke-linecap="round" />
+                </svg>
+                Open in notebook
+              </button>
+            </div>
           </div>
         </div>
 
@@ -196,6 +206,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
   <script type="module" src="js/tutorial.js"></script>
+  <script type="module" src="js/pen.js"></script>
   <script type="module" src="js/chat.js"></script>
 </body>
 </html>
