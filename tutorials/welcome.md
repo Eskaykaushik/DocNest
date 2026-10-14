@@ -126,6 +126,29 @@ is a good general reference for Markdown conventions.
 
 ---
 
+## Check yourself
+
+```quiz
+{
+  "questions": [
+    {
+      "q": "What does DocNest build the table of contents from?",
+      "options": ["Every heading (H1–H6)", "The H2 and H3 headings", "The order in tutorials.json", "Front matter"],
+      "answer": 1,
+      "why": "DocNest builds the TOC automatically from the H2 and H3 headings."
+    },
+    {
+      "q": "Which keyword turns a code fence into a tabbed block?",
+      "options": ["group", "tabs", "multi", "lang"],
+      "answer": 1,
+      "why": "Consecutive fences tagged `tabs` collapse into a single tabbed code block."
+    }
+  ]
+}
+```
+
+---
+
 ## What's next
 
 Head back to the homepage and open the LangChain tutorial to see a longer, more technical

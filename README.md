@@ -35,6 +35,13 @@ get a fast, searchable docs site — no build step, no framework, no backend.
   (click the D mark five times, type `docnest`, search for a certain game
   character, rapid theme-flipping, the Konami sequence, and a starfield when
   you've summoned every card).
+- **Nest progress** — "your nest grows as you learn": XP and levels, a daily
+  streak, discoverable badges, and read checkmarks on cards, surfaced by a navbar
+  level ring that opens a Nest panel. Stored locally, no account needed.
+- **Inline quizzes** — a fenced `quiz` block renders a self-scoring
+  "check yourself" quiz; acing one on the first try earns bonus XP and a badge.
+- **k-mentor personas** — switch the chat assistant's voice (default, ELI5,
+  Engineer, Pirate, Haiku) from the chat header.
 - **Dark + light themes** — developer palette (near-black `#0d1117` + `#58a6ff`
   in dark, `#fff` + `#0969da` in light), all-Inter typography, JetBrains Mono for
   code; navbar toggle sits rightmost in the nav and its icon color reflects the
@@ -78,7 +85,12 @@ DocNest/
 │   ├── draw.js              Canvas ink engine: pen/highlighter/eraser/shapes, gestures
 │   ├── annotator-store.js   IndexedDB store + .docnest.json export/import
 │   ├── sidebar.js           Shared sidebar tree + drawer (both pages)
-│   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs, callouts, math, Mermaid diagrams
+│   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs, callouts, math, Mermaid diagrams, quizzes
+│   ├── quiz.js              Inline "check yourself" quiz builder (```quiz fences)
+│   ├── progress.js          XP/levels/streak/badges + navbar level ring & Nest panel (localStorage)
+│   ├── badges.js            Badge definitions + unlock predicates
+│   ├── effects.js           Shared toasts, particle bursts, confetti, flashes
+│   ├── pen.js               Global presentation pen overlay (all reader pages)
 │   ├── theme.js             Dark/light theme manager + navbar toggle
 │   ├── reveal.js            IntersectionObserver "summon" reveal system (homepage)
 │   ├── easter.js            Homepage easter eggs (brand ×5, docnest, search, Konami, …)

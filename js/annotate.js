@@ -1,4 +1,4 @@
-import { createSurface, flattenPage, clamp } from "./draw.js";
+import { createSurface, flattenPage, clamp, paperPalette } from "./draw.js";
 import * as store from "./annotator-store.js";
 import { getQueryParam, formatDate, escapeHtml, debounce } from "./utils.js";
 
@@ -9,6 +9,10 @@ const DEFAULT_HEIGHT = 1123;
 const COLORS = ["#111827", "#dc2626", "#2563eb", "#059669", "#d97706", "#7c3aed", "#db2777", "#ffffff"];
 const WIDTHS = [1.5, 3, 5, 8];
 const HISTORY_LIMIT = 60;
+
+function defaultInk() {
+  return document.documentElement.dataset.theme === "light" ? COLORS[0] : "#ffffff";
+}
 
 const els = {
   library: document.getElementById("annot-library"),
@@ -57,7 +61,7 @@ const state = {
   pdf: null,
   pdfCanvas: new Map(),
   images: new Map(),
-  tool: { name: "pen", color: COLORS[0], width: WIDTHS[1] },
+  tool: { name: "pen", color: defaultInk(), width: WIDTHS[1] },
   history: new Map(),
   zoom: 1,
 };
@@ -567,7 +571,7 @@ async function printDoc() {
     } catch (error) {
       source = null;
     }
-    const canvas = flattenPage(page, source, 1.6);
+    const canvas = flattenPage(page, source, 1.6, paperPalette("light"));
     const image = document.createElement("img");
     image.className = "annot-print-page";
     image.src = canvas.toDataURL("image/png");
@@ -776,7 +780,12 @@ function init() {
     },
   });
   buildToolbar();
-  wireEvents();
+  applyThemeInk();
+  const themeObserver = new MutationObserver(applyThemeInk);
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
   renderLibrary();
   const id = getQueryParam("id");
   if (id) openDoc(id);

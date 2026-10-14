@@ -45,6 +45,9 @@ function getRenderer() {
     if (tokens[0] === "mermaid") {
       return `<div class="mermaid-diagram">${escapeHtml(code)}</div>\n`;
     }
+    if (tokens[0] === "quiz") {
+      return `<div class="quiz" data-quiz="${encodeURIComponent(code.trim())}"></div>\n`;
+    }
     const language = tokens[0] || "text";
     const isTabbed = tokens.includes("tabs");
     const langInfo = hljs.getLanguage(language);

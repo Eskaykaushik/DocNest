@@ -1,6 +1,18 @@
 const SHAPE_TOOLS = new Set(["line", "rect", "ellipse", "arrow"]);
-const PAPER_LINE = "#dfe3ea";
-const PAPER_DOT = "#c8d0da";
+const PAPER_THEMES = {
+  light: { bg: "#ffffff", line: "#dfe3ea", dot: "#c8d0da" },
+  dark: { bg: "#0d1117", line: "#30363d", dot: "#263039" },
+};
+
+export function paperPalette(theme) {
+  const key =
+    theme === "light" || theme === "dark"
+      ? theme
+      : document.documentElement.dataset.theme === "light"
+        ? "light"
+        : "dark";
+  return PAPER_THEMES[key];
+}
 
 export function clamp(value, min, max) {
   return Math.min(max, Math.max(min, value));
@@ -177,17 +189,17 @@ function strokeHit(stroke, point, tolerance) {
   return false;
 }
 
-function paintBackground(target, targetPage, src, scale) {
+function paintBackground(target, targetPage, src, scale, palette = paperPalette()) {
   const tctx = target.getContext("2d");
   tctx.setTransform(1, 0, 0, 1, 0, 0);
   tctx.clearRect(0, 0, target.width, target.height);
   tctx.setTransform(scale, 0, 0, scale, 0, 0);
   tctx.globalCompositeOperation = "source-over";
-  tctx.fillStyle = "#ffffff";
+  tctx.fillStyle = palette.bg;
   tctx.fillRect(0, 0, targetPage.width, targetPage.height);
   const background = targetPage.background || {};
-  if (background.type === "grid") drawDots(tctx, targetPage, PAPER_DOT, 24);
-  else if (background.type === "lines") drawRuled(tctx, targetPage, PAPER_LINE, 34);
+  if (background.type === "grid") drawDots(tctx, targetPage, palette.dot, 24);
+  else if (background.type === "lines") drawRuled(tctx, targetPage, palette.line, 34);
   if (src) {
     const ratio = Math.min(targetPage.width / src.width, targetPage.height / src.height);
     const w = src.width * ratio;
@@ -196,10 +208,10 @@ function paintBackground(target, targetPage, src, scale) {
   }
 }
 
-export function flattenPage(page, source, scale) {
+export function flattenPage(page, source, scale, palette) {
   const out = makeCanvas(page.width * scale, page.height * scale);
   const octx = out.getContext("2d");
-  paintBackground(out, page, source, scale);
+  paintBackground(out, page, source, scale, palette);
   octx.setTransform(scale, 0, 0, scale, 0, 0);
   for (const stroke of page.strokes) if (stroke.tool !== "highlight") drawStroke(octx, stroke);
   octx.setTransform(scale, 0, 0, scale, 0, 0);
@@ -268,6 +280,13 @@ export function createSurface({ canvas, stage, onBeforeChange, onChange, onTap, 
     bgCache = makeCanvas(page.width * cacheScale, page.height * cacheScale);
     paintBackground(bgCache, page, source, cacheScale);
     rebuildInk();
+    compose();
+  }
+
+  function repaintBackground() {
+    if (!page) return;
+    bgCache = makeCanvas(page.width * cacheScale, page.height * cacheScale);
+    paintBackground(bgCache, page, source, cacheScale);
     compose();
   }
 
@@ -421,6 +440,12 @@ export function createSurface({ canvas, stage, onBeforeChange, onChange, onTap, 
   canvas.addEventListener("pointerup", finishPointer);
   canvas.addEventListener("pointercancel", cancelPointer);
 
+  const themeObserver = new MutationObserver(() => repaintBackground());
+  themeObserver.observe(document.documentElement, {
+    attributes: true,
+    attributeFilter: ["data-theme"],
+  });
+
   return {
     setPage(nextPage, nextSource) {
       page = nextPage;
@@ -449,11 +474,12 @@ export function createSurface({ canvas, stage, onBeforeChange, onChange, onTap, 
       rebuildInk();
       compose();
     },
-    flatten(scale) {
+    flatten(scale, palette) {
       if (!page) return null;
-      return flattenPage(page, source, scale);
+      return flattenPage(page, source, scale, palette);
     },
     destroy() {
+      themeObserver.disconnect();
       canvas.removeEventListener("pointerdown", onPointerDown);
       canvas.removeEventListener("pointermove", onPointerMove);
       canvas.removeEventListener("pointerup", finishPointer);

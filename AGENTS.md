@@ -65,13 +65,18 @@ js/paper.js            Paper reader controller
 js/annotate.js         Annotate controller: library, import, tools, pages, export, print
 js/draw.js             Canvas ink engine: pen/highlighter/eraser/shapes/text, gestures
 js/annotator-store.js  IndexedDB store (docs + files) and .docnest.json export/import
+js/pen.js              Global presentation pen overlay (all reader pages)
 js/sidebar.js          Shared category sidebar tree + mobile drawer
 js/search.js           Search command palette (tutorials) — "/" or Ctrl/⌘+K
-js/markdown.js         marked.js + highlight.js wrapper; code tabs, callouts, KaTeX hook
-js/chat.js             k-mentor chat widget
+js/markdown.js         marked.js + highlight.js wrapper; code tabs, callouts, quiz fence, KaTeX hook
+js/quiz.js             Inline "check yourself" quizzes built from ```quiz fences
+js/chat.js             k-mentor chat widget + persona selector
 js/theme.js            Dark/light theme manager (localStorage "docnest.theme")
 js/reveal.js           IntersectionObserver "summon" reveal system (homepage only)
 js/easter.js           Homepage easter eggs (logo ×5, "docnest", search wink, Konami, …)
+js/effects.js          Shared delight layer: toasts, particles, confetti, flash
+js/progress.js         "Nest grows" store: XP, levels, streak, completion, navbar ring + Nest panel
+js/badges.js           Badge definitions + evaluation (pure data/predicates)
 js/utils.js            Shared helpers (reading time, slugify, fetch wrappers, debounce)
 
 data/tutorials.json    Tutorial index  (one entry per tutorial)
@@ -100,6 +105,19 @@ Key shared modules:
   `initMermaid` (Mermaid render, theme-aware + re-renders on toggle).
 - `js/search.js` `createSearch()` indexes tutorials only (per design decision —
   papers have their own hub-local search box in `papers.js`).
+- `js/effects.js` is the shared delight layer (`showToast`, `flash`,
+  `burstParticles`, `confetti`, `starfieldRain`, `celebrate`); toasts queue
+  sequentially and particle effects no-op under `prefers-reduced-motion`.
+- `js/progress.js` owns the "nest grows as you learn" loop: XP, levels, daily
+  streak, read/completion tracking, egg + quiz recorders, and badge unlocking,
+  persisted in localStorage under `"docnest.progress"`. It renders the navbar
+  **level ring + Nest panel** (`initNestUI`, auto-run on import — so any page
+  that imports it gets the ring). `attachCompletion({id,kind,category,minutes,
+  ctx})` fires once when the reader scrolls near the end.
+- `js/badges.js` is pure data + predicates (`BADGES`, `getBadge`,
+  `evaluateBadges`); `js/progress.js` owns persistence/unlocking.
+- `js/quiz.js` `initQuizzes(container, {onPerfect})` builds quizzes from
+  ```quiz fences; call it after `renderMarkdown` on the reader pages.
 
 The annotate workspace is its own three-module stack, isolated from the
 render/reader code:
@@ -127,9 +145,12 @@ Page { id, width, height, background: {type:"blank"|"grid"|"lines"|"image"|"pdf"
 Stroke { id, tool, color, width, points[{x,y,p}], text?, fontSize? }
 ```
 
-Paper surfaces are always light ("paper is content, not theme") — the canvas
-hardcodes `PAPER_LINE`/`PAPER_DOT`, so do not wire annotate surfaces to theme
-tokens.
+Annotate blank-page paper now follows the theme: in dark mode the paper is
+black (`#0d1117`) with theme-aware grid/ruled lines; in light mode white with
+the existing lines. The implementation lives in `js/draw.js` (theme palettes +
+`MutationObserver` repaint) and `js/annotate.js`/`css/annotate.css` (`--paper-bg`
++ default pen color per theme). Export/print use the light palette for
+consistent output.
 
 ## Content authoring conventions
 
@@ -185,6 +206,18 @@ prev/next navigation.
 - **Mermaid diagrams** — a fenced block tagged `mermaid` renders a themed
   diagram (flowchart/sequence/etc.) on tutorial and paper pages; re-renders
   automatically on theme toggle. Uses Mermaid v11 from CDN.
+- **Quizzes** — a fenced block tagged `quiz` holding JSON renders an interactive
+  "check yourself" card; a first-try perfect score awards XP + the
+  Perfectionist badge:
+
+  ````md
+  ```quiz
+  { "questions": [ { "q": "…?", "options": ["a", "b"], "answer": 1, "why": "…" } ] }
+  ```
+  ````
+
+  `answer` is the zero-based index of the correct option. Keep the JSON on the
+  fence's own lines (the whole block is encoded into the `.quiz` element).
 - **Internal links** are relative to the page URL (the site root), so from any
   content file use `../tutorials/rag.md` or `../papers/react-synergizing-reasoning-and-acting.md`.
   Verify targets actually exist — filenames must match exactly.
@@ -220,14 +253,19 @@ Done:
       (`js/easter.js`)
 - [x] Dark + light themes with navbar toggle + OS preference following
 - [x] Tagging (`tags` / `featured` fields)
-- [x] Research-papers library (papers.json, hub + reader, 4 papers: Attention,
-      RAG, Chain-of-Thought, ReAct)
+- [x] Research-papers library (papers.json, hub + reader, 10 papers: Attention,
+      RAG, Chain-of-Thought, ReAct, BERT, GPT-3, InstructGPT, LoRA,
+      Self-Consistency, Tree of Thoughts)
 - [x] KaTeX math rendering (papers)
 - [x] Agent-eval companion series (eval-golden-datasets, eval-llm-judge, eval-harness-ci)
 - [x] Annotate workspace (`annotate.html` + `js/draw.js` + `js/annotator-store.js`
       + `js/annotate.js`): stylus ink over PDFs/images/blank pages, IndexedDB
       library, PNG / print-to-PDF / `.docnest.json` export — see the module notes
       above
+- [x] "Nest grows as you learn": XP/levels/daily streak, badges, navbar level
+      ring + Nest panel, read checkmarks, shared effects layer (`effects.js`),
+      inline quizzes, and k-mentor personas — `progress.js`/`badges.js`/
+      `quiz.js`/`effects.js`
 
 Planned / ideas:
 
@@ -238,7 +276,9 @@ Planned / ideas:
 - [ ] Plugin hook system around the render pipeline
 - [ ] PWA manifest + service worker for offline reading
 - [ ] Multiple doc collections in one deployment
-- [ ] Future papers: Transformer variations, evals, agents (extend `papers/`)
+- [x] Extended papers library: Transformer variations (BERT, GPT-3), alignment
+      (InstructGPT/RLHF), efficiency (LoRA), and reasoning (Self-Consistency,
+      Tree of Thoughts)
 
 ## Git workflow
 

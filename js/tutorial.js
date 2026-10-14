@@ -17,6 +17,8 @@ import {
 import { renderMarkdown, initCopyButtons, initCodeTabs, initMermaid } from "./markdown.js";
 import { buildSidebar, initSidebarDrawer } from "./sidebar.js";
 import { createSearch } from "./search.js";
+import { attachCompletion, recordQuizPerfect } from "./progress.js";
+import { initQuizzes } from "./quiz.js";
 
 const contentEl = document.getElementById("markdown-content");
 const titleEl = document.getElementById("tutorial-title");
@@ -66,10 +68,20 @@ async function init() {
     initMermaid(contentEl);
     initCodeTabs(contentEl);
     initCopyButtons(contentEl);
+    initQuizzes(contentEl, { onPerfect: () => recordQuizPerfect(tutorial.id) });
     renderRelated(index, tutorial);
     initFeedback(tutorial.id);
     renderPagination(index, currentIndex);
     observeActiveSection();
+
+    const allCategories = [...new Set(index.map((t) => t.category))];
+    attachCompletion({
+      id: tutorial.id,
+      kind: "tutorial",
+      category: tutorial.category,
+      minutes: calculateReadingTime(markdownText),
+      ctx: { allCategories },
+    });
   } catch (err) {
     renderMissing(err.message);
     console.error(err);

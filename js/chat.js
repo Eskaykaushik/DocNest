@@ -6,6 +6,7 @@
  */
 
 import { renderMarkdown, initCopyButtons } from "./markdown.js";
+import { showToast } from "./effects.js";
 
 const API_URL = "https://kaushix-api-service.onrender.com";
 const ENDPOINT = "/api/teacher";
@@ -23,6 +24,75 @@ const SUGGESTIONS = [
   "Why do LLMs hallucinate?",
   "How do I start learning AI?",
 ];
+
+const PERSONA_KEY = "docnest.persona";
+
+const PERSONAS = {
+  default: {
+    label: "k-mentor",
+    prefix: "",
+    suggestions: SUGGESTIONS,
+  },
+  eli5: {
+    label: "ELI5",
+    prefix: "Explain your answer as if I'm five, with a simple everyday analogy.",
+    suggestions: [
+      "What is a neural network, simply?",
+      "Why does an LLM need so much data?",
+      "What is a token?",
+    ],
+  },
+  engineer: {
+    label: "Engineer",
+    prefix: "Answer with precise technical detail, including tradeoffs and concrete examples.",
+    suggestions: [
+      "Compare RAG vs fine-tuning tradeoffs",
+      "How does KV-cache work?",
+      "When should I use an agent vs a chain?",
+    ],
+  },
+  pirate: {
+    label: "Pirate",
+    prefix: "Answer in the voice of a friendly pirate, but keep the technical facts accurate.",
+    suggestions: [
+      "Explain transformers, matey",
+      "What be retrieval-augmented generation?",
+      "Why do LLMs make things up?",
+    ],
+  },
+  haiku: {
+    label: "Haiku",
+    prefix: "Answer with a haiku followed by one short, plain-language explanation.",
+    suggestions: [
+      "What is attention?",
+      "What is fine-tuning?",
+      "What is an embedding?",
+    ],
+  },
+};
+
+function readPersona() {
+  try {
+    const stored = localStorage.getItem(PERSONA_KEY);
+    return PERSONAS[stored] ? stored : "default";
+  } catch {
+    return "default";
+  }
+}
+
+function writePersona(id) {
+  try {
+    localStorage.setItem(PERSONA_KEY, id);
+  } catch {
+    /* storage unavailable — persona stays for this session */
+  }
+}
+
+let persona = readPersona();
+
+function emptySuggestions() {
+  return PERSONAS[persona].suggestions;
+}
 
 const el = {
   launcher: document.getElementById("chat-launcher"),
@@ -57,6 +127,8 @@ function init() {
 
   el.clear.addEventListener("click", resetConversation);
 
+  initPersonaSelect();
+
   el.send.addEventListener("click", () => sendMessage());
 
   el.input.addEventListener("keydown", (event) => {
@@ -82,6 +154,36 @@ function init() {
       }
     });
   });
+}
+
+/* --------------------------------------------------------------------- */
+/* Persona                                                                */
+/* --------------------------------------------------------------------- */
+
+function initPersonaSelect() {
+  const header = el.panel.querySelector(".chat-panel-header");
+  if (!header || header.querySelector(".chat-persona")) return;
+
+  const select = document.createElement("select");
+  select.className = "chat-persona";
+  select.setAttribute("aria-label", "k-mentor persona");
+  Object.entries(PERSONAS).forEach(([id, p]) => {
+    const option = document.createElement("option");
+    option.value = id;
+    option.textContent = p.label;
+    select.appendChild(option);
+  });
+  select.value = persona;
+  select.addEventListener("change", () => {
+    persona = PERSONAS[select.value] ? select.value : "default";
+    writePersona(persona);
+    renderChips();
+    showToast(`k-mentor persona — ${PERSONAS[persona].label}`);
+  });
+
+  const actions = header.querySelector(".chat-header-actions");
+  if (actions) header.insertBefore(select, actions);
+  else header.appendChild(select);
 }
 
 /* --------------------------------------------------------------------- */
@@ -235,10 +337,12 @@ function clearStream() {
 }
 
 function renderChips() {
+  el.body.querySelectorAll(".chat-chips").forEach((node) => node.remove());
+
   const wrap = document.createElement("div");
   wrap.className = "chat-chips";
 
-  SUGGESTIONS.forEach((suggestion, index) => {
+  emptySuggestions().forEach((suggestion, index) => {
     const chip = document.createElement("button");
     chip.type = "button";
     chip.className = "chat-chip";
@@ -294,13 +398,16 @@ async function sendMessage(preset) {
   el.input.value = "";
   addMessage(USER_NAME, message, "user");
   scrollToBottom({ force: true });
-  history.push({ role: "user", content: message });
+
+  const prefix = PERSONAS[persona].prefix;
+  const outgoing = prefix ? `${prefix}\n\n${message}` : message;
+  history.push({ role: "user", content: outgoing });
 
   el.send.disabled = true;
   const bot = addStreamingMessage();
 
   try {
-    const answer = await askTeacher(message);
+    const answer = await askTeacher(outgoing);
     history.push({ role: "assistant", content: answer });
     await streamResponse(bot, answer);
   } catch (error) {

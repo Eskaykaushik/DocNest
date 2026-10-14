@@ -121,5 +121,212 @@
     "updated": "2026-08-08",
     "file": "papers/react-synergizing-reasoning-and-acting.md",
     "description": "Interleave written reasoning with tool calls in a single loop, letting modeling think-and-act to solve multi-hop tasks."
+  },
+  {
+    "id": "bert-pretraining",
+    "title": "BERT: Pre-training of Deep Bidirectional Transformers for Language Understanding",
+    "authors": [
+      "Jacob Devlin",
+      "Ming-Wei Chang",
+      "Kenton Lee",
+      "Kristina Toutanova"
+    ],
+    "year": 2019,
+    "venue": "NAACL",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/1810.04805",
+      "code": "https://github.com/google-research/bert"
+    },
+    "tags": [
+      "Transformers",
+      "Pretraining",
+      "NLP"
+    ],
+    "difficulty": "Intermediate",
+    "featured": false,
+    "updated": "2026-10-15",
+    "file": "papers/bert-pretraining.md",
+    "description": "Pre-train a Transformer encoder to fill in masked words, then fine-tune it for almost any language task — bidirectional context at last."
+  },
+  {
+    "id": "language-models-are-few-shot-learners",
+    "title": "Language Models are Few-Shot Learners (GPT-3)",
+    "authors": [
+      "Tom B. Brown",
+      "Benjamin Mann",
+      "Nick Ryder",
+      "Melanie Subbiah",
+      "Jared Kaplan",
+      "Prafulla Dhariwal",
+      "Arvind Neelakantan",
+      "Pranav Shyam",
+      "Girish Sastry",
+      "Amanda Askell",
+      "Sandhini Agarwal",
+      "Ariel Herbert-Voss",
+      "Gretchen Krueger",
+      "Tom Henighan",
+      "Rewon Child",
+      "Aditya Ramesh",
+      "Daniel M. Ziegler",
+      "Jeffrey Wu",
+      "Clemens Winter",
+      "Christopher Hesse",
+      "Mark Chen",
+      "Eric Sigler",
+      "Mateusz Litwin",
+      "Scott Gray",
+      "Benjamin Chess",
+      "Jack Clark",
+      "Christopher Berner",
+      "Sam McCandlish",
+      "Alec Radford",
+      "Ilya Sutskever",
+      "Dario Amodei"
+    ],
+    "year": 2020,
+    "venue": "NeurIPS",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/2005.14165"
+    },
+    "tags": [
+      "LLMs",
+      "Scaling",
+      "In-Context Learning"
+    ],
+    "difficulty": "Intermediate",
+    "featured": true,
+    "updated": "2026-10-15",
+    "file": "papers/language-models-are-few-shot-learners.md",
+    "description": "Scale a decoder-only Transformer to 175B parameters and it solves tasks from a few in-prompt examples — no gradient updates required."
+  },
+  {
+    "id": "instructgpt-rlhf",
+    "title": "Training Language Models to Follow Instructions with Human Feedback",
+    "authors": [
+      "Long Ouyang",
+      "Jeff Wu",
+      "Xu Jiang",
+      "Diogo Almeida",
+      "Carroll L. Wainwright",
+      "Pamela Mishkin",
+      "Chong Zhang",
+      "Sandhini Agarwal",
+      "Katarina Slama",
+      "Alex Ray",
+      "John Schulman",
+      "Jacob Hilton",
+      "Fraser Kelton",
+      "Luke Miller",
+      "Maddie Simens",
+      "Amanda Askell",
+      "Peter Welinder",
+      "Paul Christiano",
+      "Jan Leike",
+      "Ryan Lowe"
+    ],
+    "year": 2022,
+    "venue": "NeurIPS",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/2203.02155"
+    },
+    "tags": [
+      "Alignment",
+      "RLHF",
+      "LLMs"
+    ],
+    "difficulty": "Intermediate",
+    "featured": true,
+    "updated": "2026-10-15",
+    "file": "papers/instructgpt-rlhf.md",
+    "description": "SFT, a human-preference reward model, and PPO turn a raw predictor into an assistant — a 1.3B model beating 175B GPT-3 at following instructions."
+  },
+  {
+    "id": "lora-low-rank-adaptation",
+    "title": "LoRA: Low-Rank Adaptation of Large Language Models",
+    "authors": [
+      "Edward J. Hu",
+      "Yelong Shen",
+      "Phillip Wallis",
+      "Zeyuan Allen-Zhu",
+      "Yuanzhi Li",
+      "Shean Wang",
+      "Lu Wang",
+      "Weizhu Chen"
+    ],
+    "year": 2022,
+    "venue": "ICLR",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/2106.09685",
+      "code": "https://github.com/microsoft/LoRA"
+    },
+    "tags": [
+      "Fine-tuning",
+      "Efficiency",
+      "LLMs"
+    ],
+    "difficulty": "Intermediate",
+    "featured": false,
+    "updated": "2026-10-15",
+    "file": "papers/lora-low-rank-adaptation.md",
+    "description": "Freeze the base model and train two tiny low-rank matrices per weight, matching full fine-tuning with far fewer parameters and zero inference overhead."
+  },
+  {
+    "id": "self-consistency",
+    "title": "Self-Consistency Improves Chain of Thought Reasoning in Language Models",
+    "authors": [
+      "Xuezhi Wang",
+      "Jason Wei",
+      "Dale Schuurmans",
+      "Quoc V. Le",
+      "Ed H. Chi",
+      "Sharan Narang",
+      "Aakanksha Chowdhery",
+      "Denny Zhou"
+    ],
+    "year": 2023,
+    "venue": "ICLR",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/2203.11171"
+    },
+    "tags": [
+      "Reasoning",
+      "Prompting",
+      "Evals"
+    ],
+    "difficulty": "Beginner",
+    "featured": false,
+    "updated": "2026-10-15",
+    "file": "papers/self-consistency.md",
+    "description": "Sample many chain-of-thought chains and take the majority answer — a training-free decoding trick that sharply improves reasoning accuracy."
+  },
+  {
+    "id": "tree-of-thoughts",
+    "title": "Tree of Thoughts: Deliberate Problem Solving with Large Language Models",
+    "authors": [
+      "Shunyu Yao",
+      "Dian Yu",
+      "Jeffrey Zhao",
+      "Izhak Shafran",
+      "Thomas L. Griffiths",
+      "Yuan Cao",
+      "Karthik Narasimhan"
+    ],
+    "year": 2023,
+    "venue": "NeurIPS",
+    "links": {
+      "arxiv": "https://arxiv.org/abs/2305.10601",
+      "code": "https://github.com/princeton-nlp/tree-of-thoughts"
+    },
+    "tags": [
+      "Agents",
+      "Reasoning",
+      "Prompting"
+    ],
+    "difficulty": "Intermediate",
+    "featured": true,
+    "updated": "2026-10-15",
+    "file": "papers/tree-of-thoughts.md",
+    "description": "Grow a tree of intermediate thoughts, self-evaluate which branches look promising, and search it — deliberation instead of a single chain."
   }
 ]

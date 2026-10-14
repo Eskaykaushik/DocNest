@@ -16,6 +16,8 @@ import {
 } from "./utils.js";
 import { renderMarkdown, initCopyButtons, initCodeTabs, initMath, initMermaid } from "./markdown.js";
 import { createSearch } from "./search.js";
+import { attachCompletion, recordQuizPerfect } from "./progress.js";
+import { initQuizzes } from "./quiz.js";
 
 const contentEl = document.getElementById("markdown-content");
 const titleEl = document.getElementById("paper-title");
@@ -69,10 +71,18 @@ async function init() {
     initMermaid(contentEl);
     initCodeTabs(contentEl);
     initCopyButtons(contentEl);
+    initQuizzes(contentEl, { onPerfect: () => recordQuizPerfect(paper.id) });
     renderRelated(index, paper);
     initFeedback(paper.id);
     renderPagination(index, currentIndex);
     observeActiveSection();
+
+    attachCompletion({
+      id: paper.id,
+      kind: "paper",
+      minutes: calculateReadingTime(markdownText),
+      ctx: { allPaperIds: index.map((p) => p.id) },
+    });
   } catch (err) {
     renderMissing(err.message);
     console.error(err);

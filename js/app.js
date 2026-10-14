@@ -14,6 +14,7 @@ import {
 } from "./utils.js";
 import { createSearch } from "./search.js";
 import { initReveal } from "./reveal.js";
+import { isRead, syncBadges } from "./progress.js";
 
 const state = {
   tutorials: [], // full index, enriched with readingTime
@@ -46,6 +47,7 @@ async function init() {
     renderGrid(state.tutorials);
     initReveal();
     scrollToCategory(getQueryParam("category"));
+    syncBadges({ allCategories: [...new Set(index.map((t) => t.category))] });
   } catch (err) {
     renderError(err);
   }
@@ -212,7 +214,11 @@ function renderCard(tutorial, index) {
       ).toLowerCase()}"
     >
       <a href="tutorial.html?id=${encodeURIComponent(tutorial.id)}">
-        <h3 class="card-title">${escapeHtml(tutorial.title)}</h3>
+        <h3 class="card-title">${escapeHtml(tutorial.title)}${
+          isRead(tutorial.id)
+            ? '<span class="card-read" aria-label="Completed" title="Completed">✓</span>'
+            : ""
+        }</h3>
         <p class="card-desc">${escapeHtml(tutorial.description)}</p>
         <div class="card-meta">
           ${meta

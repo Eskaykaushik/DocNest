@@ -1,3 +1,6 @@
+import { showToast, flash, burstParticles, starfieldRain } from "./effects.js";
+import { recordEgg } from "./progress.js";
+
 const CONSOLE_EGG =
   "\n%c DocNest %c a nest for your AI curiosity\n%c psst… try clicking the D mark a few times, or type hackable words in search.\n";
 const CONSOLE_STYLE = [
@@ -5,78 +8,6 @@ const CONSOLE_STYLE = [
   "color:#f0f6fc;background:transparent;",
   "color:#8b949e;background:transparent;padding-left:2px;",
 ];
-
-function getToast() {
-  let toast = document.querySelector("#egg-toast");
-  if (!toast) {
-    toast = document.createElement("div");
-    toast.className = "toast";
-    toast.id = "egg-toast";
-    document.body.appendChild(toast);
-  }
-  return toast;
-}
-
-function showToast(message) {
-  const toast = getToast();
-  toast.textContent = message;
-  toast.classList.add("show");
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(() => toast.classList.remove("show"), 2800);
-}
-
-function flashEgg() {
-  let flash = document.querySelector("#egg-flash");
-  if (!flash) {
-    flash = document.createElement("div");
-    flash.className = "egg-flash";
-    flash.id = "egg-flash";
-    document.body.appendChild(flash);
-  }
-  flash.classList.add("active");
-  clearTimeout(flashEgg._t);
-  flashEgg._t = setTimeout(() => flash.classList.remove("active"), 300);
-}
-
-function burstParticles(color) {
-  for (let i = 0; i < 16; i++) {
-    const p = document.createElement("span");
-    p.className = "egg-particle";
-    const angle = Math.random() * Math.PI * 2;
-    const dist = 60 + Math.random() * 120;
-    p.style.setProperty("--dx", `${Math.cos(angle) * dist}px`);
-    p.style.setProperty("--dy", `${Math.sin(angle) * dist - 40}px`);
-    p.style.setProperty("--duration-stagger", `${500 + Math.random() * 400}ms`);
-    p.style.setProperty("background", color);
-    p.style.left = `${window.innerWidth / 2}px`;
-    p.style.top = `${window.innerHeight / 2}px`;
-    document.body.appendChild(p);
-    setTimeout(() => p.remove(), 1000);
-  }
-}
-
-function starfieldRain() {
-  const colors = [
-    "var(--color-accent)",
-    "var(--color-accent-strong)",
-    "#e3b341",
-    "#f0f6fc",
-  ];
-  for (let i = 0; i < 26; i++) {
-    const s = document.createElement("span");
-    s.className = "egg-star";
-    const dx = (Math.random() - 0.5) * 140;
-    const dy = -(100 + Math.random() * 240);
-    s.style.setProperty("--dx", `${dx}px`);
-    s.style.setProperty("--dy", `${dy}px`);
-    s.style.background = colors[Math.floor(Math.random() * colors.length)];
-    s.style.left = `${Math.random() * window.innerWidth}px`;
-    s.style.bottom = `${Math.random() * 40 + 20}px`;
-    s.style.animationDelay = `${Math.random() * 500}ms`;
-    document.body.appendChild(s);
-    setTimeout(() => s.remove(), 1800);
-  }
-}
 
 function initLogoEgg() {
   const brand = document.querySelector(".brand");
@@ -96,12 +27,13 @@ function initLogoEgg() {
     clicks += 1;
     if (clicks >= 5) {
       fired = true;
-      flashEgg();
+      flash();
       brand.classList.remove("pulse");
       void brand.offsetWidth;
       brand.classList.add("pulse");
       setTimeout(() => brand.classList.remove("pulse"), 750);
       showToast("Nest initialized.");
+      recordEgg("logo");
     }
   });
 }
@@ -129,6 +61,7 @@ function initTypedSecret() {
     if (buffer === SECRET) {
       buffer = "";
       showToast("You found a hidden nest.");
+      recordEgg("typed");
     }
   });
 }
@@ -154,6 +87,7 @@ function initSearchEgg() {
       '<span aria-hidden="true">◆</span> Power source detected: pure curiosity.';
     dropdown.appendChild(row);
     showToast("A wild easter egg appeared!");
+    recordEgg("search");
   }
   input.addEventListener("input", () => {
     clearTimeout(timer);
@@ -179,6 +113,7 @@ function initThemeFlipEgg() {
       fired = true;
       burstParticles("var(--color-accent)");
       showToast("Dual-nature unlocked.");
+      recordEgg("theme-flip");
     }
   });
 }
@@ -212,6 +147,7 @@ function initKonamiEgg() {
       fired = true;
       document.body.classList.add("nest-mode");
       showToast("Nest Mode.");
+      recordEgg("konami");
       setTimeout(() => document.body.classList.remove("nest-mode"), 1400);
     }
   });
@@ -223,6 +159,7 @@ function initGridRewardEgg() {
     if (fired) return;
     fired = true;
     starfieldRain();
+    recordEgg("grid-reveal");
   });
 }
 

@@ -7,6 +7,7 @@
 
 import { fetchJson, getQueryParam, debounce, escapeHtml } from "./utils.js";
 import { createSearch } from "./search.js";
+import { isRead, syncBadges } from "./progress.js";
 
 const gridEl = document.getElementById("tutorial-grid");
 const resultsEl = document.getElementById("grid-results");
@@ -37,6 +38,7 @@ async function init() {
     renderHeroStats(papers);
     renderFilters(papers);
     applyFilters();
+    syncBadges({ allPaperIds: papers.map((p) => p.id) });
   } catch (err) {
     gridEl.innerHTML = `
       <div class="empty-state">
@@ -188,7 +190,11 @@ function renderCard(paper) {
           </span>
           <span class="card-category">${tagBadge}</span>
         </div>
-        <h3 class="card-title">${escapeHtml(paper.title)}</h3>
+        <h3 class="card-title">${escapeHtml(paper.title)}${
+          isRead(paper.id)
+            ? '<span class="card-read" aria-label="Completed" title="Completed">✓</span>'
+            : ""
+        }</h3>
         <p class="card-desc">${escapeHtml(paper.description)}</p>
         <p class="card-authors">${escapeHtml(paper.authors.slice(0, 2).join(", "))}${paper.authors.length > 2 ? " et al." : ""}</p>
         <div class="card-meta">

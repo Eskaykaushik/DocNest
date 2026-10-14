@@ -593,12 +593,17 @@ body.annot-editing .site-footer {
   background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
   background-size: 22px 22px;
   overscroll-behavior: contain;
+  --paper-bg: #ffffff;
+}
+
+[data-theme="dark"] .annot-stage {
+  --paper-bg: #0d1117;
 }
 
 .annot-page {
   position: relative;
   margin: 0 auto;
-  background: #ffffff;
+  background: var(--paper-bg);
   border-radius: 2px;
   box-shadow: var(--shadow-md);
   width: max-content;
