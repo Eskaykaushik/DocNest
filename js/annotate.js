@@ -767,6 +767,16 @@ function wireEvents() {
   }, 200));
 }
 
+function applyThemeInk() {
+  const color = defaultInk();
+  state.tool.color = color;
+  if (surface) surface.setTool({ color });
+  els.colors.querySelectorAll("[data-color]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.color.toLowerCase() === color.toLowerCase());
+  });
+  if (els.colorInput) els.colorInput.value = color;
+}
+
 function init() {
   surface = createSurface({
     canvas: els.canvas,
@@ -780,6 +790,7 @@ function init() {
     },
   });
   buildToolbar();
+  wireEvents();
   applyThemeInk();
   const themeObserver = new MutationObserver(applyThemeInk);
   themeObserver.observe(document.documentElement, {
