@@ -288,6 +288,64 @@ button {
   background: var(--color-surface);
 }
 
+/* Theme toggle */
+
+.theme-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease),
+    transform var(--duration-fast) var(--ease);
+}
+
+.theme-toggle:hover {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+  box-shadow: var(--shadow-glow);
+  transform: translateY(-1px);
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.theme-toggle svg[data-theme-icon="sun"] {
+  display: none;
+  color: #e3b341;
+}
+
+.theme-toggle svg[data-theme-icon="moon"] {
+  display: block;
+  color: var(--color-accent);
+}
+
+[data-theme="dark"] .theme-toggle svg[data-theme-icon="sun"] {
+  display: block;
+}
+
+[data-theme="dark"] .theme-toggle svg[data-theme-icon="moon"] {
+  display: none;
+}
+
+.theme-toggle .sun-path {
+  filter: drop-shadow(0 0 3px rgba(227, 179, 65, 0.55));
+}
+
+.theme-toggle .moon-path {
+  filter: drop-shadow(0 0 3px rgba(88, 166, 255, 0.5));
+}
+
 /* Theme switcher */
 
 .theme-switcher-wrap {

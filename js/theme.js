@@ -51,14 +51,10 @@
   }
 
   function updateToggle(theme) {
+    const isDark = theme === "dark";
     document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
-      const sun = button.querySelector('[data-theme-icon="sun"]');
-      const moon = button.querySelector('[data-theme-icon="moon"]');
-      const isDark = theme === "dark";
       button.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
       button.setAttribute("aria-pressed", String(isDark));
-      if (sun) sun.hidden = !isDark;
-      if (moon) moon.hidden = isDark;
     });
   }
 
