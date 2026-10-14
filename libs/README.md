@@ -19,11 +19,3 @@ demand — only when you open or import a PDF — via js/annotate.js:
 To vendor PDF.js instead, download both files into this folder and change the
 two URLs in the `ensurePdfLib` / worker-src assignments in js/annotate.js.
 The worker URL is set on `pdfjsLib.GlobalWorkerOptions.workerSrc`.
-
-The "Open in notebook" action on tutorial/paper pages rasterizes the rendered
-article with html2canvas, loaded on demand from cdnjs by js/to-notebook.js:
-
-    https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js
-
-To vendor it, download that file into this folder and change `HTML2CANVAS_LIB`
-in js/to-notebook.js.

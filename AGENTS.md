@@ -65,7 +65,6 @@ js/paper.js            Paper reader controller
 js/annotate.js         Annotate controller: library, import, tools, pages, export, print
 js/draw.js             Canvas ink engine: pen/highlighter/eraser/shapes/text, gestures
 js/annotator-store.js  IndexedDB store (docs + files) and .docnest.json export/import
-js/to-notebook.js      Rasterizes a tutorial/paper article into a new notebook (html2canvas)
 js/sidebar.js          Shared category sidebar tree + mobile drawer
 js/search.js           Search command palette (tutorials) — "/" or Ctrl/⌘+K
 js/markdown.js         marked.js + highlight.js wrapper; code tabs, callouts, KaTeX hook
@@ -86,9 +85,7 @@ images/                Static images (docnest-diagram.svg, etc.)
 Runtimes: marked.js + highlight.js (CDN) on tutorial-ish pages; plus KaTeX on
 `paper.html`. `annotate.html` dynamically loads PDF.js 3.11.174 (UMD) from cdnjs
 only when a PDF is opened or imported (see `ensurePdfLib` in `js/annotate.js`).
-Tutorial/paper pages load html2canvas 1.4.1 from cdnjs on demand when the user
-clicks *Open in notebook* (see `js/to-notebook.js`). All loaded by `<script>` in
-the HTML `<head>`/`<body>`.
+All loaded by `<script>` in the HTML `<head>`/`<body>`.
 Fonts: all pages use Inter; JetBrains Mono for code. Colors come from a
 developer token palette (see `--color-*` in `style.css`) — never hard-code
 colors. The homepage uses a `[data-reveal]` summon-on-scroll system
@@ -121,12 +118,6 @@ render/reader code:
 - `js/annotate.js` is the controller: library + editor views, blank/grid/ruled
   creation, image + PDF import, page rail, zoom, undo/redo, text overlay, PNG
   export, print prep (`#annot-print`), import/export, toasts, shortcuts.
-- `js/to-notebook.js` backs the *Open in notebook* button on tutorial/paper
-  pages. It clones the rendered article into an 840px-wide light-themed wrapper,
-  rasterizes it with html2canvas, slices it into A4-ratio page-sized images, and
-  saves a new doc (`pages[].background.type === "image"`) before redirecting to
-  `annotate.html?id=<id>`. Page aspect must match the slice so the engine's
-  "contain" background fit fills each page exactly.
 
 Data model (`js/annotator-store.js` / `js/annotate.js`):
 
@@ -237,8 +228,6 @@ Done:
       + `js/annotate.js`): stylus ink over PDFs/images/blank pages, IndexedDB
       library, PNG / print-to-PDF / `.docnest.json` export — see the module notes
       above
-- [x] "Open in notebook" on tutorials and papers (`js/to-notebook.js`): rasterize
-      the article into background pages and jump straight into the Annotate editor
 
 Planned / ideas:
 

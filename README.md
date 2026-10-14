@@ -52,10 +52,6 @@ get a fast, searchable docs site — no build step, no framework, no backend.
   (IndexedDB) — no upload, no account — and can be exported as PNG, printed to PDF,
   or backed up as a portable `.docnest.json` file. PDF rendering uses PDF.js
   (cdnjs, loaded on demand).
-- **Open in notebook** — every tutorial and paper has an *Open in notebook* button
-  that rasterizes the rendered article into page-sized images and opens it in the
-  Annotate workspace, so you can highlight, write margin notes, and solve problems
-  directly on top of the reading. Uses html2canvas (cdnjs, loaded on demand).
 
 ## Folder structure
 
@@ -81,7 +77,6 @@ DocNest/
 │   ├── annotate.js          Annotate controller: library, import, toolbar, pages, export
 │   ├── draw.js              Canvas ink engine: pen/highlighter/eraser/shapes, gestures
 │   ├── annotator-store.js   IndexedDB store + .docnest.json export/import
-│   ├── to-notebook.js       Rasterizes a tutorial/paper into a new notebook (html2canvas)
 │   ├── sidebar.js           Shared sidebar tree + drawer (both pages)
 │   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs, callouts, math, Mermaid diagrams
 │   ├── theme.js             Dark/light theme manager + navbar toggle
@@ -125,9 +120,7 @@ Markdown parsing and syntax highlighting are loaded from a CDN (marked.js and
 highlight.js) via `<script>` tags in `index.html` and `tutorial.html`; KaTeX for
 paper math is loaded on `paper.html`; Mermaid v11 for diagrams is loaded on
 `tutorial.html` and `paper.html`; PDF.js is loaded on demand on `annotate.html`
-only when a PDF is opened or imported, and html2canvas is loaded on demand on
-tutorial/paper pages when you click *Open in notebook*. There is nothing to
-install locally.
+only when a PDF is opened or imported. There is nothing to install locally.
 
 ## Adding a tutorial
 

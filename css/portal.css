@@ -1919,18 +1919,6 @@ body.home.nest-mode .hero-title .accent {
   animation: fade-up var(--duration-base) var(--ease) backwards;
 }
 
-.tutorial-actions {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 18px;
-}
-
-.notebook-open-btn {
-  padding: 8px 14px;
-  font-size: 13px;
-}
-
 @media (prefers-reduced-motion: reduce) {
   body.home .grid-heading,
   body.home .path-filters,
