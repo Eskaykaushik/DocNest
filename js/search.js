@@ -8,6 +8,14 @@
 
 import { debounce, escapeHtml } from "./utils.js";
 
+export function toPaperIndex(papers) {
+  return (papers || []).map((paper) => ({
+    ...paper,
+    category: paper.venue || "Papers",
+    href: `paper.html?id=${encodeURIComponent(paper.id)}`,
+  }));
+}
+
 export function createSearch({ onQueryChange = () => {} } = {}) {
   const input = document.getElementById("search-input");
   const wrap = document.getElementById("search-wrap");
@@ -34,20 +42,26 @@ export function createSearch({ onQueryChange = () => {} } = {}) {
   }
 
   function matchesQuery(tutorial, query) {
-    return (
-      tutorial.title.toLowerCase().includes(query) ||
-      tutorial.description.toLowerCase().includes(query) ||
-      tutorial.category.toLowerCase().includes(query) ||
-      tutorial.difficulty.toLowerCase().includes(query)
-    );
+    const haystack = [
+      tutorial.title,
+      tutorial.description,
+      tutorial.category,
+      tutorial.difficulty,
+      ...(tutorial.tags || []),
+    ]
+      .filter(Boolean)
+      .join(" ")
+      .toLowerCase();
+    return haystack.includes(query);
   }
 
   function paletteRow(tutorial) {
+    const href = tutorial.href || `tutorial.html?id=${encodeURIComponent(tutorial.id)}`;
     return `
       <a
         class="palette-row"
         role="option"
-        href="tutorial.html?id=${encodeURIComponent(tutorial.id)}"
+        href="${escapeHtml(href)}"
       >
         <span class="palette-row-title">${escapeHtml(tutorial.title)}</span>
         <span class="palette-row-desc">${escapeHtml(tutorial.description)}</span>
@@ -66,10 +80,10 @@ export function createSearch({ onQueryChange = () => {} } = {}) {
       return;
     }
 
-    const matches = index.filter((tutorial) => matchesQuery(tutorial, query));
+    const matches = index.filter((tutorial) => matchesQuery(tutorial, query.trim().toLowerCase()));
 
     if (matches.length === 0) {
-      dropdown.innerHTML = `<div class="palette-empty">No tutorials match "${escapeHtml(query)}"</div>`;
+      dropdown.innerHTML = `<div class="palette-empty">No matches for "${escapeHtml(query)}"</div>`;
       open();
       return;
     }

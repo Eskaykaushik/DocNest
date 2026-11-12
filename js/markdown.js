@@ -10,6 +10,16 @@ import { slugify, escapeHtml } from "./utils.js";
 let renderer = null;
 let usedIds = null;
 
+const CONTENT_LINK = /^(?:\.{0,2}\/)*(tutorials|papers)\/([^/]+?)\.md(#.*)?$/;
+
+function rewriteContentLink(href) {
+  const match = href.match(CONTENT_LINK);
+  if (!match) return href;
+  const [, collection, id, hash = ""] = match;
+  const page = collection === "papers" ? "paper.html" : "tutorial.html";
+  return `${page}?id=${encodeURIComponent(id)}${hash}`;
+}
+
 /**
  * Build (once) a marked.js renderer customized for DocNest's markup:
  * - code blocks get a header with a language label + copy button
@@ -21,6 +31,12 @@ function getRenderer() {
 
   renderer = new marked.Renderer();
   usedIds = new Set();
+
+  renderer.link = (href, title, text) => {
+    const target = rewriteContentLink(href || "");
+    const titleAttr = title ? ` title="${escapeHtml(title)}"` : "";
+    return `<a href="${escapeHtml(target)}"${titleAttr}>${text}</a>`;
+  };
 
   renderer.heading = (text, level) => {
     const plainText = text.replace(/<[^>]+>/g, "").replace(/&#\d+;|&[a-z]+;/gi, "");

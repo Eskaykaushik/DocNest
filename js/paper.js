@@ -15,7 +15,7 @@ import {
   escapeHtml,
 } from "./utils.js";
 import { renderMarkdown, initCopyButtons, initCodeTabs, initMath, initMermaid } from "./markdown.js";
-import { createSearch } from "./search.js";
+import { createSearch, toPaperIndex } from "./search.js";
 import { attachCompletion, recordQuizPerfect } from "./progress.js";
 import { initQuizzes } from "./quiz.js";
 
@@ -49,6 +49,7 @@ async function init() {
 
   try {
     const index = await fetchJson("data/papers.json");
+    search.setIndex(toPaperIndex(index));
     const currentIndex = index.findIndex((p) => p.id === id);
     const paper = index[currentIndex];
 
@@ -60,7 +61,6 @@ async function init() {
     document.title = `${paper.title} · DocNest`;
     window.__docnestPaper = paper;
 
-    search.setIndex([]);
     renderHeader(paper);
     renderLinks(paper);
 

@@ -6,7 +6,7 @@
  */
 
 import { fetchJson, getQueryParam, debounce, escapeHtml } from "./utils.js";
-import { createSearch } from "./search.js";
+import { createSearch, toPaperIndex } from "./search.js";
 import { isRead, syncBadges } from "./progress.js";
 
 const gridEl = document.getElementById("tutorial-grid");
@@ -35,6 +35,7 @@ async function init() {
 
   try {
     papers = await fetchJson("data/papers.json");
+    search.setIndex(toPaperIndex(papers));
     renderHeroStats(papers);
     renderFilters(papers);
     applyFilters();
