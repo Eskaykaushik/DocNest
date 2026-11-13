@@ -62,9 +62,10 @@ css/annotate.css       Annotate workspace: topbar, toolbars, page rail, stage, p
 
 js/app.js              Homepage controller (tracks, paper topics, continue)
 js/browse.js           Catalogue controller (filters, URL state, pagination)
-js/tutorial.js         Tutorial reader controller
+js/content-page.js     Shared reader pipeline: URL → index → Markdown → header, TOC, related, pagination, completion
+js/tutorial.js         Tutorial page wiring: metadata, breadcrumbs, sidebar, related
 js/papers.js           Papers hub controller
-js/paper.js            Paper reader controller
+js/paper.js            Paper page wiring: metadata, links, citation, math, related
 js/annotate.js         Annotate controller: library, import, tools, pages, export, print
 js/draw.js             Canvas ink engine: pen/highlighter/eraser/shapes/text, gestures
 js/annotator-store.js  IndexedDB store (docs + files) and .docnest.json export/import
@@ -105,6 +106,13 @@ inside the annotate canvas stays local. Homepage easter eggs live in
 
 Key shared modules:
 
+- `js/content-page.js` exports `ContentPageController`, the shared reader
+  pipeline. A page supplies `indexUrl`, `elements`, and hooks (`title`,
+  `breadcrumb`, `metaChips`, `headerExtras`, `enhance`, `related`,
+  `paginationHref`, `completionCtx`, `missing`); the controller owns URL
+  resolution, fetching, article rendering, TOC + active-section tracking,
+  feedback, pagination and completion. Tutorials and papers are thin configs;
+  a new content type (blog post, docs page, case study) is a new config.
 - `js/markdown.js` exposes `renderMarkdown`, `initCopyButtons`, `initCodeTabs`,
   and `initMath` (KaTeX auto-render, scoped to the article element).
 - `js/diagram.js` is the Diagram Kit. `initDiagrams(container)` renders

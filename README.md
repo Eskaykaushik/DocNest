@@ -79,9 +79,10 @@ DocNest/
 │
 ├── js/
 │   ├── app.js               Homepage controller: card grid, topic/level filters, search palette
-│   ├── tutorial.js          Tutorial page controller: render, TOC, related, feedback
+│   ├── content-page.js      Shared reader pipeline: fetch, header, TOC, related, pagination, completion
+│   ├── tutorial.js          Tutorial page wiring: metadata, breadcrumbs, sidebar, related
 │   ├── papers.js            Papers hub controller: stats, chips, local search, cards
-│   ├── paper.js             Paper reader controller: header, KaTeX, related, citation
+│   ├── paper.js             Paper page wiring: metadata, links, citation, math, related
 │   ├── annotate.js          Annotate controller: library, import, toolbar, pages, export
 │   ├── draw.js              Canvas ink engine: pen/highlighter/eraser/shapes, gestures
 │   ├── annotator-store.js   IndexedDB store + .docnest.json export/import
