@@ -64,6 +64,7 @@ js/app.js              Homepage controller (tracks, paper topics, continue)
 js/browse.js           Catalogue controller (filters, URL state, pagination)
 js/content-page.js     Shared reader pipeline: URL → index → Markdown → header, TOC, related, pagination, completion
 js/tutorial.js         Tutorial page wiring: metadata, breadcrumbs, sidebar, related
+js/deck.js             Tutorial → PPTX deck export (PptxGenJS CDN, lazy-loaded)
 js/papers.js           Papers hub controller
 js/paper.js            Paper page wiring: metadata, links, citation, math, related
 js/annotate.js         Annotate controller: library, import, tools, pages, export, print
@@ -113,6 +114,11 @@ Key shared modules:
   resolution, fetching, article rendering, TOC + active-section tracking,
   feedback, pagination and completion. Tutorials and papers are thin configs;
   a new content type (blog post, docs page, case study) is a new config.
+- `js/deck.js` turns a rendered tutorial into a `.pptx` deck. It reads the
+  article DOM (not raw Markdown), plans cover → agenda → section bullets →
+  code → diagrams → quiz → sources → closing, rasterises Mermaid SVGs to PNG
+  at 2×, and lazy-loads PptxGenJS from a CDN on first click. Decks always use
+  the warm-paper light palette; full section prose goes into speaker notes.
 - `js/markdown.js` exposes `renderMarkdown`, `initCopyButtons`, `initCodeTabs`,
   and `initMath` (KaTeX auto-render, scoped to the article element).
 - `js/diagram.js` is the Diagram Kit. `initDiagrams(container)` renders

@@ -10,8 +10,11 @@ import {
   escapeHtml,
 } from "./utils.js";
 import { ContentPageController, metaChip, clockIconSvg } from "./content-page.js";
+import { initDeckButton } from "./deck.js";
 import { buildSidebar, initSidebarDrawer } from "./sidebar.js";
 import { createSearch } from "./search.js";
+
+const deckButton = document.getElementById("deck-btn");
 
 const elements = {
   content: document.getElementById("markdown-content"),
@@ -50,6 +53,21 @@ const page = new ContentPageController({
       tutorial.subtopic ? metaChip(escapeHtml(tutorial.subtopic), "subtopic-chip") : "",
       tutorial.updated ? metaChip(`Updated ${formatDate(tutorial.updated)}`) : "",
     ];
+  },
+  headerExtras: (tutorial, markdownText) => {
+    if (!deckButton || deckButton.dataset.bound === "true") return;
+    deckButton.dataset.bound = "true";
+    deckButton.hidden = false;
+
+    const wordCount = markdownText.trim().split(/\s+/).filter(Boolean).length;
+    initDeckButton({
+      button: deckButton,
+      entry: tutorial,
+      articleEl: elements.content,
+      url: new URL(`tutorial.html?id=${encodeURIComponent(tutorial.id)}`, window.location.href).href,
+      readingTime: calculateReadingTime(markdownText),
+      wordCount,
+    });
   },
   related: (index, tutorial) =>
     index

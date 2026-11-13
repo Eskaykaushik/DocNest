@@ -708,6 +708,7 @@ button {
   flex-wrap: wrap;
   gap: var(--space-5);
   align-items: center;
+  min-width: 0;
 }
 
 .meta-chip {
@@ -725,6 +726,83 @@ button {
 .meta-chip svg {
   width: 14px;
   height: 14px;
+}
+
+.tutorial-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-5) var(--space-8);
+}
+
+.tutorial-actions {
+  margin-left: auto;
+}
+
+.deck-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+  min-width: 137px;
+  padding: 6px var(--space-7);
+  font-family: var(--font-ui);
+  font-size: var(--text-sm);
+  font-weight: 600;
+  white-space: nowrap;
+  color: var(--color-text);
+  background: var(--color-bg);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: border-color var(--duration-fast) var(--ease),
+    color var(--duration-fast) var(--ease),
+    background var(--duration-fast) var(--ease);
+}
+
+.deck-btn svg {
+  width: 14px;
+  height: 14px;
+}
+
+.deck-btn:hover:not(:disabled) {
+  color: var(--color-accent);
+  border-color: var(--color-accent-border);
+  background: var(--color-surface);
+}
+
+.deck-btn:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.deck-btn:disabled {
+  cursor: progress;
+  opacity: 0.75;
+}
+
+.deck-spinner {
+  display: none;
+  width: 12px;
+  height: 12px;
+  border: 2px solid var(--color-border);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: deck-spin 0.7s linear infinite;
+}
+
+.deck-btn.is-busy svg {
+  display: none;
+}
+
+.deck-btn.is-busy .deck-spinner {
+  display: inline-block;
+}
+
+@keyframes deck-spin {
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .tutorial-body {

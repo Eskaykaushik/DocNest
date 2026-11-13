@@ -29,6 +29,8 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 - **Syntax-highlighted code blocks** (via highlight.js) with a one-click copy button.
   Consecutive fences tagged `tabs` render as a single multi-language tabbed block.
 - **Related tutorials** under each article, plus a "Was this helpful?" feedback widget.
+- **Download as PowerPoint** — every tutorial exports to an editable 16:9 `.pptx`
+  deck (cover, agenda, sections, code, diagrams, quiz, sources) via PptxGenJS.
 - **Reading-progress bar** on every tutorial page.
 - **Previous / next navigation** based on tutorial order in `tutorials.json`.
 - **Hidden easter eggs** — small surprises scattered across the homepage
@@ -81,6 +83,7 @@ DocNest/
 │   ├── app.js               Homepage controller: card grid, topic/level filters, search palette
 │   ├── content-page.js      Shared reader pipeline: fetch, header, TOC, related, pagination, completion
 │   ├── tutorial.js          Tutorial page wiring: metadata, breadcrumbs, sidebar, related
+│   ├── deck.js              PPTX deck export: slide plan, PptxGenJS lazy load, diagram capture
 │   ├── papers.js            Papers hub controller: stats, chips, local search, cards
 │   ├── paper.js             Paper page wiring: metadata, links, citation, math, related
 │   ├── annotate.js          Annotate controller: library, import, toolbar, pages, export
