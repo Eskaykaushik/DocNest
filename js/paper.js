@@ -14,7 +14,8 @@ import {
   formatDate,
   escapeHtml,
 } from "./utils.js";
-import { renderMarkdown, initCopyButtons, initCodeTabs, initMath, initMermaid } from "./markdown.js";
+import { renderMarkdown, initCopyButtons, initCodeTabs, initMath } from "./markdown.js";
+import { initDiagrams } from "./diagram.js";
 import { createSearch, toPaperIndex } from "./search.js";
 import { attachCompletion, recordQuizPerfect } from "./progress.js";
 import { initQuizzes } from "./quiz.js";
@@ -68,7 +69,7 @@ async function init() {
     renderArticle(markdownText);
     buildTableOfContents();
     initMath(contentEl);
-    initMermaid(contentEl);
+    initDiagrams(contentEl);
     initCodeTabs(contentEl);
     initCopyButtons(contentEl);
     initQuizzes(contentEl, { onPerfect: () => recordQuizPerfect(paper.id) });

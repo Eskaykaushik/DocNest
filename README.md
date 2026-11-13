@@ -73,6 +73,7 @@ DocNest/
 ├── css/
 │   ├── style.css           Layout, navbar, cards, buttons, forms, responsive rules, theme tokens
 │   ├── markdown.css        Typography and rendering rules for parsed Markdown
+│   ├── diagram.css         Diagram Kit: plate, canvas cap, shape strokes, cluster plates, trace states
 │   ├── portal.css          Portal components: sidebar, palette, card grid, tabs, papers
 │   └── annotate.css        Annotate workspace: toolbar, page rail, stage, print rules
 │
@@ -86,6 +87,7 @@ DocNest/
 │   ├── annotator-store.js   IndexedDB store + .docnest.json export/import
 │   ├── sidebar.js           Shared sidebar tree + drawer (both pages)
 │   ├── markdown.js          marked.js + highlight.js integration, copy buttons, code tabs, callouts, math, Mermaid diagrams, quizzes
+│   ├── diagram.js           Diagram Kit: Mermaid render, theming, auto-orientation, click-to-trace
 │   ├── quiz.js              Inline "check yourself" quiz builder (```quiz fences)
 │   ├── progress.js          XP/levels/streak/badges + navbar level ring & Nest panel (localStorage)
 │   ├── badges.js            Badge definitions + unlock predicates

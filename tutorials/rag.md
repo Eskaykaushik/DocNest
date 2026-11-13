@@ -24,18 +24,18 @@ RAG sidesteps the problem instead of trying to fix the model: don't make the mod
 The heavy lifting in "relevance" is done by **embeddings** — vectors where semantically similar text lands close together, so that searching for a vector near your question's vector finds the right chunks even when no words match exactly.
 
 ```mermaid
-graph LR
-    D[Your Documents] --> C[Chunking]
-    C --> E[Embeddings]
-    E --> V[(Vector Store)]
+graph TD
+    D[/Documents/] --> C(Chunking)
+    C --> E(Embeddings)
+    E --> V[(Vector<br/>Store)]
 
-    Q[User Question] --> QE[Embedding]
-    QE --> S{Similarity Search}
+    Q[/Question/] --> QE(Embedding)
+    QE --> S{{Similarity<br/>Search}}
     V --> S
-    S --> R[Top-K Chunks]
-    R --> P[Prompt Assembly]
-    P --> L[LLM]
-    L --> A[Answer]
+    S --> R(Top-K<br/>Chunks)
+    R --> P(Prompt<br/>Assembly)
+    P --> L((LLM))
+    L --> A[/Answer/]
     Q --> L
 ```
 

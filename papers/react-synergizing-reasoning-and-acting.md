@@ -30,6 +30,16 @@ ReAct gives the language model a *scratchpad* and a loop. At each step the model
 - **Observation** — the tool's result, fed straight back into the context,
 - …repeat, until a **Finish** action emits the final answer.
 
+```mermaid
+graph TD
+    Q[/Question/] --> T(Thought)
+    T --> A(Action)
+    A --> E{{Environment}}
+    E --> O(Observation)
+    O -.->|repeat| T
+    T --> F[/Final<br/>Answer/]
+```
+
 ```
 Thought: I need to compare populations, but I don't know them.
 Action: Search[population of Germany, France]

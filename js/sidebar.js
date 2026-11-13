@@ -225,6 +225,10 @@ function writePrefs(prefs) {
  */
 export function categoryIcon(category) {
   const icons = {
+    Foundations: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c2.5-1 5.5-1 8 0 2.5-1 5.5-1 8 0v12c-2.5-1-5.5-1-8 0-2.5-1-5.5-1-8 0V6z"/><path d="M12 6v12"/></svg>`,
+    "LLM Engineering": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.3c-1.2 0-2.3-.2-3.4-.6L4 21l1.2-3.6A8.38 8.38 0 1 1 21 11.5z"/><path d="M8.5 10.5h7M8.5 13.5h4.5"/></svg>`,
+    "AI-Assisted Coding": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8L12 3z"/><path d="M18 15l.9 2.1L21 18l-2.1.9L18 21l-.9-2.1L15 18l2.1-.9L18 15z"/></svg>`,
+    "Evaluation & Production": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M8.5 12.5l2 2 4-4.5"/><path d="M8.5 16.5l2 2 4-4.5"/></svg>`,
     "Getting Started": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6c2.5-1 5.5-1 8 0 2.5-1 5.5-1 8 0v12c-2.5-1-5.5-1-8 0-2.5-1-5.5-1-8 0V6z"/><path d="M12 6v12"/></svg>`,
     Python: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7l5 5-5 5"/><path d="M12 17h8"/></svg>`,
     "Machine Learning": `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="7" cy="17" r="2.2"/><circle cx="12" cy="9" r="2.2"/><circle cx="18" cy="14" r="2.2"/><path d="M7 17l5-8 6 5"/></svg>`,

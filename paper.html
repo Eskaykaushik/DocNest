@@ -12,12 +12,13 @@
 
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/markdown.css" />
+  <link rel="stylesheet" href="css/diagram.css" />
   <link rel="stylesheet" href="css/portal.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.16.9/katex.min.css" />
   <script src="js/theme.js"></script>
 </head>
-<body>
+<body class="reader">
   <a class="visually-hidden" href="#main-content">Skip to content</a>
 
   <div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
@@ -29,7 +30,7 @@
         DocNest
       </a>
       <nav class="nav-actions" aria-label="Primary">
-        <a class="nav-link" href="index.html#learning-paths">Learning Paths</a>
+        <a class="nav-link" href="browse.html">Learn</a>
         <a class="nav-link" href="papers.html">Papers</a>
         <a class="nav-link" href="annotate.html">Annotate</a>
         <div class="search-wrap" id="search-wrap">
@@ -77,7 +78,7 @@
 
             <div class="paper-actions-top">
               <a href="papers.html" class="paper-back-link">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:13px;height:13px;">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                   <path d="M10 3L5 8l5 5" />
                 </svg>
                 All papers
@@ -91,7 +92,7 @@
             <div class="paper-links" id="paper-links">
               <div class="paper-link-buttons"></div>
               <button type="button" class="btn btn-ghost paper-cite-btn" id="paper-cite-btn">
-                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" style="width:14px;height:14px;">
+                <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                   <path d="M5 3v8a2 2 0 0 0 2 2h6V5L9.5 3H5z" stroke-linejoin="round" />
                   <path d="M5 4H3a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h5" stroke-linecap="round" />
                 </svg>

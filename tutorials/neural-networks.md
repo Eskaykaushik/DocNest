@@ -14,6 +14,16 @@ You need the Machine Learning fundamentals (features, labels, train/test split) 
 
 A neural network is a stack of layers. Each layer multiplies its input by a matrix of **weights** (`W`), adds a vector of **biases** (`b`), and pushes the result through a nonlinear **activation** function. Chain enough layers together and the combined function can represent astonishingly complex patterns — that's the whole trick.
 
+```mermaid
+graph LR
+    X[/Input/] --> H1(Neuron)
+    X --> H2(Neuron)
+    X --> H3(Neuron)
+    H1 --> Y[/Output/]
+    H2 --> Y
+    H3 --> Y
+```
+
 ```python
 import numpy as np
 
@@ -40,6 +50,17 @@ A network starts with random weights and produces garbage. Training fixes this w
 3. **Backward pass** — work out how each weight should change to reduce the loss. This is **backpropagation**, and it's just the chain rule of calculus applied smartly, layer by layer.
 4. **Update** — nudge every weight in the direction that lowers the loss, by a step size called the **learning rate**.
 5. Repeat, thousands of times.
+
+```mermaid
+graph TD
+    B[/Batch/] --> F(Forward<br/>Pass)
+    F --> P[/Prediction/]
+    P --> L(Loss)
+    L --> K(Backward<br/>Pass)
+    K --> G(Gradients)
+    G --> U(Update<br/>Weights)
+    U -.->|repeat| F
+```
 
 That nudge is called **gradient descent**, and the "learning" you keep hearing about is literally this loop. There's no magic in a trained model — it's just a set of numbers tuned by millions of tiny corrections.
 

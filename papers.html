@@ -26,7 +26,7 @@
         DocNest
       </a>
       <nav class="nav-actions" aria-label="Primary">
-        <a class="nav-link" href="index.html#learning-paths">Learning Paths</a>
+        <a class="nav-link" href="browse.html">Learn</a>
         <a class="nav-link" href="papers.html">Papers</a>
         <a class="nav-link" href="annotate.html">Annotate</a>
         <div class="search-wrap" id="search-wrap">
@@ -66,46 +66,32 @@
   </header>
 
   <main id="main-content">
-    <section class="hero">
-      <h1 class="hero-title">Research papers,<br /><span class="accent">read like tutorials</span></h1>
-      <p class="hero-subtitle">Landmark AI papers with TL;DRs, math, and runnable code.</p>
-      <p class="hero-stats" id="hero-stats" aria-hidden="true"></p>
+    <section class="masthead papers-masthead">
+      <p class="eyebrow">Research papers</p>
+      <h1 class="masthead-title">Research papers,<br /><span class="accent">read like tutorials</span></h1>
+      <p class="tutorial-meta-row papers-stats" id="hero-stats" aria-hidden="true"></p>
     </section>
 
     <div class="home-content">
-      <div class="papers-intro">
-        <p class="eyebrow">How to use this library</p>
-        <p>
-          Each entry is the actual paper — compressed the way our tutorials compress ideas: an opening
-          <strong>one-sentence summary</strong>, a plain-English <strong>problem</strong>, the
-          <strong>math</strong> without hand-waving, a minimal <strong>code</strong> walkthrough you can run,
-          and <strong>takeaways</strong> that connect it to today's tools.
-        </p>
-      </div>
+      <div class="papers-toolbar">
+        <div class="path-filters" id="path-filters" hidden></div>
 
-      <div class="grid-heading">
-        <div>
-          <h2 class="grid-title">Papers</h2>
-          <p class="grid-subtitle">Filter by topic, difficulty, or search the titles and authors.</p>
+        <div class="papers-search" id="papers-search">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+            <circle cx="7" cy="7" r="5" />
+            <path d="M11 11L14.5 14.5" stroke-linecap="round" />
+          </svg>
+          <input
+            type="search"
+            id="papers-search-input"
+            placeholder="Search papers by title or author…"
+            aria-label="Search papers"
+            autocomplete="off"
+          />
         </div>
-        <p class="grid-results" id="grid-results" aria-live="polite"></p>
       </div>
 
-      <div class="path-filters" id="path-filters" hidden></div>
-
-      <div class="papers-search" id="papers-search">
-        <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-          <circle cx="7" cy="7" r="5" />
-          <path d="M11 11L14.5 14.5" stroke-linecap="round" />
-        </svg>
-        <input
-          type="search"
-          id="papers-search-input"
-          placeholder="Search papers by title or author…"
-          aria-label="Search papers"
-          autocomplete="off"
-        />
-      </div>
+      <p class="browse-results" id="grid-results" aria-live="polite"></p>
 
       <div class="tutorial-grid" id="tutorial-grid"></div>
     </div>

@@ -41,6 +41,19 @@ query  = [?]  ————————————————→  key = [.…] 
   and takes 89% of its updated meaning from "animal"'s value.
 ```
 
+```mermaid
+graph LR
+    T[/Tokens/] --> Q(Query)
+    T --> K(Key)
+    T --> V(Value)
+    Q --> S(Scores)
+    K --> S
+    S --> M(Softmax)
+    M --> B(Blend)
+    V --> B
+    B --> O[/Context/]
+```
+
 Every word does this simultaneously — that's why it's called **self-attention** (words attending to words in their own sentence). Because every word can attend to every other word in a single step, the "fading memory" problem of RNNs simply disappears, and the whole thing runs in parallel on a GPU.
 
 ## Multi-head attention: several questions at once

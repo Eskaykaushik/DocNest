@@ -35,6 +35,17 @@ output:   " Paris"     (probability 0.62)
           ...
 ```
 
+```mermaid
+graph TD
+    P[/Prompt/] --> TK(Tokenize)
+    TK --> E(Embed)
+    E --> L((Transformer<br/>Layers))
+    L --> G(Logits)
+    G --> S(Sample)
+    S --> N[/Next<br/>Token/]
+    N -.->|append| TK
+```
+
 It assigns a probability to every possible next token, and picks one. That's a **probability distribution over the vocabulary** — typically 50,000–100,000 tokens. The entire model is a machine for turning a string of tokens into "what's the most likely token to come next?"
 
 Everything else is built on this loop:

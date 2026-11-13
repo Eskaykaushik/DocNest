@@ -32,6 +32,17 @@ That's not a simple loop anymore — it's a **flowchart** with branches and poss
 
 This mental model — nodes doing work, edges deciding what happens next, state carrying data between them — is really the entire idea behind LangGraph. Everything else is details.
 
+```mermaid
+graph TD
+    Q[/Question/] --> C(Classify)
+    C -->|simple| A(Answer)
+    C -->|complex| R(Research)
+    R -->|empty| S(New<br/>Search)
+    S --> R
+    R -->|found| A
+    A --> O[/Response/]
+```
+
 ## Step 1: Define your state
 
 State is the data structure that every node can read from and write to. In LangGraph, you typically define it as a `TypedDict`:

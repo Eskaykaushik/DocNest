@@ -1,0 +1,32 @@
+[
+  {
+    "id": "foundations",
+    "name": "Foundations",
+    "description": "Start at the bottom. It's solid.",
+    "order": 1
+  },
+  {
+    "id": "llm-engineering",
+    "name": "LLM Engineering",
+    "description": "Make the machine talk.",
+    "order": 2
+  },
+  {
+    "id": "ai-assisted-coding",
+    "name": "AI-Assisted Coding",
+    "description": "Work with the agent, not against it.",
+    "order": 3
+  },
+  {
+    "id": "agents",
+    "name": "Agents",
+    "description": "Give it hands.",
+    "order": 4
+  },
+  {
+    "id": "evaluation-production",
+    "name": "Evaluation & Production",
+    "description": "Keep it honest.",
+    "order": 5
+  }
+]

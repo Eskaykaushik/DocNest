@@ -14,7 +14,8 @@ import {
   formatDate,
   escapeHtml,
 } from "./utils.js";
-import { renderMarkdown, initCopyButtons, initCodeTabs, initMermaid } from "./markdown.js";
+import { renderMarkdown, initCopyButtons, initCodeTabs } from "./markdown.js";
+import { initDiagrams } from "./diagram.js";
 import { buildSidebar, initSidebarDrawer } from "./sidebar.js";
 import { createSearch } from "./search.js";
 import { attachCompletion, recordQuizPerfect } from "./progress.js";
@@ -65,7 +66,7 @@ async function init() {
     renderHeader(tutorial, markdownText);
     renderArticle(markdownText);
     buildTableOfContents();
-    initMermaid(contentEl);
+    initDiagrams(contentEl);
     initCodeTabs(contentEl);
     initCopyButtons(contentEl);
     initQuizzes(contentEl, { onPerfect: () => recordQuizPerfect(tutorial.id) });
@@ -94,7 +95,7 @@ function renderHeader(tutorial, markdownText) {
 
   breadcrumbEl.innerHTML = `
     <a href="index.html">Home</a>
-    / <a href="index.html?category=${encodeURIComponent(tutorial.category)}">${escapeHtml(tutorial.category)}</a>
+    / <a href="browse.html?category=${encodeURIComponent(tutorial.category)}">${escapeHtml(tutorial.category)}</a>
     / <span class="accent">${escapeHtml(tutorial.title)}</span>
   `;
   titleEl.textContent = tutorial.title;

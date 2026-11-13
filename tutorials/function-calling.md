@@ -22,6 +22,16 @@ The loop has exactly two phases:
 
 That loop — call, check for tool request, execute, feed the result back, repeat — is the entire "agent loop" you've read about.
 
+```mermaid
+graph TD
+    U[/Messages/] --> M((Model))
+    M --> C(Check<br/>Response)
+    C -->|text| A[/Answer/]
+    C -->|tool_calls| T{{Tool}}
+    T --> R(Result)
+    R -.->|append| U
+```
+
 ## Step 1: Define a tool as a Python function
 
 ```python

@@ -6,6 +6,11 @@
    ========================================================================== */
 
 body.annotate {
+  --paper-thumb-bg: #ffffff;
+  --paper-thumb-ink: #c9d2dd;
+  --paper-thumb-num: #8a95a3;
+  --paper-thumb-rule: #e3e8ee;
+  --paper-input-bg: rgba(255, 255, 255, 0.85);
   overflow-x: hidden;
 }
 
@@ -25,18 +30,20 @@ body.annotate {
 .annot-library {
   max-width: var(--max-width-page);
   margin: 0 auto;
-  padding: 72px 24px 96px;
+  padding: var(--page-pad-top) var(--space-10) var(--space-17);
 }
 
 .annot-hero {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  text-align: center;
-  gap: 4px;
+  align-items: flex-start;
+  text-align: left;
+  gap: var(--space-2);
+  max-width: 720px;
+  margin-bottom: var(--space-12);
 }
 
-.annot-hero .hero-subtitle {
+.annot-hero .masthead-lede {
   max-width: 640px;
 }
 
@@ -53,12 +60,12 @@ body.annotate {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 10px;
+  gap: var(--space-5);
   width: 100%;
-  margin: 36px 0 8px;
+  margin: 36px 0 var(--space-4);
   padding: 22px;
   font-family: var(--font-ui);
-  font-size: 14px;
+  font-size: var(--text-base);
   color: var(--color-muted);
   background: var(--color-surface);
   border: 1px dashed var(--color-border);
@@ -80,7 +87,7 @@ body.annotate {
 .annot-doc-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
-  gap: 16px;
+  gap: var(--space-8);
   margin-top: 12px;
 }
 
@@ -110,7 +117,7 @@ body.annotate {
   align-items: center;
   justify-content: center;
   height: 148px;
-  background: #ffffff;
+  background: var(--paper-thumb-bg);
   border-bottom: 1px solid var(--color-border);
   overflow: hidden;
 }
@@ -123,16 +130,16 @@ body.annotate {
 }
 
 .annot-doc-initial {
-  font-size: 44px;
+  font-size: var(--text-6xl);
   font-weight: 700;
-  color: #c9d2dd;
+  color: var(--paper-thumb-ink);
 }
 
 .annot-doc-body {
   display: flex;
   flex-direction: column;
   gap: 3px;
-  padding: 12px 14px;
+  padding: var(--space-6) var(--space-7);
 }
 
 .annot-doc-name {
@@ -144,7 +151,7 @@ body.annotate {
 }
 
 .annot-doc-meta {
-  font-size: 12px;
+  font-size: var(--text-sm);
   color: var(--color-muted);
 }
 
@@ -183,7 +190,7 @@ body.annotate {
 }
 
 .annot-empty {
-  margin: 40px 0;
+  margin: var(--space-13) 0;
   text-align: center;
   color: var(--color-muted);
 }
@@ -209,8 +216,8 @@ body.annot-editing .site-footer {
 .annot-topbar {
   display: flex;
   align-items: center;
-  gap: 10px;
-  padding: 8px 16px;
+  gap: var(--space-5);
+  padding: var(--space-4) var(--space-8);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
@@ -248,9 +255,9 @@ body.annot-editing .site-footer {
   flex: 1;
   min-width: 0;
   max-width: 420px;
-  padding: 6px 10px;
+  padding: var(--space-3) var(--space-5);
   font-family: var(--font-ui);
-  font-size: 15px;
+  font-size: var(--text-lg);
   font-weight: 600;
   color: var(--color-text);
   background: transparent;
@@ -270,13 +277,13 @@ body.annot-editing .site-footer {
 }
 
 .annot-save-status {
-  font-size: 12px;
+  font-size: var(--text-sm);
   color: var(--color-muted);
 }
 
 .annot-topbar-actions {
   display: flex;
-  gap: 2px;
+  gap: var(--space-1);
   margin-left: auto;
 }
 
@@ -303,8 +310,8 @@ body.annot-editing .site-footer {
 .annot-thumbs {
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  padding: 12px;
+  gap: var(--space-4);
+  padding: var(--space-6);
   overflow-y: auto;
 }
 
@@ -313,7 +320,7 @@ body.annot-editing .site-footer {
   flex: none;
   aspect-ratio: 3 / 4;
   padding: 0;
-  background: #ffffff;
+  background: var(--paper-thumb-bg);
   border: 1px solid var(--color-border);
   border-radius: var(--radius-sm);
   cursor: pointer;
@@ -335,8 +342,8 @@ body.annot-editing .site-footer {
   top: 4px;
   left: 6px;
   font-family: var(--font-mono);
-  font-size: 11px;
-  color: #8a95a3;
+  font-size: var(--text-xs);
+  color: var(--paper-thumb-num);
 }
 
 .annot-thumb-lines {
@@ -349,7 +356,7 @@ body.annot-editing .site-footer {
 
 .annot-thumb-lines i {
   height: 2px;
-  background: #e3e8ee;
+  background: var(--paper-thumb-rule);
   border-radius: 1px;
 }
 
@@ -368,13 +375,13 @@ body.annot-editing .site-footer {
 .annot-rail-actions {
   display: flex;
   flex-direction: column;
-  gap: 6px;
-  padding: 12px;
+  gap: var(--space-3);
+  padding: var(--space-6);
   border-top: 1px solid var(--color-border);
 }
 
 .annot-add-label {
-  font-size: 11px;
+  font-size: var(--text-xs);
   text-transform: uppercase;
   letter-spacing: 0.08em;
   color: var(--color-muted);
@@ -383,14 +390,14 @@ body.annot-editing .site-footer {
 .annot-add-page {
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  gap: var(--space-2);
 }
 
 .annot-add-page button,
 .annot-rail-delete {
-  padding: 6px 8px;
+  padding: var(--space-3) var(--space-4);
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: var(--text-sm);
   text-align: left;
   color: var(--color-muted);
   background: var(--color-bg);
@@ -435,8 +442,8 @@ body.annot-editing .site-footer {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 6px;
-  padding: 8px 12px;
+  gap: var(--space-3);
+  padding: var(--space-4) var(--space-6);
   background: var(--color-surface);
   border-bottom: 1px solid var(--color-border);
 }
@@ -524,7 +531,7 @@ body.annot-editing .site-footer {
 }
 
 .annot-color-input::-webkit-color-swatch-wrapper {
-  padding: 2px;
+  padding: var(--space-1);
 }
 
 .annot-color-input::-webkit-color-swatch {
@@ -566,9 +573,9 @@ body.annot-editing .site-footer {
 
 .annot-zoom-label {
   min-width: 52px;
-  padding: 0 4px;
+  padding: 0 var(--space-2);
   font-family: var(--font-mono);
-  font-size: 12px;
+  font-size: var(--text-sm);
   color: var(--color-muted);
   background: transparent;
   border: none;
@@ -587,7 +594,7 @@ body.annot-editing .site-footer {
   position: relative;
   flex: 1;
   min-height: 0;
-  padding: 24px;
+  padding: var(--space-10);
   overflow: auto;
   background: var(--color-bg);
   background-image: radial-gradient(var(--color-border) 1px, transparent 1px);
@@ -621,7 +628,7 @@ body.annot-editing .site-footer {
   padding: 0;
   font-family: var(--font-ui);
   line-height: 1.2;
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--paper-input-bg);
   border: 1px dashed var(--color-accent);
   border-radius: 2px;
   outline: none;
@@ -630,18 +637,18 @@ body.annot-editing .site-footer {
 .annot-statusbar {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 6px 14px;
-  font-size: 12px;
+  gap: var(--space-6);
+  padding: var(--space-3) var(--space-7);
+  font-size: var(--text-sm);
   color: var(--color-muted);
   background: var(--color-surface);
   border-top: 1px solid var(--color-border);
 }
 
 .annot-soft {
-  padding: 4px 10px;
+  padding: var(--space-2) var(--space-5);
   font-family: var(--font-ui);
-  font-size: 12px;
+  font-size: var(--text-sm);
   color: var(--color-muted);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
@@ -662,7 +669,7 @@ body.annot-editing .site-footer {
 .annot-hint {
   margin-left: auto;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: var(--text-xs);
   opacity: 0.8;
 }
 
@@ -676,8 +683,8 @@ body.annot-editing .site-footer {
   bottom: 24px;
   z-index: 60;
   max-width: min(420px, calc(100vw - 32px));
-  padding: 10px 16px;
-  font-size: 13px;
+  padding: var(--space-5) var(--space-8);
+  font-size: var(--text-md);
   color: var(--color-text);
   background: var(--color-surface);
   border: 1px solid var(--color-border);
@@ -793,11 +800,11 @@ body.is-dropping::after {
 
   .annot-statusbar {
     flex-wrap: wrap;
-    gap: 8px;
+    gap: var(--space-4);
   }
 
   .annot-library {
-    padding: 48px 16px 72px;
+    padding: var(--space-14) var(--space-8) 72px;
   }
 
   .annot-colors {

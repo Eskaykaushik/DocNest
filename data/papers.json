@@ -19,9 +19,7 @@
       "code": "https://nlp.seas.harvard.edu/2018/04/03/attention.html"
     },
     "tags": [
-      "Transformers",
-      "LLMs",
-      "Attention"
+      "Transformers"
     ],
     "difficulty": "Intermediate",
     "featured": true,
@@ -53,9 +51,7 @@
       "code": "https://github.com/huggingface/transformers/tree/main/examples/research_projects/rag"
     },
     "tags": [
-      "RAG",
-      "Retrieval",
-      "LLMs"
+      "Retrieval"
     ],
     "difficulty": "Intermediate",
     "featured": true,
@@ -83,9 +79,7 @@
       "arxiv": "https://arxiv.org/abs/2201.11903"
     },
     "tags": [
-      "Prompting",
-      "LLMs",
-      "Reasoning"
+      "Prompting"
     ],
     "difficulty": "Beginner",
     "featured": false,
@@ -113,8 +107,7 @@
     },
     "tags": [
       "Agents",
-      "Reasoning",
-      "Tool Use"
+      "Prompting"
     ],
     "difficulty": "Intermediate",
     "featured": true,
@@ -138,9 +131,7 @@
       "code": "https://github.com/google-research/bert"
     },
     "tags": [
-      "Transformers",
-      "Pretraining",
-      "NLP"
+      "Transformers"
     ],
     "difficulty": "Intermediate",
     "featured": false,
@@ -190,9 +181,7 @@
       "arxiv": "https://arxiv.org/abs/2005.14165"
     },
     "tags": [
-      "LLMs",
-      "Scaling",
-      "In-Context Learning"
+      "Prompting"
     ],
     "difficulty": "Intermediate",
     "featured": true,
@@ -231,9 +220,7 @@
       "arxiv": "https://arxiv.org/abs/2203.02155"
     },
     "tags": [
-      "Alignment",
-      "RLHF",
-      "LLMs"
+      "Alignment"
     ],
     "difficulty": "Intermediate",
     "featured": true,
@@ -261,9 +248,7 @@
       "code": "https://github.com/microsoft/LoRA"
     },
     "tags": [
-      "Fine-tuning",
-      "Efficiency",
-      "LLMs"
+      "Efficiency"
     ],
     "difficulty": "Intermediate",
     "featured": false,
@@ -290,9 +275,8 @@
       "arxiv": "https://arxiv.org/abs/2203.11171"
     },
     "tags": [
-      "Reasoning",
       "Prompting",
-      "Evals"
+      "Evaluation"
     ],
     "difficulty": "Beginner",
     "featured": false,
@@ -320,7 +304,6 @@
     },
     "tags": [
       "Agents",
-      "Reasoning",
       "Prompting"
     ],
     "difficulty": "Intermediate",

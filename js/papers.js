@@ -1,7 +1,7 @@
 /**
  * papers.js
  * Papers library hub controller: loads data/papers.json, renders hero stats,
- * topic/difficulty filter chips, a local "search papers" box that filters by
+ * topic filter chips, a local "search papers" box that filters by
  * title/author, and a responsive paper-card grid with skeleton + empty states.
  */
 
@@ -17,7 +17,6 @@ const heroStatsEl = document.getElementById("hero-stats");
 
 let papers = [];
 let activeTags = new Set();
-let activeLevels = new Set();
 let query = "";
 
 const search = createSearch();
@@ -27,9 +26,7 @@ init();
 
 async function init() {
   const tagParam = getQueryParam("tag");
-  const levelParam = getQueryParam("difficulty");
   if (tagParam) activeTags = new Set([tagParam]);
-  if (levelParam) activeLevels = new Set([levelParam]);
 
   showSkeletons(6);
 
@@ -70,26 +67,19 @@ function showSkeletons(count) {
 function renderHeroStats(list) {
   const venues = new Set(list.map((p) => p.venue)).size;
   heroStatsEl.innerHTML = `
-    <span>${list.length} papers</span>
-    <span>${venues} venues</span>
-    <span>${new Set(list.flatMap((p) => p.tags || [])).size} topics</span>
+    <span class="meta-chip">${list.length} papers</span>
+    <span class="meta-chip">${venues} venues</span>
+    <span class="meta-chip">${new Set(list.flatMap((p) => p.tags || [])).size} topics</span>
   `;
 }
 
 function renderFilters(list) {
   const tags = [...new Set(list.flatMap((p) => p.tags || []))].sort();
-  const levels = ["Beginner", "Intermediate", "Advanced"].filter((level) =>
-    list.some((p) => p.difficulty === level)
-  );
 
   filtersEl.innerHTML = `
     <span class="chip-group" role="group" aria-label="Filter by topic">
       <button type="button" class="filter-chip chip-tag active" data-tag="">All topics</button>
       ${tags.map((tag) => `<button type="button" class="filter-chip chip-tag" data-tag="${escapeHtml(tag)}">${escapeHtml(tag)}</button>`).join("")}
-    </span>
-    <span class="chip-group" role="group" aria-label="Filter by difficulty">
-      <button type="button" class="filter-chip chip-level active" data-level="">All levels</button>
-      ${levels.map((level) => `<button type="button" class="filter-chip chip-level" data-level="${escapeHtml(level)}">${escapeHtml(level)}</button>`).join("")}
     </span>
   `;
 
@@ -105,16 +95,6 @@ function renderFilters(list) {
     });
   });
 
-  filtersEl.querySelectorAll(".chip-level").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      const value = chip.dataset.level;
-      value ? activeLevels.add(value) : activeLevels.clear();
-      if (value) activeLevels = new Set([value]);
-      syncChips();
-      applyFilters();
-    });
-  });
-
   syncChips();
 }
 
@@ -124,17 +104,11 @@ function syncChips() {
       ? activeTags.has(chip.dataset.tag)
       : activeTags.size === 0);
   });
-  filtersEl.querySelectorAll(".chip-level").forEach((chip) => {
-    chip.classList.toggle("active", chip.dataset.level
-      ? activeLevels.has(chip.dataset.level)
-      : activeLevels.size === 0);
-  });
 }
 
 function applyFilters() {
   const filtered = papers.filter((paper) => {
     if (activeTags.size && !(paper.tags || []).some((tag) => activeTags.has(tag))) return false;
-    if (activeLevels.size && !activeLevels.has(paper.difficulty)) return false;
     if (query) {
       const haystack = `${paper.title} ${paper.authors.join(" ")} ${paper.venue}`.toLowerCase();
       if (!haystack.includes(query)) return false;
@@ -154,7 +128,6 @@ function applyFilters() {
     `;
     gridEl.querySelector("#clear-filters")?.addEventListener("click", () => {
       activeTags.clear();
-      activeLevels.clear();
       query = "";
       searchInput.value = "";
       syncChips();
@@ -167,17 +140,7 @@ function applyFilters() {
 }
 
 function renderCard(paper) {
-  const difficultyClass = (level) => {
-    const map = {
-      Beginner: "badge-beginner",
-      Intermediate: "badge-intermediate",
-      Advanced: "badge-advanced",
-    };
-    return map[level] || "";
-  };
-
   const tagBadge = paper.tags?.[0] ? escapeHtml(paper.tags[0]) : "Research";
-  const venueLine = `${escapeHtml(paper.venue)} · ${paper.year}`;
 
   return `
     <article class="tutorial-card paper-card">
@@ -190,19 +153,13 @@ function renderCard(paper) {
             </svg>
           </span>
           <span class="card-category">${tagBadge}</span>
+          <span class="card-year">${paper.year}</span>
         </div>
         <h3 class="card-title">${escapeHtml(paper.title)}${
           isRead(paper.id)
             ? '<span class="card-read" aria-label="Completed" title="Completed">✓</span>'
             : ""
         }</h3>
-        <p class="card-desc">${escapeHtml(paper.description)}</p>
-        <p class="card-authors">${escapeHtml(paper.authors.slice(0, 2).join(", "))}${paper.authors.length > 2 ? " et al." : ""}</p>
-        <div class="card-meta">
-          <span class="card-minread">${venueLine}</span>
-          <span class="card-difficulty ${difficultyClass(paper.difficulty)}">${escapeHtml(paper.difficulty)}</span>
-          ${paper.featured ? `<span class="card-difficulty badge-intermediate">Featured</span>` : ""}
-        </div>
       </a>
     </article>
   `;

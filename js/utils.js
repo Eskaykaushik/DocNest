@@ -84,7 +84,7 @@ export function escapeHtml(str) {
  * @returns {Promise<string>}
  */
 export async function fetchText(path) {
-  const response = await fetch(path);
+  const response = await fetch(path, { cache: "no-cache" });
   if (!response.ok) {
     throw new Error(`Failed to load "${path}" (${response.status})`);
   }
@@ -97,7 +97,7 @@ export async function fetchText(path) {
  * @returns {Promise<any>}
  */
 export async function fetchJson(path) {
-  const response = await fetch(path);
+  const response = await fetch(path, { cache: "no-cache" });
   if (!response.ok) {
     throw new Error(`Failed to load "${path}" (${response.status})`);
   }

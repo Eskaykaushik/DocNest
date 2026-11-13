@@ -1,0 +1,152 @@
+/* ==========================================================================
+   DocNest — Diagram Kit
+   One visual system for every ```mermaid block: framed plate, capped canvas,
+   chunky strokes, cluster plates, and click-to-trace. Authors write plain
+   Mermaid; this file plus js/diagram.js supply the design.
+   ========================================================================== */
+
+.mermaid-diagram {
+  margin: 22px 0;
+  padding: var(--space-8);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-surface);
+  overflow-x: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: safe center;
+  gap: var(--space-6);
+  justify-content: center;
+}
+
+.mermaid-diagram svg {
+  max-width: 100%;
+  height: auto;
+}
+
+.mermaid-diagram svg.flowchart {
+  max-width: var(--diagram-max-width) !important;
+  width: 100%;
+}
+
+.mermaid-diagram g.cluster rect {
+  rx: 10px;
+  ry: 10px;
+  stroke-dasharray: 5 4;
+}
+
+.mermaid-diagram .cluster-label .nodeLabel {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  fill: var(--color-muted) !important;
+  color: var(--color-muted) !important;
+}
+
+.mermaid-diagram svg.is-tracing g.cluster rect {
+  opacity: var(--diagram-dim);
+  transition: opacity var(--diagram-fade) var(--ease);
+}
+
+.mermaid-diagram svg.is-tracing g.cluster.is-lit rect {
+  opacity: 1;
+}
+
+.mermaid-diagram g.node {
+  cursor: pointer;
+}
+
+.mermaid-diagram g.node .label-container {
+  stroke-width: var(--diagram-node-stroke) !important;
+}
+
+.mermaid-diagram path.flowchart-link {
+  stroke-width: var(--diagram-edge-stroke) !important;
+}
+
+.mermaid-diagram g.node:focus {
+  outline: none;
+}
+
+.mermaid-diagram g.node:focus-visible {
+  filter: drop-shadow(0 0 7px var(--color-accent-glow));
+}
+
+.mermaid-diagram svg.is-tracing g.node {
+  opacity: var(--diagram-dim);
+  transition: opacity var(--diagram-fade) var(--ease);
+}
+
+.mermaid-diagram svg.is-tracing g.node.is-lit {
+  opacity: 1;
+}
+
+.mermaid-diagram svg.is-tracing g.node.is-self {
+  filter: drop-shadow(0 0 10px var(--color-accent-glow));
+}
+
+.mermaid-diagram svg.is-tracing g.node.is-self .label-container {
+  stroke: var(--color-accent) !important;
+  stroke-width: var(--diagram-self-stroke) !important;
+}
+
+.mermaid-diagram svg.is-tracing g.node.is-self .nodeLabel {
+  fill: var(--color-accent) !important;
+}
+
+.mermaid-diagram svg.is-tracing path.flowchart-link {
+  opacity: calc(var(--diagram-dim) * 0.7);
+  transition: opacity var(--diagram-fade) var(--ease);
+}
+
+.mermaid-diagram svg.is-tracing path.flowchart-link.is-lit {
+  opacity: 1;
+  stroke: var(--color-accent) !important;
+  stroke-width: var(--diagram-lit-stroke) !important;
+}
+
+.mermaid-diagram svg.is-tracing g.edgeLabel {
+  opacity: var(--diagram-dim);
+  transition: opacity var(--diagram-fade) var(--ease);
+}
+
+.diagram-bar[hidden] {
+  display: none;
+}
+
+.diagram-bar {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--space-8);
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--text-2xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+
+.diagram-clear {
+  font: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  color: var(--color-accent);
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+}
+
+.diagram-clear:hover {
+  color: var(--color-accent-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .mermaid-diagram svg.is-tracing g.node,
+  .mermaid-diagram svg.is-tracing path.flowchart-link,
+  .mermaid-diagram svg.is-tracing g.edgeLabel {
+    transition: none;
+  }
+}

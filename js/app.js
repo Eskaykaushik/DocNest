@@ -1,292 +1,139 @@
 /**
  * app.js
- * Homepage controller: loads the tutorial index, renders the scalable
- * card-grid landing (with topic + level filters), and wires the navbar
- * search so typing filters cards live (search also matches tags).
+ * Homepage controller: compact masthead, tutorial tracks, paper topics, and
+ * a continue row drawn from reading history.
  */
 
-import {
-  fetchJson,
-  fetchText,
-  calculateReadingTime,
-  getQueryParam,
-  escapeHtml,
-} from "./utils.js";
+import { fetchJson, escapeHtml } from "./utils.js";
 import { createSearch } from "./search.js";
-import { initReveal } from "./reveal.js";
-import { isRead, syncBadges } from "./progress.js";
+import { getState, syncBadges } from "./progress.js";
+
+const trackIndexEl = document.getElementById("track-index");
+const paperTopicsEl = document.getElementById("paper-topics");
+const continueModule = document.getElementById("continue-module");
+const continueListEl = document.getElementById("continue-list");
+const browseAllCount = document.getElementById("browse-all-count");
 
 const state = {
-  tutorials: [], // full index, enriched with readingTime
-  query: "",
-  category: "all",
-  difficulty: "all",
+  tutorials: [],
+  tracks: [],
+  papers: [],
 };
 
-const grid = document.getElementById("tutorial-grid");
-const resultsEl = document.getElementById("grid-results");
-
-const search = createSearch({
-  onQueryChange: (query) => {
-    state.query = query.trim().toLowerCase();
-    applyFilters();
-  },
-});
+const search = createSearch();
 
 init();
 
 async function init() {
-  renderSkeletons(8);
-  bindNavLinks();
-
   try {
-    const index = await fetchJson("data/tutorials.json");
-    state.tutorials = await enrichWithReadingTime(index);
-    search.setIndex(state.tutorials);
-    renderFilters(index);
-    renderGrid(state.tutorials);
-    initReveal();
-    scrollToCategory(getQueryParam("category"));
-    syncBadges({ allCategories: [...new Set(index.map((t) => t.category))] });
+    const [tracks, tutorials, papers] = await Promise.all([
+      fetchJson("data/tracks.json"),
+      fetchJson("data/tutorials.json"),
+      fetchJson("data/papers.json"),
+    ]);
+
+    state.tracks = tracks;
+    state.tutorials = tutorials;
+    state.papers = papers;
+
+    search.setIndex(tutorials);
+    renderTracks(tracks, tutorials);
+    renderPaperTopics(papers);
+    renderContinue(tutorials, papers);
+    renderBrowseAll(tutorials.length);
+    syncBadges({ allCategories: [...new Set(tutorials.map((t) => t.category))] });
   } catch (err) {
     renderError(err);
   }
 }
 
-/**
- * Reading time is estimated from each tutorial's actual word count,
- * so the homepage and the tutorial page always agree.
- */
-async function enrichWithReadingTime(index) {
-  return Promise.all(
-    index.map(async (tutorial) => {
-      try {
-        const text = await fetchText(tutorial.file);
-        return { ...tutorial, readingTime: calculateReadingTime(text) };
-      } catch {
-        return { ...tutorial, readingTime: null };
-      }
-    })
-  );
-}
+function renderTracks(tracks, tutorials) {
+  if (!trackIndexEl) return;
 
-function renderSkeletons(count) {
-  grid.innerHTML = Array.from({ length: count })
-    .map(() => `<div class="skeleton-card" aria-hidden="true"></div>`)
-    .join("");
-}
-
-/* --------------------------------------------------------------------- */
-/* Navbar                                                                 */
-/* --------------------------------------------------------------------- */
-
-/** "Learning Paths" clears any active filter so the grid shows everything. */
-function bindNavLinks() {
-  document.querySelectorAll('a[href="#learning-paths"]').forEach((link) => {
-    link.addEventListener("click", () => clearFilters());
-  });
-}
-
-/* --------------------------------------------------------------------- */
-/* Filter chips                                                           */
-/* --------------------------------------------------------------------- */
-
-function renderFilters(index) {
-  const container = document.getElementById("path-filters");
-  if (!container) return;
-
-  const categories = [...new Set(index.map((t) => t.category))].sort();
-  const difficulties = [...new Set(index.map((t) => t.difficulty))].sort();
-
-  let chips = chipGroup(
-    "Filter by topic",
-    [{ value: "all", label: "All topics" }].concat(
-      categories.map((name) => ({ value: name, label: name }))
-    ),
-    "category",
-    state.category
-  );
-
-  chips += chipGroup(
-    "Filter by level",
-    [{ value: "all", label: "All levels" }].concat(
-      difficulties.map((name) => ({ value: name, label: name }))
-    ),
-    "difficulty",
-    state.difficulty
-  );
-
-  container.innerHTML = chips;
-  container.hidden = false;
-
-  container.querySelectorAll(".filter-chip").forEach((chip) => {
-    chip.addEventListener("click", () => {
-      if (chip.dataset.category) {
-        state.category = chip.dataset.category;
-      } else {
-        state.difficulty = chip.dataset.difficulty;
-      }
-      updateChipStates();
-      applyFilters();
-    });
-  });
-}
-
-function chipGroup(label, items, key, activeValue) {
-  const buttons = items
-    .map((item) => {
-      const isActive = item.value === activeValue;
-      return `
-        <button
-          type="button"
-          class="filter-chip${isActive ? " active" : ""}"
-          data-${key}="${escapeHtml(item.value)}"
-        >${escapeHtml(item.label)}</button>
-      `;
+  trackIndexEl.innerHTML = tracks
+    .map((track) => {
+      const count = tutorials.filter((t) => t.category === track.name).length;
+      return moduleRow({
+        href: `browse.html?track=${encodeURIComponent(track.id)}`,
+        name: track.name,
+        count,
+      });
     })
     .join("");
-  return `
-    <div class="chip-group" role="group" aria-label="${label}">
-      ${buttons}
-    </div>
-  `;
 }
 
-function updateChipStates() {
-  document.querySelectorAll("#path-filters .filter-chip").forEach((chip) => {
-    if (chip.dataset.category) {
-      chip.classList.toggle("active", chip.dataset.category === state.category);
-    } else {
-      chip.classList.toggle("active", chip.dataset.difficulty === state.difficulty);
+function renderPaperTopics(papers) {
+  if (!paperTopicsEl) return;
+
+  const counts = new Map();
+  for (const paper of papers) {
+    for (const tag of paper.tags || []) {
+      counts.set(tag, (counts.get(tag) || 0) + 1);
     }
+  }
+
+  paperTopicsEl.innerHTML = [...counts.entries()]
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .map(
+      ([tag, count]) => `
+        <a class="topic-chip" href="papers.html?tag=${encodeURIComponent(tag)}">
+          ${escapeHtml(tag)}<span>${count}</span>
+        </a>
+      `
+    )
+    .join("");
+}
+
+function renderContinue(tutorials, papers) {
+  if (!continueModule || !continueListEl) return;
+
+  const read = getState().read;
+  const latest = Object.entries(read)
+    .sort((a, b) => (b[1].at || 0) - (a[1].at || 0))[0];
+
+  if (!latest) return;
+
+  const [id, entry] = latest;
+  const isPaper = entry.kind === "paper";
+  const item = isPaper
+    ? papers.find((p) => p.id === id)
+    : tutorials.find((t) => t.id === id);
+
+  if (!item) return;
+
+  continueListEl.innerHTML = moduleRow({
+    href: isPaper
+      ? `paper.html?id=${encodeURIComponent(id)}`
+      : `tutorial.html?id=${encodeURIComponent(id)}`,
+    name: item.title,
+    count: entry.minutes ? `${entry.minutes} min` : "",
   });
+  continueModule.hidden = false;
 }
 
-function clearFilters() {
-  state.query = "";
-  state.category = "all";
-  state.difficulty = "all";
-  if (search.input) search.input.value = "";
-  updateChipStates();
-  applyFilters();
-}
-
-/** Scroll offset for cross-page deep links (?category=). */
-function scrollToCategory(category) {
-  if (!category) return;
-  const target = document.getElementById("tutorial-grid");
-  const anchor = document.querySelector(`#path-filters [data-category="${CSS.escape(category)}"]`);
-  if (anchor) {
-    anchor.classList.add("active");
-    state.category = category;
-    updateChipStates();
-    applyFilters();
-  }
-  if (target) {
-    target.scrollIntoView({ behavior: "smooth", block: "start" });
-  }
-}
-
-/* --------------------------------------------------------------------- */
-/* Card grid                                                              */
-/* --------------------------------------------------------------------- */
-
-function renderGrid(tutorials) {
-  grid.innerHTML = tutorials.map(renderCard).join("");
-}
-
-function renderCard(tutorial, index) {
-  const meta = [
-    tutorial.category,
-    tutorial.difficulty,
-    tutorial.readingTime ? `${tutorial.readingTime} min` : null,
-  ].filter(Boolean);
-  const delay = Math.min(index * 60, 480);
+function moduleRow({ href, name, count = "" }) {
   return `
-    <article
-      class="tutorial-card"
-      data-reveal
-      style="--reveal-delay: ${delay}ms"
-      data-category="${escapeHtml(tutorial.category)}"
-      data-difficulty="${escapeHtml(tutorial.difficulty)}"
-      data-searchable="${escapeHtml(
-        `${tutorial.title} ${tutorial.description} ${tutorial.category} ${tutorial.difficulty} ${(tutorial.tags || []).join(" ")}`
-      ).toLowerCase()}"
-    >
-      <a href="tutorial.html?id=${encodeURIComponent(tutorial.id)}">
-        <h3 class="card-title">${escapeHtml(tutorial.title)}${
-          isRead(tutorial.id)
-            ? '<span class="card-read" aria-label="Completed" title="Completed">✓</span>'
-            : ""
-        }</h3>
-        <p class="card-desc">${escapeHtml(tutorial.description)}</p>
-        <div class="card-meta">
-          ${meta
-            .map(
-              (m, i) =>
-                `${i ? `<span class="meta-dot" aria-hidden="true">·</span>` : ""}<span>${escapeHtml(m)}</span>`
-            )
-            .join("")}
-        </div>
-      </a>
-    </article>
+    <a class="module-row" href="${href}">
+      <span class="module-name">${escapeHtml(name)}</span>
+      <span class="module-leader" aria-hidden="true"></span>
+      <span class="module-count">${escapeHtml(String(count))}</span>
+      <span class="module-arrow" aria-hidden="true">→</span>
+    </a>
   `;
 }
 
-/* --------------------------------------------------------------------- */
-/* Live filtering across cards                                            */
-/* --------------------------------------------------------------------- */
-
-function applyFilters() {
-  const query = state.query;
-  const category = state.category;
-  const difficulty = state.difficulty;
-  const hasFilters =
-    query !== "" || category !== "all" || difficulty !== "all";
-  let matchCount = 0;
-
-  grid.querySelectorAll(".tutorial-card").forEach((card) => {
-    const matchesQuery = !query || card.dataset.searchable.includes(query);
-    const matchesCategory = category === "all" || card.dataset.category === category;
-    const matchesDifficulty =
-      difficulty === "all" || card.dataset.difficulty === difficulty;
-    const matches = matchesQuery && matchesCategory && matchesDifficulty;
-    card.hidden = !matches;
-    if (matches) matchCount++;
-  });
-
-  resultsEl.textContent = hasFilters || matchCount !== state.tutorials.length
-    ? `${matchCount} tutorial${matchCount === 1 ? "" : "s"}`
-    : "";
-
-  if (matchCount === 0 && state.tutorials.length > 0) {
-    ensureEmptyState();
-  } else {
-    document.getElementById("empty-state")?.remove();
-  }
+function renderBrowseAll(count) {
+  if (browseAllCount) browseAllCount.textContent = String(count);
 }
-
-function ensureEmptyState() {
-  document.getElementById("empty-state")?.remove();
-  grid.insertAdjacentHTML(
-    "beforeend",
-    `<div class="empty-state" id="empty-state">
-      <h3>No tutorials match your filters</h3>
-      <p>Try a different topic, level, or keyword.</p>
-      <button type="button" class="empty-reset" id="empty-reset">Clear filters</button>
-    </div>`
-  );
-  document.getElementById("empty-reset")?.addEventListener("click", clearFilters);
-}
-
-/* --------------------------------------------------------------------- */
-/* Misc                                                                   */
-/* --------------------------------------------------------------------- */
 
 function renderError(err) {
-  grid.innerHTML = `<div class="empty-state">
-    <h3>Couldn't load tutorials</h3>
-    <p>${escapeHtml(err.message)}</p>
-  </div>`;
+  if (trackIndexEl) {
+    trackIndexEl.innerHTML = `
+      <div class="empty-state">
+        <h3>Couldn't load the field guide</h3>
+        <p>${escapeHtml(err.message)}</p>
+      </div>
+    `;
+  }
   console.error(err);
 }

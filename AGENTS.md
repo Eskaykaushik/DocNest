@@ -10,8 +10,8 @@ get a fast, searchable static site. No build step, no framework, no backend.
 
 Two content libraries, same chrome:
 
-- **Tutorials** — `index.html` (card-grid homepage) + `tutorial.html` (reader
-  with sidebar tree).
+- **Tutorials** — `index.html` (field-guide homepage) + `browse.html`
+  (paginated catalogue) + `tutorial.html` (reader with sidebar tree).
 - **Research papers** — `papers.html` (library hub) + `paper.html` (reader with
   paper header, KaTeX math, citation). Papers are real papers written as
   tutorials: TL;DR, problem, key idea, math, code, takeaways, cite-this.
@@ -47,18 +47,21 @@ google-chrome --headless=new --no-sandbox --disable-gpu \
 ## Architecture & file map
 
 ```
-index.html            Homepage: minimal summoned-hero + scroll-reveal card grid
+index.html            Homepage: compact masthead, search, Learn/Papers/Continue modules
+browse.html            Catalogue: track/level filters, search, pagination
 tutorial.html          Tutorial reader: sidebar tree, TOC, prev/next
-papers.html            Papers hub: hero stats, topic/difficulty chips, local search
+papers.html            Papers hub: stats, topic chips, local search
 paper.html             Paper reader: paper header, KaTeX article, citation copy
 annotate.html          Annotate workspace: notebook library + ink editor
 
 css/style.css          Layout, navbar, cards, buttons, theme tokens (dark + light)
 css/markdown.css       Typography + rules for parsed Markdown
+css/diagram.css        Diagram Kit: framed plate, canvas sizing, shape strokes, cluster plates, trace states
 css/portal.css         Portal components: sidebar, palette, grids, chips, papers, chat
 css/annotate.css       Annotate workspace: topbar, toolbars, page rail, stage, print rules
 
-js/app.js              Homepage controller (card grid, topic/level filters)
+js/app.js              Homepage controller (tracks, paper topics, continue)
+js/browse.js           Catalogue controller (filters, URL state, pagination)
 js/tutorial.js         Tutorial reader controller
 js/papers.js           Papers hub controller
 js/paper.js            Paper reader controller
@@ -69,6 +72,7 @@ js/pen.js              Global presentation pen overlay (all reader pages)
 js/sidebar.js          Shared category sidebar tree + mobile drawer
 js/search.js           Search command palette (tutorials) — "/" or Ctrl/⌘+K
 js/markdown.js         marked.js + highlight.js wrapper; code tabs, callouts, quiz fence, KaTeX hook
+js/diagram.js          Diagram Kit: Mermaid render + theming + auto-orientation + click-to-trace
 js/quiz.js             Inline "check yourself" quizzes built from ```quiz fences
 js/chat.js             k-mentor chat widget + persona selector
 js/theme.js            Dark/light theme manager (localStorage "docnest.theme")
@@ -80,6 +84,7 @@ js/badges.js           Badge definitions + evaluation (pure data/predicates)
 js/utils.js            Shared helpers (reading time, slugify, fetch wrappers, debounce)
 
 data/tutorials.json    Tutorial index  (one entry per tutorial)
+data/tracks.json       Track metadata for the homepage + catalogue filters
 data/papers.json       Papers index    (one entry per paper)
 tutorials/*.md         Tutorial content
 papers/*.md            Paper content
@@ -91,18 +96,28 @@ Runtimes: marked.js + highlight.js (CDN) on tutorial-ish pages; plus KaTeX on
 `paper.html`. `annotate.html` dynamically loads PDF.js 3.11.174 (UMD) from cdnjs
 only when a PDF is opened or imported (see `ensurePdfLib` in `js/annotate.js`).
 All loaded by `<script>` in the HTML `<head>`/`<body>`.
-Fonts: all pages use Inter; JetBrains Mono for code. Colors come from a
-developer token palette (see `--color-*` in `style.css`) — never hard-code
-colors. The homepage uses a `[data-reveal]` summon-on-scroll system
-(`js/reveal.js`): elements start invisible and fade/rise in via
-IntersectionObserver with a `--reveal-delay` stagger; `prefers-reduced-motion`
-renders them instantly. Homepage easter eggs live in `js/easter.js`.
+Fonts: all pages use Inter; JetBrains Mono for metadata/code; every page
+headline uses the `--font-display` serif stack. Colors come from one global
+token palette (see `--color-*` in `style.css`) — never hard-code colors. The
+warm paper/ink palette and vermilion accent apply app-wide; only `--paper-*`
+inside the annotate canvas stays local. Homepage easter eggs live in
+`js/easter.js`.
 
 Key shared modules:
 
 - `js/markdown.js` exposes `renderMarkdown`, `initCopyButtons`, `initCodeTabs`,
-  `initMath` (KaTeX auto-render, scoped to the article element), and
-  `initMermaid` (Mermaid render, theme-aware + re-renders on toggle).
+  and `initMath` (KaTeX auto-render, scoped to the article element).
+- `js/diagram.js` is the Diagram Kit. `initDiagrams(container)` renders
+  every `.mermaid-diagram`, pulls its Mermaid theme from the global CSS tokens
+  (`--color-*`, `--chart-*`), and re-renders on theme toggles.
+  `initDiagramInteractions(container)` then post-processes rendered flowcharts:
+  clicking a box lights it, its edges, and its direct neighbours while dimming
+  the rest; Enter/Space toggles, Escape or a canvas click clears. Subgraphs
+  (`subgraph … end`) render as dashed accent plates with a mono uppercase
+  label, and tracing a node also lights the cluster that contains it. HTML
+  labels are padded after render so long names are not clipped by the
+  `foreignObject` viewport. Authors only write plain Mermaid — the component
+  supplies frame, sizing, strokes, cluster styling and trace.
 - `js/search.js` `createSearch()` indexes tutorials only (per design decision —
   papers have their own hub-local search box in `papers.js`).
 - `js/effects.js` is the shared delight layer (`showToast`, `flash`,
@@ -164,19 +179,22 @@ consistent output.
   "id": "deploying",
   "title": "Deploying a Static Site",
   "description": "Ship your site to any static host in under five minutes.",
-  "category": "General",
+  "category": "Foundations",
   "subtopic": "Hosting",
   "difficulty": "Beginner",
   "tags": ["DevOps"],
   "featured": false,
+  "readingTime": 5,
   "updated": "2026-08-08",
   "file": "tutorials/deploying.md"
 }
 ```
 
 Optional: `subtopic` (sidebar subgroups), `tags` (keywords searchable from the
-palette — not rendered as chips), `featured` (reserved; homepage has no
-spotlight band anymore), `updated` (chip). Entry order in the JSON sets
+palette — not rendered as chips), `featured` (fallback pick), `readingTime`
+(precomputed minutes; keeps the homepage from fetching Markdown), `updated`
+(chip). `category`
+must match a `name` in `data/tracks.json`. Entry order in the JSON sets
 prev/next navigation.
 
 ### Adding a paper
@@ -203,9 +221,35 @@ prev/next navigation.
 - **Math** — LaTeX with `$…$` (inline) / `$$…$$` (display); rendered by KaTeX
   on paper pages only. Avoid stray `_` underlines inside `$…$` (marked parses
   emphasis before KaTeX; single `_` is safe, pairs are not).
-- **Mermaid diagrams** — a fenced block tagged `mermaid` renders a themed
-  diagram (flowchart/sequence/etc.) on tutorial and paper pages; re-renders
-  automatically on theme toggle. Uses Mermaid v11 from CDN.
+- **Mermaid diagrams** — a fenced block tagged `mermaid` renders through the
+  Diagram Kit (`css/diagram.css` + `js/diagram.js`). It is themed
+  from the global tokens, fills the article width, and re-renders on theme
+  toggle. Uses Mermaid v11 from CDN.
+
+  Keep the same shape language everywhere so diagrams read as one system:
+
+  | Shape | Mermaid | Use for |
+  | --- | --- | --- |
+  | Parallelogram | `[/Label/]` | inputs and outputs (documents, questions, answers) |
+  | Rounded rect | `(Label)` | processing steps (chunk, embed, assemble) |
+  | Cylinder | `[(Label)]` | stores (vector store, cache, database) |
+  | Hexagon | `{{Label}}` | retrieval / search |
+  | Circle | `((Label))` | models (LLM) |
+
+  Flow top-down (`graph TD`). Wrap labels longer than ~9 characters onto two
+  lines with `<br/>` so the canvas stays narrow and the boxes stay chunky.
+  Avoid stadium `([ ])` (huge path data) and diamond `{ }` (very tall node).
+  For training or agent loops, close the cycle with a dashed back edge
+  (`U -.->|repeat| F`) rather than long-range backward edges across a stack —
+  Mermaid draws the latter as cramped local loops.
+
+  The component also picks the orientation. It renders the diagram as written;
+  if the result would be squeezed at the canvas width, it tries the
+  perpendicular direction and keeps whichever stays legible, so chains and
+  pipelines settle vertical while wide fan-outs settle horizontal. Force it
+  with a comment on the first line: `%% direction: TD`, `LR`, or `keep`
+  (default is `auto`).
+
 - **Quizzes** — a fenced block tagged `quiz` holding JSON renders an interactive
   "check yourself" card; a first-try perfect score awards XP + the
   Perfectionist badge:
@@ -233,6 +277,10 @@ prev/next navigation.
 - Keep parity: new pages reuse existing classes/layout so geometry matches
   (`paper-shell` overrides the 2-column `.page-shell` grid for the no-sidebar
   paper reader).
+- Reader pages set `body.reader`: `.page-shell` narrows the tutorial tree to
+  208px and `.tutorial-body` uses a 200px TOC rail, giving a ~640px article.
+  Mermaid flowcharts cap at `--diagram-max-width` (360px) and wrap long labels
+  onto two lines, so the shapes stay chunky without stretching the canvas.
 - Content `id`s are slugs; page lookups use `?id=` query params.
 
 ## Verification checklist before shipping a change
@@ -247,6 +295,8 @@ prev/next navigation.
 
 Done:
 
+- [x] Compact homepage: masthead + search, Learn/Papers/Continue modules, and
+      a paginated `browse.html` catalogue
 - [x] Card-grid homepage: minimal text-only hero (Inter-bold, shimmer accent),
       "summoned" content — slow staggered scroll-reveals (`js/reveal.js`),
       topic/level chips + search (tags included in search matches), easter eggs
@@ -266,6 +316,8 @@ Done:
       ring + Nest panel, read checkmarks, shared effects layer (`effects.js`),
       inline quizzes, and k-mentor personas — `progress.js`/`badges.js`/
       `quiz.js`/`effects.js`
+- [x] AI-Assisted Coding track: vibe coding vs. engineering, AGENTS.md, context
+      engineering, spec-driven development, and MCP — five sourced tutorials
 
 Planned / ideas:
 

@@ -8,7 +8,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/markdown.css" />
@@ -26,26 +26,9 @@
         DocNest
       </a>
       <nav class="nav-actions" aria-label="Primary">
-        <a class="nav-link" href="#learning-paths">Learning Paths</a>
+        <a class="nav-link" href="browse.html">Learn</a>
         <a class="nav-link" href="papers.html">Papers</a>
         <a class="nav-link" href="annotate.html">Annotate</a>
-        <div class="search-wrap" id="search-wrap">
-          <div class="search-input-group">
-            <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-              <circle cx="7" cy="7" r="5" />
-              <path d="M11 11L14.5 14.5" stroke-linecap="round" />
-            </svg>
-            <input
-              type="search"
-              id="search-input"
-              placeholder="Search a topic…"
-              aria-label="Search tutorials"
-              autocomplete="off"
-            />
-            <span class="kbd-hint" aria-hidden="true">/</span>
-          </div>
-          <div class="search-dropdown" id="search-dropdown" role="listbox" aria-label="Search results"></div>
-        </div>
         <button
           type="button"
           class="theme-toggle"
@@ -66,29 +49,54 @@
   </header>
 
   <main id="main-content">
-    <section class="hero hero--home">
-      <p class="eyebrow" data-reveal style="--reveal-delay: 40ms">Nest · Explore · Level up</p>
-      <h1 class="hero-title" data-reveal style="--reveal-delay: 80ms">A nest for your<br /><span class="accent">AI curiosity</span></h1>
-      <p class="hero-subtitle" data-reveal style="--reveal-delay: 200ms">
-        Beginner-friendly docs across Python, ML fundamentals, LLMs, and agents —
-        pick a tutorial and start nesting.
-      </p>
-      <div class="hero-actions" data-reveal style="--reveal-delay: 340ms">
-        <a class="btn btn-primary" href="#tutorial-grid">Browse tutorials</a>
+    <section class="masthead">
+      <p class="eyebrow masthead-eyebrow">Study notes · 2026</p>
+      <h1 class="masthead-title">
+        A field guide to <span class="accent">AI</span>.
+      </h1>
+
+      <div class="search-wrap masthead-search" id="search-wrap">
+        <div class="search-input-group">
+          <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="7" cy="7" r="5" />
+            <path d="M11 11L14.5 14.5" stroke-linecap="round" />
+          </svg>
+          <input
+            type="search"
+            id="search-input"
+            placeholder="Search tutorials…"
+            aria-label="Search tutorials"
+            autocomplete="off"
+          />
+          <span class="kbd-hint" aria-hidden="true">/</span>
+        </div>
+        <div class="search-dropdown" id="search-dropdown" role="listbox" aria-label="Search results"></div>
       </div>
     </section>
 
-    <div class="home-content">
-      <div class="grid-heading" id="learning-paths" data-reveal>
-        <div>
-          <h2 class="grid-title">Tutorials</h2>
-          <p class="grid-subtitle">All tutorials across every topic, subject, and level.</p>
-        </div>
-        <p class="grid-results" id="grid-results" aria-live="polite"></p>
-      </div>
+    <div class="modules">
+      <section class="module" aria-labelledby="module-learn">
+        <header class="module-head">
+          <h2 class="module-title" id="module-learn">Learn</h2>
+          <a class="module-more" href="browse.html">All <span id="browse-all-count"></span> →</a>
+        </header>
+        <div class="module-list" id="track-index"></div>
+      </section>
 
-      <div class="path-filters" id="path-filters" hidden data-reveal></div>
-      <div class="tutorial-grid" id="tutorial-grid"></div>
+      <section class="module" aria-labelledby="module-papers">
+        <header class="module-head">
+          <h2 class="module-title" id="module-papers">Papers</h2>
+          <a class="module-more" href="papers.html">All papers →</a>
+        </header>
+        <div class="paper-topics" id="paper-topics"></div>
+      </section>
+
+      <section class="module" id="continue-module" aria-labelledby="module-continue" hidden>
+        <header class="module-head">
+          <h2 class="module-title" id="module-continue">Continue</h2>
+        </header>
+        <div class="module-list" id="continue-list"></div>
+      </section>
     </div>
   </main>
 
