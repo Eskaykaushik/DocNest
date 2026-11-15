@@ -131,6 +131,32 @@
     "file": "tutorials/function-calling.md"
   },
   {
+    "id": "structured-outputs",
+    "title": "Structured Outputs",
+    "description": "Schema-constrained generation, refusals, and the validation the schema cannot do for you — how to get typed objects instead of regex-parsed JSON.",
+    "category": "LLM Engineering",
+    "subtopic": "Structured Output",
+    "difficulty": "Intermediate",
+    "readingTime": 8,
+    "tags": ["Structured Output", "JSON Schema", "Reliability"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/structured-outputs.md"
+  },
+  {
+    "id": "reasoning-models",
+    "title": "Reasoning Models",
+    "description": "What reasoning tokens cost, how the effort dial works, and how to keep a model's thinking intact across tool calls and turns.",
+    "category": "LLM Engineering",
+    "subtopic": "Reasoning",
+    "difficulty": "Intermediate",
+    "readingTime": 8,
+    "tags": ["Reasoning", "Model Selection", "Cost"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/reasoning-models.md"
+  },
+  {
     "id": "vibe-coding",
     "title": "Vibe Coding vs. AI-Assisted Engineering",
     "description": "Where the term came from, why it is not a synonym for using AI to write software, and how to tell which mode you are in.",
@@ -222,6 +248,45 @@
     "file": "tutorials/langgraph.md"
   },
   {
+    "id": "agent-memory",
+    "title": "Agent Memory",
+    "description": "Thread state versus long-term memory: what to store, when to write it, how to retrieve on a token budget, and how not to leak it across users.",
+    "category": "Agents",
+    "subtopic": "Memory",
+    "difficulty": "Intermediate",
+    "readingTime": 8,
+    "tags": ["Agents", "Memory", "LangGraph"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/agent-memory.md"
+  },
+  {
+    "id": "multi-agent-orchestration",
+    "title": "Multi-Agent Orchestration",
+    "description": "When splitting an agent across context windows actually helps, the orchestration patterns worth using, and why coordination is where they fail.",
+    "category": "Agents",
+    "subtopic": "Orchestration",
+    "difficulty": "Advanced",
+    "readingTime": 8,
+    "tags": ["Agents", "Orchestration", "Architecture"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/multi-agent-orchestration.md"
+  },
+  {
+    "id": "agent-security",
+    "title": "Agent Security",
+    "description": "Prompt injection, the lethal trifecta, and the design patterns that bound what an agent can do once it has read untrusted content.",
+    "category": "Agents",
+    "subtopic": "Security",
+    "difficulty": "Intermediate",
+    "readingTime": 9,
+    "tags": ["Agents", "Security", "Prompt Injection"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/agent-security.md"
+  },
+  {
     "id": "agent-eval-techniques",
     "title": "Agent Evaluation Techniques",
     "description": "From golden datasets to LLM-as-judge — how to systematically measure whether an agent actually works, and catch regressions.",
@@ -285,5 +350,18 @@
     "featured": false,
     "updated": "2026-08-08",
     "file": "tutorials/serving-llm-apps.md"
+  },
+  {
+    "id": "llm-observability",
+    "title": "LLM Observability",
+    "description": "Traces, spans, GenAI semantic conventions, sampling, and redaction — how to debug a bad answer instead of guessing at the prompt.",
+    "category": "Evaluation & Production",
+    "subtopic": "Observability",
+    "difficulty": "Intermediate",
+    "readingTime": 8,
+    "tags": ["Observability", "Tracing", "Production"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/llm-observability.md"
   }
 ]

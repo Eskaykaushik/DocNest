@@ -332,6 +332,9 @@ Done:
       `quiz.js`/`effects.js`
 - [x] AI-Assisted Coding track: vibe coding vs. engineering, AGENTS.md, context
       engineering, spec-driven development, and MCP — five sourced tutorials
+- [x] Agents and reliability expansion: agent memory, multi-agent orchestration,
+      agent security, structured outputs, reasoning models, and LLM
+      observability — six sourced tutorials
 
 Planned / ideas:
 
