@@ -283,12 +283,13 @@ async function captureDiagrams(articleEl) {
 
   const root = document.documentElement;
   const previous = root.dataset.theme;
+  const previousSkin = root.dataset.skin;
   const needsLight = previous !== "light";
+  const needsPaper = Boolean(previousSkin) && previousSkin !== "paper";
 
-  if (needsLight) {
-    root.dataset.theme = "light";
-    await wait(900);
-  }
+  if (needsLight) root.dataset.theme = "light";
+  if (needsPaper) root.dataset.skin = "paper";
+  if (needsLight || needsPaper) await wait(900);
 
   const images = [];
   try {
@@ -306,6 +307,7 @@ async function captureDiagrams(articleEl) {
     }
   } finally {
     if (needsLight) root.dataset.theme = previous;
+    if (needsPaper) root.dataset.skin = previousSkin;
   }
 
   return images;

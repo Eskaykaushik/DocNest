@@ -1,0 +1,232 @@
+/* ==========================================================================
+   DocNest — skins.css
+   The skin layer. Two orthogonal axes:
+
+     data-theme="light|dark"   colour temperature (theme.js)
+     data-skin="paper|doodle"  visual language  (skin.js)
+
+   A skin may only override tokens from the component contract in style.css.
+   Structural rules live in the last section and must stay scoped to
+   [data-skin="…"] so the default skin is never touched.
+
+   Adding a skin: write a token block here, then register it in js/skin.js.
+   ========================================================================== */
+
+/* --------------------------------------------------------------------- */
+/* Doodle — shared tokens (type, geometry, strokes)                       */
+/* --------------------------------------------------------------------- */
+
+[data-skin="doodle"] {
+  --font-display: "Caveat", "Bradley Hand", "Segoe Print", cursive;
+  --font-ui: "Nunito", "Trebuchet MS", -apple-system, sans-serif;
+
+  --card-bg: var(--color-surface);
+  --card-border: 2px solid var(--color-text);
+  --card-radius: 18px 6px 16px 8px / 8px 16px 6px 18px;
+  --card-shadow: 3px 3px 0 var(--color-border);
+  --card-hover-shadow: 5px 5px 0 var(--color-accent-border);
+  --card-hover-lift: -2px;
+
+  --btn-bg: transparent;
+  --btn-border: 2px solid var(--color-text);
+  --btn-radius: 12px 4px 10px 5px / 5px 10px 4px 12px;
+  --btn-shadow: 2px 2px 0 var(--color-border);
+
+  --control-bg: var(--color-surface);
+  --control-border: 1.5px solid var(--color-text);
+  --control-radius: 10px 3px 9px 4px / 4px 9px 3px 10px;
+  --control-shadow: 2px 2px 0 var(--color-border);
+
+  --chip-bg: var(--color-bg);
+  --chip-border: 1.5px solid var(--color-text);
+  --chip-radius: 10px 3px 9px 4px / 4px 9px 3px 10px;
+
+  --field-bg: var(--color-bg);
+  --field-border: 1.5px solid var(--color-text);
+  --field-radius: 14px 5px 12px 6px / 6px 12px 5px 14px;
+
+  --plate-bg: var(--color-surface);
+  --plate-border: 1.5px solid var(--color-text);
+  --plate-radius: 14px 5px 12px 6px / 6px 12px 5px 14px;
+
+  --code-radius: 12px 4px 10px 5px / 5px 10px 4px 12px;
+  --code-border: 1.5px solid var(--color-text);
+
+  --heading-font: var(--font-display);
+  --heading-weight: 600;
+  --heading-tracking: 0;
+
+  --diagram-node-stroke: 2.2px;
+  --diagram-edge-stroke: 2px;
+  --diagram-self-stroke: 3px;
+  --diagram-lit-stroke: 3.2px;
+
+  --shadow-sm: 2px 2px 0 var(--color-border);
+  --shadow-md: 4px 4px 0 var(--color-border);
+  --shadow-glow: 4px 4px 0 var(--color-accent-border);
+
+  --chart-1: #2f5aa8;
+  --chart-2: #c0392b;
+  --chart-3: #3f7d3a;
+  --chart-4: #b8742a;
+  --chart-5: #6b4c9a;
+  --chart-6: #2f7d7a;
+  --chart-7: #8a5a2b;
+  --chart-8: #6a6357;
+}
+
+/* Doodle · whiteboard */
+
+[data-theme="light"][data-skin="doodle"] {
+  --color-bg: #fbfaf6;
+  --color-surface: #f2efe4;
+  --color-surface-hover: #e8e4d6;
+  --color-border: #c7bfae;
+  --color-text: #24211c;
+  --color-muted: #6a6357;
+  --color-accent: #b8442a;
+  --color-accent-strong: #d15a38;
+  --color-accent-soft: rgba(184, 68, 42, 0.1);
+  --color-accent-border: rgba(184, 68, 42, 0.38);
+  --color-accent-border-strong: rgba(184, 68, 42, 0.65);
+  --color-accent-glow: rgba(184, 68, 42, 0.35);
+  --color-danger: #c02a2a;
+  --color-danger-soft: rgba(192, 42, 42, 0.12);
+  --color-danger-border: rgba(192, 42, 42, 0.4);
+  --color-warning: #a86a00;
+  --color-warning-soft: rgba(168, 106, 0, 0.12);
+  --color-warning-border: rgba(168, 106, 0, 0.5);
+  --color-success: #2f7d3a;
+  --color-success-soft: rgba(47, 125, 58, 0.12);
+  --color-success-border: rgba(47, 125, 58, 0.4);
+  --color-overlay: rgba(36, 33, 28, 0.4);
+  --color-scrollbar-thumb: #d3cbb9;
+  --color-scrollbar-thumb-hover: #b9b09c;
+
+  --nav-bg: rgba(251, 250, 246, 0.92);
+  --code-bg: #1f2422;
+  --code-header-bg: #171b19;
+  --code-text: #ece5d7;
+  --code-inline-text: #8a3d12;
+
+  --doodle-grid: rgba(36, 33, 28, 0.055);
+  --diagram-cluster-bg: #e8e4d6;
+  --diagram-cluster-border: rgba(184, 68, 42, 0.38);
+}
+
+/* Doodle · chalkboard */
+
+[data-theme="dark"][data-skin="doodle"] {
+  --color-bg: #1b201d;
+  --color-surface: #232a26;
+  --color-surface-hover: #2b332e;
+  --color-border: #46504a;
+  --color-text: #eae7dc;
+  --color-muted: #a2a89e;
+  --color-accent: #e98a63;
+  --color-accent-strong: #f2a682;
+  --color-accent-soft: rgba(233, 138, 99, 0.14);
+  --color-accent-border: rgba(233, 138, 99, 0.42);
+  --color-accent-border-strong: rgba(233, 138, 99, 0.7);
+  --color-accent-glow: rgba(233, 138, 99, 0.4);
+  --color-danger: #f0736b;
+  --color-danger-soft: rgba(240, 115, 107, 0.14);
+  --color-danger-border: rgba(240, 115, 107, 0.4);
+  --color-warning: #e0b357;
+  --color-warning-soft: rgba(224, 179, 87, 0.14);
+  --color-warning-border: rgba(224, 179, 87, 0.5);
+  --color-success: #6fbf7d;
+  --color-success-soft: rgba(111, 191, 125, 0.14);
+  --color-success-border: rgba(111, 191, 125, 0.4);
+  --color-overlay: rgba(0, 0, 0, 0.55);
+  --color-scrollbar-thumb: #3a443e;
+  --color-scrollbar-thumb-hover: #4d5952;
+
+  --nav-bg: rgba(27, 32, 29, 0.92);
+  --code-bg: #101412;
+  --code-header-bg: #151a17;
+  --code-text: #eae7dc;
+  --code-inline-text: #f2a682;
+
+  --doodle-grid: rgba(234, 231, 220, 0.06);
+  --diagram-cluster-bg: #2b332e;
+  --diagram-cluster-border: rgba(233, 138, 99, 0.4);
+}
+
+/* --------------------------------------------------------------------- */
+/* Doodle — structural rules (texture and motion, not tokens)             */
+/* --------------------------------------------------------------------- */
+
+[data-skin="doodle"] body {
+  background-image:
+    linear-gradient(var(--doodle-grid, transparent) 1px, transparent 1px),
+    linear-gradient(90deg, var(--doodle-grid, transparent) 1px, transparent 1px);
+  background-size: 26px 26px;
+  background-attachment: fixed;
+}
+
+[data-skin="doodle"] .navbar {
+  border-bottom: 2px solid var(--color-text);
+}
+
+[data-skin="doodle"] .markdown-content h1,
+[data-skin="doodle"] .markdown-content h2,
+[data-skin="doodle"] .markdown-content h3,
+[data-skin="doodle"] .markdown-content h4,
+[data-skin="doodle"] .tutorial-title,
+[data-skin="doodle"] .browse-title,
+[data-skin="doodle"] .masthead-title,
+[data-skin="doodle"] .grid-title,
+[data-skin="doodle"] .related-title {
+  font-family: var(--heading-font);
+  font-weight: var(--heading-weight);
+  letter-spacing: var(--heading-tracking);
+}
+
+[data-skin="doodle"] .markdown-content h2 {
+  border-top: 2px dashed var(--color-border);
+}
+
+[data-skin="doodle"] .markdown-content .callout {
+  border-left-width: 5px;
+  rotate: -0.3deg;
+}
+
+[data-skin="doodle"] .markdown-content .code-block {
+  box-shadow: 3px 3px 0 var(--color-border);
+}
+
+[data-skin="doodle"] .tutorial-card,
+[data-skin="doodle"] .related-card {
+  rotate: -0.4deg;
+}
+
+[data-skin="doodle"] .tutorial-card:nth-child(2n),
+[data-skin="doodle"] .related-card:nth-child(2n) {
+  rotate: 0.5deg;
+}
+
+[data-skin="doodle"] .mermaid-diagram g.node .label-container,
+[data-skin="doodle"] .mermaid-diagram path.flowchart-link {
+  filter: url(#dn-wobble);
+}
+
+[data-skin="doodle"] .btn-primary {
+  background: var(--color-text);
+  color: var(--color-bg);
+  border-color: var(--color-text);
+}
+
+[data-skin="doodle"] .btn-primary:hover {
+  background: var(--color-accent);
+  border-color: var(--color-accent);
+  color: var(--color-bg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-skin="doodle"] .markdown-content .callout,
+  [data-skin="doodle"] .tutorial-card,
+  [data-skin="doodle"] .related-card {
+    rotate: 0deg;
+  }
+}

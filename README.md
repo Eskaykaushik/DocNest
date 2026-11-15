@@ -48,6 +48,11 @@ get a fast, searchable docs site — no build step, no framework, no backend.
   in dark, `#fff` + `#0969da` in light), all-Inter typography, JetBrains Mono for
   code; navbar toggle sits rightmost in the nav and its icon color reflects the
   current mode; OS-preference following.
+- **Skins** — a visual language layer orthogonal to light/dark. The default
+  `paper` skin is the original look; `doodle` is a hand-drawn whiteboard in
+  light mode and a chalkboard in dark mode (graph-paper ground, marker inks,
+  Caveat headings, wobbly borders, sketch shadows). Reach it from the pen
+  button in the navbar or `?skin=doodle`; the choice persists.
 - **Research-papers library** — a dedicated `papers.html` hub + `paper.html` reader for
   reading landmark AI papers as tutorials: paper header with authors/venue/year, arXiv
   and code links, one-click citation, TL;DR callouts, LaTeX math via KaTeX, related
@@ -77,6 +82,7 @@ DocNest/
 │   ├── markdown.css        Typography and rendering rules for parsed Markdown
 │   ├── diagram.css         Diagram Kit: plate, canvas cap, shape strokes, cluster plates, trace states
 │   ├── portal.css          Portal components: sidebar, palette, card grid, tabs, papers
+│   ├── skins.css           Skin layer: doodle token blocks + scoped texture rules
 │   └── annotate.css        Annotate workspace: toolbar, page rail, stage, print rules
 │
 ├── js/
@@ -97,7 +103,8 @@ DocNest/
 │   ├── badges.js            Badge definitions + unlock predicates
 │   ├── effects.js           Shared toasts, particle bursts, confetti, flashes
 │   ├── pen.js               Global presentation pen overlay (all reader pages)
-│   ├── theme.js             Dark/light theme manager + navbar toggle
+│   ├── theme.js             Appearance boot: dark/light + skin attribute before paint
+│   ├── skin.js              Skin registry, toggle button, persistence, change events
 │   ├── reveal.js            IntersectionObserver "summon" reveal system (homepage)
 │   ├── easter.js            Homepage easter eggs (brand ×5, docnest, search, Konami, …)
 │   └── utils.js             Shared helpers (reading time, slugify, fetch wrappers…)

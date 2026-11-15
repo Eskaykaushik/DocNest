@@ -58,6 +58,7 @@ css/style.css          Layout, navbar, cards, buttons, theme tokens (dark + ligh
 css/markdown.css       Typography + rules for parsed Markdown
 css/diagram.css        Diagram Kit: framed plate, canvas sizing, shape strokes, cluster plates, trace states
 css/portal.css         Portal components: sidebar, palette, grids, chips, papers, chat
+css/skins.css          Skin layer: token overrides + scoped texture rules
 css/annotate.css       Annotate workspace: topbar, toolbars, page rail, stage, print rules
 
 js/app.js              Homepage controller (tracks, paper topics, continue)
@@ -77,7 +78,8 @@ js/markdown.js         marked.js + highlight.js wrapper; code tabs, callouts, qu
 js/diagram.js          Diagram Kit: Mermaid render + theming + auto-orientation + click-to-trace
 js/quiz.js             Inline "check yourself" quizzes built from ```quiz fences
 js/chat.js             k-mentor chat widget + persona selector
-js/theme.js            Dark/light theme manager (localStorage "docnest.theme")
+js/theme.js            Appearance boot: theme + skin attributes before first paint
+js/skin.js             Skin registry, navbar toggle, persistence, change events
 js/reveal.js           IntersectionObserver "summon" reveal system (homepage only)
 js/easter.js           Homepage easter eggs (logo ×5, "docnest", search wink, Konami, …)
 js/effects.js          Shared delight layer: toasts, particles, confetti, flash
@@ -123,7 +125,7 @@ Key shared modules:
   and `initMath` (KaTeX auto-render, scoped to the article element).
 - `js/diagram.js` is the Diagram Kit. `initDiagrams(container)` renders
   every `.mermaid-diagram`, pulls its Mermaid theme from the global CSS tokens
-  (`--color-*`, `--chart-*`), and re-renders on theme toggles.
+  (`--color-*`, `--chart-*`), and re-renders on theme or skin toggles.
   `initDiagramInteractions(container)` then post-processes rendered flowcharts:
   clicking a box lights it, its edges, and its direct neighbours while dimming
   the rest; Enter/Space toggles, Escape or a canvas click clears. Subgraphs
@@ -147,6 +149,58 @@ Key shared modules:
   `evaluateBadges`); `js/progress.js` owns persistence/unlocking.
 - `js/quiz.js` `initQuizzes(container, {onPerfect})` builds quizzes from
   ```quiz fences; call it after `renderMarkdown` on the reader pages.
+
+## Skins and the component contract
+
+Appearance has two orthogonal axes:
+
+- `data-theme="light|dark"` — colour temperature. Booted by `js/theme.js` in
+  `<head>`, before first paint.
+- `data-skin="paper|doodle"` — visual language. Also booted by `theme.js`
+  (from `?skin=` or `localStorage`), then owned by `js/skin.js`.
+
+Keeping them separate matters: `js/draw.js` and `js/annotate.js` branch on
+`dataset.theme === "light"`, so a third theme value would silently land in the
+dark branch. A skin never touches that code.
+
+**The contract.** Every visual primitive is a component token, declared once in
+`:root` in `css/style.css`. Components consume the token; skins override the
+token. Never restyle a component inside a skin block.
+
+| Group | Tokens |
+| --- | --- |
+| Card | `--card-bg`, `--card-border`, `--card-radius`, `--card-shadow`, `--card-hover-shadow`, `--card-hover-lift` |
+| Button | `--btn-bg`, `--btn-border`, `--btn-radius`, `--btn-shadow` |
+| Icon control | `--control-bg`, `--control-border`, `--control-radius`, `--control-shadow` |
+| Chip | `--chip-bg`, `--chip-border`, `--chip-radius` |
+| Field | `--field-bg`, `--field-border`, `--field-radius` |
+| Plate (callout, diagram, table, panel) | `--plate-bg`, `--plate-border`, `--plate-radius` |
+| Code | `--code-border`, `--code-radius` |
+| Type | `--heading-font`, `--heading-weight`, `--heading-tracking` |
+
+`--card-radius` is a single value, so a skin can pass the asymmetric
+hand-drawn form (`18px 6px 16px 8px / 8px 16px 6px 18px`) without new rules.
+
+**Adding a skin**
+
+1. Add a `[data-skin="<id>"]` token block in `css/skins.css`. Theme-specific
+   colours go in `[data-theme="light"][data-skin="<id>"]` and
+   `[data-theme="dark"][data-skin="<id>"]`; everything else (type, geometry,
+   strokes) goes in the base block.
+2. Register it in `js/skin.js` (`registerSkin({ id, label, icon })`). The
+   toggle cycles through registry order.
+3. Structural rules that tokens cannot express (texture, rotation, SVG
+   filters) go at the bottom of `skins.css`, scoped to `[data-skin="<id>"]`.
+   Guard motion with `prefers-reduced-motion`.
+
+`js/skin.js` also exports `setSkin`, `getSkin`, `cycleSkin`, `listSkins` and
+`onSkinChange`, and dispatches `docnest:skinchange` on `document` — the
+Diagram Kit listens to the attribute directly.
+
+The `doodle` skin is the worked example: `Caveat` + `Nunito` (added to the
+existing Google Fonts request, same CDN), graph-paper ground, marker palette,
+sketch shadows, and a `feTurbulence` displacement filter (`#dn-wobble`,
+injected by `skin.js`) applied only to diagram strokes so labels stay crisp.
 
 The annotate workspace is its own three-module stack, isolated from the
 render/reader code:
@@ -303,6 +357,8 @@ prev/next navigation.
 - Serve + headless-Chrome dump: all new pages render, no console errors.
   (favicon.ico 404 is pre-existing and expected.)
 - Check dark **and** light theme (toggle → `data-theme="light"`, body bg flips).
+- Check both skins (`?skin=doodle` and the navbar pen toggle): `data-skin`
+  flips, the skin persists on reload, and the default paper skin is unchanged.
 - Check mobile breakpoint if layout shifts matter (< 1025px sidebar drawer).
 
 ## Roadmap
@@ -337,6 +393,8 @@ Done:
       observability — six sourced tutorials
 - [x] AI System Design track: a design method plus support-assistant and
       batch-enrichment case studies
+- [x] Skin system: component token contract + `data-skin` registry, with a
+      doodle/whiteboard skin (chalkboard in dark) across the reader pages
 
 Planned / ideas:
 

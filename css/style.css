@@ -121,6 +121,45 @@
   --chart-6: #b06a3c;
   --chart-7: #f0936b;
   --chart-8: #9a8f7e;
+
+  /* Component contract — skins override these tokens, never the rules that
+     consume them. Keep every visual primitive listed here so a new skin is a
+     token block plus a registry entry. */
+  --card-bg: transparent;
+  --card-border: 1px solid var(--color-border);
+  --card-radius: var(--radius-sm);
+  --card-shadow: none;
+  --card-hover-shadow: var(--shadow-glow);
+  --card-hover-lift: -3px;
+
+  --btn-bg: transparent;
+  --btn-border: 1px solid var(--color-border);
+  --btn-radius: var(--radius-sm);
+  --btn-shadow: none;
+
+  --control-bg: var(--color-surface);
+  --control-border: 1px solid var(--color-border);
+  --control-radius: var(--radius-sm);
+  --control-shadow: none;
+
+  --chip-bg: var(--color-surface);
+  --chip-border: 1px solid var(--color-border);
+  --chip-radius: var(--radius-pill);
+
+  --field-bg: var(--color-surface);
+  --field-border: 1px solid var(--color-border);
+  --field-radius: var(--radius-md);
+
+  --plate-bg: var(--color-surface);
+  --plate-border: 1px solid var(--color-border);
+  --plate-radius: var(--radius-md);
+
+  --code-radius: var(--radius-md);
+  --code-border: 1px solid var(--color-border);
+
+  --heading-font: var(--font-display);
+  --heading-weight: 400;
+  --heading-tracking: -0.015em;
 }
 
 /* Light theme — same token names, different color values. */
@@ -354,9 +393,10 @@ button {
   height: 36px;
   flex-shrink: 0;
   padding: 0;
-  border-radius: var(--radius-sm);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  border-radius: var(--control-radius);
+  background: var(--control-bg);
+  border: var(--control-border);
+  box-shadow: var(--control-shadow);
   color: var(--color-muted);
   cursor: pointer;
   transition: color var(--duration-fast) var(--ease),
@@ -400,6 +440,20 @@ button {
 
 .theme-toggle .moon-path {
   filter: drop-shadow(0 0 3px var(--color-accent-glow));
+}
+
+/* Skin toggle (paper ↔ doodle) */
+
+.skin-toggle .skin-icon-pen {
+  display: none;
+}
+
+[data-skin="doodle"] .skin-toggle .skin-icon-sheet {
+  display: none;
+}
+
+[data-skin="doodle"] .skin-toggle .skin-icon-pen {
+  display: block;
 }
 
 /* Theme switcher */
@@ -545,9 +599,9 @@ button {
   display: flex;
   align-items: center;
   gap: var(--space-5);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  background: var(--field-bg);
+  border: var(--field-border);
+  border-radius: var(--field-radius);
   padding: var(--space-5) var(--space-6);
   transition: border-color var(--duration-fast) var(--ease), box-shadow var(--duration-fast) var(--ease);
 }
@@ -585,7 +639,7 @@ button {
   min-width: 22px;
   height: 22px;
   padding: 0 var(--space-3);
-  border-radius: 5px;
+  border-radius: var(--control-radius);
   background: var(--color-bg);
   border: 1px solid var(--color-border);
   color: var(--color-muted);
@@ -717,10 +771,10 @@ button {
   gap: var(--space-3);
   font-size: var(--text-md);
   color: var(--color-muted);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  background: var(--chip-bg);
+  border: var(--chip-border);
   padding: 5px var(--space-6);
-  border-radius: var(--radius-pill);
+  border-radius: var(--chip-radius);
 }
 
 .meta-chip svg {

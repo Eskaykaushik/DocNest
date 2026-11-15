@@ -61,7 +61,7 @@ function mermaidConfig() {
     securityLevel: "loose",
     theme: "base",
     themeVariables: themeVariables(),
-    fontFamily: "Inter, ui-sans-serif, system-ui, sans-serif",
+    fontFamily: token("--font-ui", "Inter, ui-sans-serif, system-ui, sans-serif"),
     flowchart: {
       nodeSpacing: 26,
       rankSpacing: 18,
@@ -194,7 +194,7 @@ function watchTheme() {
 
   new MutationObserver(() => {
     schedule(Array.from(document.querySelectorAll(SELECTOR)), document);
-  }).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+  }).observe(root, { attributes: true, attributeFilter: ["data-theme", "data-skin"] });
 }
 
 export function initDiagrams(container = document) {

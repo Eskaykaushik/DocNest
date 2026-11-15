@@ -156,8 +156,8 @@
 .markdown-content .table-wrap {
   overflow-x: auto;
   margin: 0 0 22px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border: var(--plate-border);
+  border-radius: var(--plate-radius);
 }
 
 .markdown-content table {
@@ -208,8 +208,8 @@
 .markdown-content .code-block {
   position: relative;
   margin: 0 0 22px;
-  border: 1px solid var(--color-border);
-  border-radius: var(--radius-md);
+  border: var(--code-border);
+  border-radius: var(--code-radius);
   overflow: hidden;
   background: var(--code-bg);
 }

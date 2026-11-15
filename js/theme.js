@@ -12,6 +12,8 @@
 
 (function () {
   const STORAGE_KEY = "docnest.theme";
+  const SKIN_KEY = "docnest.skin";
+  const DEFAULT_SKIN = "paper";
   const root = document.documentElement;
 
   const STORAGE_UNAVAILABLE = Symbol("storage-unavailable");
@@ -63,6 +65,34 @@
     apply(next, true); // explicit choice → persist
   }
 
+  function initialSkin() {
+    let param = null;
+    try {
+      param = new URLSearchParams(window.location.search).get("skin");
+    } catch {
+      param = null;
+    }
+    if (param && /^[a-z0-9-]+$/.test(param)) {
+      try {
+        localStorage.setItem(SKIN_KEY, param);
+      } catch {
+        /* storage unavailable */
+      }
+      return param;
+    }
+    try {
+      const stored = localStorage.getItem(SKIN_KEY);
+      if (stored && /^[a-z0-9-]+$/.test(stored)) return stored;
+    } catch {
+      /* storage unavailable */
+    }
+    return DEFAULT_SKIN;
+  }
+
+  function applySkin(skin) {
+    root.setAttribute("data-skin", skin);
+  }
+
   // A user clicking the toggle overrides the OS preference from then on.
   document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-theme-toggle]");
@@ -81,6 +111,11 @@
   else if (media.addListener) media.addListener(onSystemChange);
 
   apply(currentTheme(), false);
+
+  // Skin boots here too, before first paint. Any slug is accepted so a skin
+  // can be added without touching this file; js/skin.js validates against the
+  // registry and falls back to the default.
+  applySkin(initialSkin());
 
   // The toggle button lives in <body>, which parses after theme.js runs in
   // <head>. Re-sync the icon state once the DOM is available.
