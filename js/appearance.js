@@ -1,11 +1,15 @@
 /* Appearance control — one dropdown for both axes: skin × theme.
-   The pre-paint attributes are set by js/theme.js; this module owns the UI,
-   persistence and change events. Adding a skin or theme = one entry below. */
+   js/theme.js sets the pre-paint attributes; this module owns the UI,
+   persistence, the diagram wobble filter, and reconciles the attributes with
+   the saved choice if the boot script was stale or blocked. Adding a skin or
+   theme = one entry below. */
 
 const SKIN_KEY = "docnest.skin";
 const THEME_KEY = "docnest.theme";
 const DEFAULT_SKIN = "doodle";
 const DEFAULT_THEME = "dark";
+const FILTER_ID = "dn-wobble";
+const DEFS_ID = "dn-skin-defs";
 
 export const SKINS = [
   { id: "doodle", label: "Doodle" },
@@ -21,13 +25,31 @@ let select = null;
 let observer = null;
 
 export function getAppearance() {
-  const root = document.documentElement;
-  const skin = root.dataset.skin;
-  const theme = root.dataset.theme;
-  return {
-    skin: skin || DEFAULT_SKIN,
-    theme: THEMES.some((item) => item.id === theme) ? theme : DEFAULT_THEME,
-  };
+  return { skin: resolveSkin(), theme: resolveTheme() };
+}
+
+function storedValue(key) {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+function resolveSkin() {
+  const attr = document.documentElement.dataset.skin;
+  if (SKINS.some((item) => item.id === attr)) return attr;
+  const saved = storedValue(SKIN_KEY);
+  if (SKINS.some((item) => item.id === saved)) return saved;
+  return DEFAULT_SKIN;
+}
+
+function resolveTheme() {
+  const attr = document.documentElement.dataset.theme;
+  if (THEMES.some((item) => item.id === attr)) return attr;
+  const saved = storedValue(THEME_KEY);
+  if (THEMES.some((item) => item.id === saved)) return saved;
+  return DEFAULT_THEME;
 }
 
 export function setAppearance({ skin, theme } = {}, { persist = true } = {}) {
@@ -38,6 +60,8 @@ export function setAppearance({ skin, theme } = {}, { persist = true } = {}) {
 
   root.dataset.skin = nextSkin;
   root.dataset.theme = nextTheme;
+
+  if (nextSkin === "doodle") ensureFilter();
 
   if (persist) {
     try {
@@ -55,6 +79,18 @@ export function setAppearance({ skin, theme } = {}, { persist = true } = {}) {
     }),
   );
   return { skin: nextSkin, theme: nextTheme };
+}
+
+function ensureFilter() {
+  if (document.getElementById(DEFS_ID)) return;
+  const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+  svg.id = DEFS_ID;
+  svg.setAttribute("aria-hidden", "true");
+  svg.setAttribute("width", "0");
+  svg.setAttribute("height", "0");
+  svg.style.position = "absolute";
+  svg.innerHTML = `<defs><filter id="${FILTER_ID}" x="-12%" y="-12%" width="124%" height="124%"><feTurbulence type="fractalNoise" baseFrequency="0.022" numOctaves="1" seed="7" result="noise"/><feDisplacementMap in="SourceGraphic" in2="noise" scale="1.6" xChannelSelector="R" yChannelSelector="G"/></filter></defs>`;
+  document.body.appendChild(svg);
 }
 
 function optionValue(skin, theme) {
@@ -108,6 +144,15 @@ export function initAppearance() {
 
   const nav = document.querySelector(".nav-actions");
   if (!nav) return getAppearance();
+
+  // Reconcile the root attributes with the saved choice before drawing the
+  // control. js/theme.js normally does this before first paint; this keeps the
+  // page and the dropdown in agreement if that script was cached or blocked.
+  const root = document.documentElement;
+  const appearance = getAppearance();
+  if (root.dataset.skin !== appearance.skin) root.dataset.skin = appearance.skin;
+  if (root.dataset.theme !== appearance.theme) root.dataset.theme = appearance.theme;
+  if (appearance.skin === "doodle") ensureFilter();
 
   const control = buildSelect();
   select = control.querySelector("select");
