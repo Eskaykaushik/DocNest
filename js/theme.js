@@ -13,7 +13,7 @@
 (function () {
   const STORAGE_KEY = "docnest.theme";
   const SKIN_KEY = "docnest.skin";
-  const DEFAULT_SKIN = "paper";
+  const DEFAULT_SKIN = "doodle";
   const root = document.documentElement;
 
   const STORAGE_UNAVAILABLE = Symbol("storage-unavailable");
@@ -65,13 +65,16 @@
     apply(next, true); // explicit choice → persist
   }
 
-  function initialSkin() {
-    let param = null;
+  function urlParam(name) {
     try {
-      param = new URLSearchParams(window.location.search).get("skin");
+      return new URLSearchParams(window.location.search).get(name);
     } catch {
-      param = null;
+      return null;
     }
+  }
+
+  function initialSkin() {
+    const param = urlParam("skin");
     if (param && /^[a-z0-9-]+$/.test(param)) {
       try {
         localStorage.setItem(SKIN_KEY, param);
@@ -110,11 +113,21 @@
   if (media.addEventListener) media.addEventListener("change", onSystemChange);
   else if (media.addListener) media.addListener(onSystemChange);
 
-  apply(currentTheme(), false);
+  const themeParam = urlParam("theme");
+  if (themeParam === "light" || themeParam === "dark") {
+    try {
+      localStorage.setItem(STORAGE_KEY, themeParam);
+    } catch {
+      /* storage unavailable */
+    }
+    apply(themeParam, false);
+  } else {
+    apply(currentTheme(), false);
+  }
 
   // Skin boots here too, before first paint. Any slug is accepted so a skin
-  // can be added without touching this file; js/skin.js validates against the
-  // registry and falls back to the default.
+  // can be added without touching this file; js/appearance.js validates
+  // against the registry and falls back to the default.
   applySkin(initialSkin());
 
   // The toggle button lives in <body>, which parses after theme.js runs in

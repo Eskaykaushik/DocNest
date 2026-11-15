@@ -79,7 +79,7 @@ js/diagram.js          Diagram Kit: Mermaid render + theming + auto-orientation 
 js/quiz.js             Inline "check yourself" quizzes built from ```quiz fences
 js/chat.js             k-mentor chat widget + persona selector
 js/theme.js            Appearance boot: theme + skin attributes before first paint
-js/skin.js             Skin registry, navbar toggle, persistence, change events
+js/appearance.js       Skin × theme dropdown, registry, persistence, change events
 js/reveal.js           IntersectionObserver "summon" reveal system (homepage only)
 js/easter.js           Homepage easter eggs (logo ×5, "docnest", search wink, Konami, …)
 js/effects.js          Shared delight layer: toasts, particles, confetti, flash
@@ -157,7 +157,14 @@ Appearance has two orthogonal axes:
 - `data-theme="light|dark"` — colour temperature. Booted by `js/theme.js` in
   `<head>`, before first paint.
 - `data-skin="paper|doodle"` — visual language. Also booted by `theme.js`
-  (from `?skin=` or `localStorage`), then owned by `js/skin.js`.
+  (from `?skin=` or `localStorage`), then owned by `js/appearance.js`.
+
+One control sets both: the navbar `<select>` lists every skin × theme pair
+(`Doodle · Light`, `Doodle · Dark`, `Paper · Light`, `Paper · Dark`). Doodle is
+the default skin; light/dark still follows the OS until the reader picks a
+pair, after which both values persist in `localStorage`. Below 700px the
+control collapses to a 38px icon so the navbar still fits at 390px; the native
+menu keeps every pair. Annotate is excluded — it keeps its own theme toggle.
 
 Keeping them separate matters: `js/draw.js` and `js/annotate.js` branch on
 `dataset.theme === "light"`, so a third theme value would silently land in the
@@ -187,20 +194,21 @@ hand-drawn form (`18px 6px 16px 8px / 8px 16px 6px 18px`) without new rules.
    colours go in `[data-theme="light"][data-skin="<id>"]` and
    `[data-theme="dark"][data-skin="<id>"]`; everything else (type, geometry,
    strokes) goes in the base block.
-2. Register it in `js/skin.js` (`registerSkin({ id, label, icon })`). The
-   toggle cycles through registry order.
+2. Register it in `js/appearance.js` (`SKINS`). The dropdown is generated from
+   `SKINS × THEMES`, so a new skin appears in every theme automatically.
 3. Structural rules that tokens cannot express (texture, rotation, SVG
    filters) go at the bottom of `skins.css`, scoped to `[data-skin="<id>"]`.
    Guard motion with `prefers-reduced-motion`.
 
-`js/skin.js` also exports `setSkin`, `getSkin`, `cycleSkin`, `listSkins` and
-`onSkinChange`, and dispatches `docnest:skinchange` on `document` — the
-Diagram Kit listens to the attribute directly.
+`js/appearance.js` exports `getAppearance`, `setAppearance`, `SKINS` and
+`THEMES`, and dispatches `docnest:appearancechange` on `document` — the
+Diagram Kit listens to the root attributes directly.
 
 The `doodle` skin is the worked example: `Caveat` + `Nunito` (added to the
 existing Google Fonts request, same CDN), graph-paper ground, marker palette,
 sketch shadows, and a `feTurbulence` displacement filter (`#dn-wobble`,
-injected by `skin.js`) applied only to diagram strokes so labels stay crisp.
+injected by `appearance.js`) applied only to diagram strokes so labels stay
+crisp.
 
 The annotate workspace is its own three-module stack, isolated from the
 render/reader code:
@@ -357,8 +365,9 @@ prev/next navigation.
 - Serve + headless-Chrome dump: all new pages render, no console errors.
   (favicon.ico 404 is pre-existing and expected.)
 - Check dark **and** light theme (toggle → `data-theme="light"`, body bg flips).
-- Check both skins (`?skin=doodle` and the navbar pen toggle): `data-skin`
-  flips, the skin persists on reload, and the default paper skin is unchanged.
+- Check every skin × theme pair from the navbar dropdown (`?skin=…&theme=…`
+  also works): attributes flip, the pair persists on reload, and paper stays
+  visually identical to the original site.
 - Check mobile breakpoint if layout shifts matter (< 1025px sidebar drawer).
 
 ## Roadmap

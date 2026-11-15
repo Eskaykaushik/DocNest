@@ -442,73 +442,86 @@ button {
   filter: drop-shadow(0 0 3px var(--color-accent-glow));
 }
 
-/* Skin toggle (paper ↔ doodle) */
+/* Appearance control (skin × theme dropdown) */
 
-.skin-toggle .skin-icon-pen {
-  display: none;
-}
-
-[data-skin="doodle"] .skin-toggle .skin-icon-sheet {
-  display: none;
-}
-
-[data-skin="doodle"] .skin-toggle .skin-icon-pen {
-  display: block;
-}
-
-/* Theme switcher */
-
-.theme-switcher-wrap {
+.appearance-control {
   display: inline-flex;
   align-items: center;
-  gap: var(--space-3);
-  font-family: var(--font-mono);
+  flex-shrink: 0;
 }
 
-.theme-switcher-label {
-  font-size: var(--text-2xs);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--color-muted);
+.appearance-control::after {
+  content: "";
+  width: 6px;
+  height: 6px;
+  margin-left: -17px;
+  border-right: 1.5px solid var(--color-muted);
+  border-bottom: 1.5px solid var(--color-muted);
+  transform: translateY(-2px) rotate(45deg);
+  pointer-events: none;
 }
 
-.theme-switcher {
+.appearance-select {
   appearance: none;
   -webkit-appearance: none;
-  width: 132px;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border);
+  min-width: 140px;
+  background-color: var(--control-bg);
+  border: var(--control-border);
+  border-radius: var(--control-radius);
+  box-shadow: var(--control-shadow);
   color: var(--color-text);
-  font-family: var(--font-mono);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: var(--space-3) 26px var(--space-3) var(--space-5);
-  border-radius: var(--radius-sm);
+  font-family: var(--font-ui);
+  font-size: var(--text-md);
+  font-weight: 600;
+  padding: 7px 28px 7px var(--space-6);
   cursor: pointer;
   outline: none;
   transition: border-color var(--duration-fast) var(--ease),
-    box-shadow var(--duration-fast) var(--ease),
-    background var(--duration-fast) var(--ease);
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='9' height='6' fill='none' stroke='%235c6a75' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1l3.5 4 3.5-4'/%3E%3C/svg%3E");
-  background-repeat: no-repeat;
-  background-position: right 7px center;
+    box-shadow var(--duration-fast) var(--ease);
 }
 
-.theme-switcher::-webkit-calendar-picker-interface {
-  opacity: 0;
-}
-
-.theme-switcher:focus {
+.appearance-select:hover {
   border-color: var(--color-accent);
-  box-shadow: var(--shadow-glow);
 }
 
-.theme-switcher:hover {
-  border-color: var(--color-accent-border);
-  background: var(--color-surface-hover);
+.appearance-select:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+/* Below ~700px the full label does not fit next to the brand and search, so
+   the control collapses to an icon. The native menu still shows every pair. */
+
+@media (max-width: 700px) {
+  .appearance-control {
+    position: relative;
+    width: 38px;
+    height: 36px;
+    justify-content: center;
+  }
+
+  .appearance-select {
+    width: 38px;
+    min-width: 38px;
+    height: 36px;
+    padding: 0;
+    color: transparent;
+  }
+
+  .appearance-control::after {
+    display: none;
+  }
+
+  .appearance-control::before {
+    content: "";
+    position: absolute;
+    width: 17px;
+    height: 17px;
+    background-color: var(--color-text);
+    -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='9' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M12 3a9 9 0 0 1 0 18z'/%3E%3C/svg%3E") center / contain no-repeat;
+    mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='9' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M12 3a9 9 0 0 1 0 18z'/%3E%3C/svg%3E") center / contain no-repeat;
+    pointer-events: none;
+  }
 }
 
 /* Navbar search */
