@@ -160,9 +160,11 @@ Appearance has two orthogonal axes:
   (from `?skin=` or `localStorage`), then owned by `js/appearance.js`.
 
 One control sets both: the navbar `<select>` lists every skin × theme pair
-(`Doodle · Light`, `Doodle · Dark`, `Paper · Light`, `Paper · Dark`). Doodle is
-the default skin; light/dark still follows the OS until the reader picks a
-pair, after which both values persist in `localStorage`. Below 700px the
+(`Doodle · Light`, `Doodle · Dark`, `Paper · Light`, `Paper · Dark`). The
+default appearance is **Doodle · Dark** for every visitor — `js/theme.js`
+pins `DEFAULT_SKIN = "doodle"` and `DEFAULT_THEME = "dark"` and no longer
+consults `prefers-color-scheme`. Once the reader picks a pair, both values
+persist in `localStorage` and win on every later visit. Below 700px the
 control collapses to a 38px icon so the navbar still fits at 390px; the native
 menu keeps every pair. Annotate is excluded — it keeps its own theme toggle.
 
@@ -380,7 +382,7 @@ Done:
       "summoned" content — slow staggered scroll-reveals (`js/reveal.js`),
       topic/level chips + search (tags included in search matches), easter eggs
       (`js/easter.js`)
-- [x] Dark + light themes with navbar toggle + OS preference following
+- [x] Dark + light themes with a skin × theme dropdown (default Doodle · Dark)
 - [x] Tagging (`tags` / `featured` fields)
 - [x] Research-papers library (papers.json, hub + reader, 10 papers: Attention,
       RAG, Chain-of-Thought, ReAct, BERT, GPT-3, InstructGPT, LoRA,

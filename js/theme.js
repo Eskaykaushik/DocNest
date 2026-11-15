@@ -1,19 +1,20 @@
 /**
  * theme.js
  * Minimal theme manager. Resolves the effective theme from localStorage
- * (explicit choice) → prefers-color-scheme (OS preference), applies it to
+ * (explicit choice) → the built-in default (dark), applies it to
  * <html data-theme>, and wires the navbar toggle button (sun/moon icon).
  *
  * Loaded as a regular (non-module) script in <head> so it runs before the
  * page paints, avoiding a flash of the wrong theme. localStorage is only
- * written when the user explicitly toggles — otherwise the theme follows
- * the OS live.
+ * written when the user explicitly picks a pair — otherwise the default
+ * Doodle · Dark look is used.
  */
 
 (function () {
   const STORAGE_KEY = "docnest.theme";
   const SKIN_KEY = "docnest.skin";
   const DEFAULT_SKIN = "doodle";
+  const DEFAULT_THEME = "dark";
   const root = document.documentElement;
 
   const STORAGE_UNAVAILABLE = Symbol("storage-unavailable");
@@ -31,13 +32,9 @@
     return stored === "light" || stored === "dark";
   }
 
-  function systemPrefersLight() {
-    return window.matchMedia("(prefers-color-scheme: light)").matches;
-  }
-
   function currentTheme() {
     if (hasExplicitChoice()) return readStored();
-    return systemPrefersLight() ? "light" : "dark";
+    return DEFAULT_THEME;
   }
 
   function apply(theme, persist) {
@@ -96,22 +93,13 @@
     root.setAttribute("data-skin", skin);
   }
 
-  // A user clicking the toggle overrides the OS preference from then on.
+  // A user clicking the toggle overrides the default from then on.
   document.addEventListener("click", (event) => {
     const button = event.target.closest("[data-theme-toggle]");
     if (!button) return;
     event.preventDefault();
     toggle();
   });
-
-  // Keep the theme live when the OS preference changes, unless the user has
-  // made an explicit choice that should win.
-  const media = window.matchMedia("(prefers-color-scheme: light)");
-  const onSystemChange = () => {
-    if (!hasExplicitChoice()) apply(systemPrefersLight() ? "light" : "dark", false);
-  };
-  if (media.addEventListener) media.addEventListener("change", onSystemChange);
-  else if (media.addListener) media.addListener(onSystemChange);
 
   const themeParam = urlParam("theme");
   if (themeParam === "light" || themeParam === "dark") {

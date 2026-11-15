@@ -5,7 +5,7 @@
 const SKIN_KEY = "docnest.skin";
 const THEME_KEY = "docnest.theme";
 const DEFAULT_SKIN = "doodle";
-const DEFAULT_THEME = "light";
+const DEFAULT_THEME = "dark";
 
 export const SKINS = [
   { id: "doodle", label: "Doodle" },
@@ -22,9 +22,11 @@ let observer = null;
 
 export function getAppearance() {
   const root = document.documentElement;
+  const skin = root.dataset.skin;
+  const theme = root.dataset.theme;
   return {
-    skin: root.dataset.skin || DEFAULT_SKIN,
-    theme: root.dataset.theme === "dark" ? "dark" : DEFAULT_THEME,
+    skin: skin || DEFAULT_SKIN,
+    theme: THEMES.some((item) => item.id === theme) ? theme : DEFAULT_THEME,
   };
 }
 

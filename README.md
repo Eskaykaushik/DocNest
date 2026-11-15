@@ -46,8 +46,8 @@ get a fast, searchable docs site — no build step, no framework, no backend.
   Engineer, Pirate, Haiku) from the chat header.
 - **Dark + light themes** — developer palette (near-black `#0d1117` + `#58a6ff`
   in dark, `#fff` + `#0969da` in light), all-Inter typography, JetBrains Mono for
-  code; navbar toggle sits rightmost in the nav and its icon color reflects the
-  current mode; OS-preference following.
+  code; the navbar appearance dropdown picks the pair and the default is
+  Doodle · Dark.
 - **Skins** — a visual language layer orthogonal to light/dark. The default
   `doodle` skin is a hand-drawn whiteboard in light mode and a chalkboard in
   dark mode (graph-paper ground, marker inks, Caveat headings, wobbly borders,
