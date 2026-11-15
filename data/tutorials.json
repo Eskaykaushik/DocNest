@@ -363,5 +363,44 @@
     "featured": false,
     "updated": "2026-11-15",
     "file": "tutorials/llm-observability.md"
+  },
+  {
+    "id": "system-design-method",
+    "title": "Designing an AI System",
+    "description": "A method for choosing the shape: workload archetypes, four budgets, failure paths, cost arithmetic, and a one-page design doc.",
+    "category": "AI System Design",
+    "subtopic": "Method",
+    "difficulty": "Intermediate",
+    "readingTime": 11,
+    "tags": ["System Design", "Architecture", "Cost"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/system-design-method.md"
+  },
+  {
+    "id": "design-support-agent",
+    "title": "Case Study: The Support Assistant",
+    "description": "A router, retrieval, read-only tools, and drafted refunds — designing support automation that resolves instead of deflecting.",
+    "category": "AI System Design",
+    "subtopic": "Case Studies",
+    "difficulty": "Advanced",
+    "readingTime": 9,
+    "tags": ["System Design", "Support", "Agents"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/design-support-agent.md"
+  },
+  {
+    "id": "design-batch-pipeline",
+    "title": "Case Study: Batch Enrichment",
+    "description": "Two million records and nobody waiting: batch pricing, idempotent stages, schema validation, and a nightly quality sample.",
+    "category": "AI System Design",
+    "subtopic": "Case Studies",
+    "difficulty": "Intermediate",
+    "readingTime": 10,
+    "tags": ["System Design", "Batch", "Data"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/design-batch-pipeline.md"
   }
 ]

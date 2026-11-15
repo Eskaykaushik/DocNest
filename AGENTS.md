@@ -335,6 +335,8 @@ Done:
 - [x] Agents and reliability expansion: agent memory, multi-agent orchestration,
       agent security, structured outputs, reasoning models, and LLM
       observability — six sourced tutorials
+- [x] AI System Design track: a design method plus support-assistant and
+      batch-enrichment case studies
 
 Planned / ideas:
 

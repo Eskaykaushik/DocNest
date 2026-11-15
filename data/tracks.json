@@ -28,5 +28,11 @@
     "name": "Evaluation & Production",
     "description": "Keep it honest.",
     "order": 5
+  },
+  {
+    "id": "system-design",
+    "name": "AI System Design",
+    "description": "Pick the shape before the model.",
+    "order": 6
   }
 ]
