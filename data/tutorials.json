@@ -402,5 +402,18 @@
     "featured": false,
     "updated": "2026-11-15",
     "file": "tutorials/design-batch-pipeline.md"
+  },
+  {
+    "id": "design-coding-agent",
+    "title": "Case Study: A Personal Coding Agent",
+    "description": "Designing a terminal coding agent for one user: a minimal toolset, just-in-time context, permission gates, checkpoints, and tests as ground truth.",
+    "category": "AI System Design",
+    "subtopic": "Case Studies",
+    "difficulty": "Advanced",
+    "readingTime": 12,
+    "tags": ["System Design", "Coding Agents", "Developer Tools"],
+    "featured": false,
+    "updated": "2026-11-15",
+    "file": "tutorials/design-coding-agent.md"
   }
 ]
