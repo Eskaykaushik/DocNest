@@ -8,11 +8,12 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400..700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Nunito:wght@400;500;600;700&display=swap" rel="stylesheet" />
 
   <link rel="stylesheet" href="css/style.css" />
   <link rel="stylesheet" href="css/markdown.css" />
   <link rel="stylesheet" href="css/portal.css" />
+  <link rel="stylesheet" href="css/skins.css" />
   <link rel="stylesheet" href="css/annotate.css" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css" />
   <script src="js/theme.js"></script>
@@ -30,21 +31,23 @@
         <a class="nav-link" href="browse.html">Learn</a>
         <a class="nav-link" href="papers.html">Papers</a>
         <a class="nav-link" href="annotate.html" aria-current="page">Annotate</a>
-        <button
-          type="button"
-          class="theme-toggle"
-          data-theme-toggle
-          aria-label="Switch theme"
-          aria-pressed="false"
-        >
-          <svg data-theme-icon="sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <circle class="sun-path" cx="12" cy="12" r="4" />
-            <path class="sun-path" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
-          </svg>
-          <svg data-theme-icon="moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path class="moon-path" d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
-          </svg>
-        </button>
+        <div class="search-wrap" id="search-wrap">
+          <div class="search-input-group">
+            <svg class="search-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="7" cy="7" r="5" />
+              <path d="M11 11L14.5 14.5" stroke-linecap="round" />
+            </svg>
+            <input
+              type="search"
+              id="search-input"
+              placeholder="Search a topic…"
+              aria-label="Search tutorials"
+              autocomplete="off"
+            />
+            <span class="kbd-hint" aria-hidden="true">/</span>
+          </div>
+          <div class="search-dropdown" id="search-dropdown" role="listbox" aria-label="Search results"></div>
+        </div>
       </nav>
     </div>
   </header>
@@ -285,6 +288,8 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
   <script type="module" src="js/annotate.js"></script>
+  <script type="module" src="js/appearance.js"></script>
+  <script type="module" src="js/progress.js"></script>
   <script type="module" src="js/chat.js"></script>
   <script type="module" src="js/nav.js"></script>
 </body>

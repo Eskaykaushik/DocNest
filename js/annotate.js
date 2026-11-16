@@ -1,6 +1,7 @@
 import { createSurface, flattenPage, clamp, paperPalette } from "./draw.js";
 import * as store from "./annotator-store.js";
-import { getQueryParam, formatDate, escapeHtml, debounce } from "./utils.js";
+import { getQueryParam, formatDate, escapeHtml, debounce, fetchJson } from "./utils.js";
+import { createSearch, toPaperIndex } from "./search.js";
 
 const PDF_LIB = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js";
 const PDF_WORKER = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
@@ -68,6 +69,20 @@ const state = {
 
 let surface = null;
 let toastTimer = 0;
+
+const search = createSearch();
+
+async function initNavSearch() {
+  try {
+    const [tutorials, papers] = await Promise.all([
+      fetchJson("data/tutorials.json"),
+      fetchJson("data/papers.json"),
+    ]);
+    search?.setIndex([...tutorials, ...toPaperIndex(papers)]);
+  } catch {
+    return;
+  }
+}
 
 function uid(prefix) {
   return `${prefix}${Date.now().toString(36)}${Math.random().toString(36).slice(2, 7)}`;
@@ -792,6 +807,7 @@ function init() {
   buildToolbar();
   wireEvents();
   applyThemeInk();
+  initNavSearch();
   const themeObserver = new MutationObserver(applyThemeInk);
   themeObserver.observe(document.documentElement, {
     attributes: true,

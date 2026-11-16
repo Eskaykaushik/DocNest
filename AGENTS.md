@@ -16,8 +16,8 @@ Two content libraries, same chrome:
   paper header, KaTeX math, citation). Papers are real papers written as
   tutorials: TL;DR, problem, key idea, math, code, takeaways, cite-this.
 
-Plus a full-site **k-mentor chat** widget (all four pages) and a **dark/light
-theme** toggle.
+Plus a full-site **k-mentor chat** widget (every page) and a **skin × theme
+appearance dropdown**.
 
 ## Commands
 
@@ -167,8 +167,8 @@ pins `DEFAULT_SKIN = "paper"` and `DEFAULT_THEME = "dark"` and no longer
 consults `prefers-color-scheme`. Once the reader picks a pair, both values
 persist in `localStorage` and win on every later visit. Below 900px the
 control collapses to a 38px icon so the navbar still fits next to the links
-and search; the native menu keeps every pair. Annotate is excluded — it keeps
-its own theme toggle.
+and search; the native menu keeps every pair. The annotate workspace loads the
+same control, so one saved pair applies everywhere.
 
 Keeping them separate matters: `js/draw.js` and `js/annotate.js` branch on
 `dataset.theme === "light"`, so a third theme value would silently land in the
@@ -215,7 +215,8 @@ injected by `appearance.js`) applied only to diagram strokes so labels stay
 crisp.
 
 The annotate workspace is its own three-module stack, isolated from the
-render/reader code:
+render/reader code, while sharing the navbar modules (`appearance.js`,
+`progress.js`, `nav.js`, `search.js`):
 
 - `js/draw.js` `createSurface({ canvas, stage, onBeforeChange, onChange, onTap,
   onZoom })` is the canvas ink engine. It owns two offscreen ink caches
@@ -263,8 +264,8 @@ the brand is the home link.
 
 `js/nav.js` clones the nav links into a hamburger menu at ≤560px, where the
 inline links are hidden and the level ring collapses into the menu's
-"Your nest" entry. `annotate.html` keeps its own theme toggle and omits the
-search/ring, but shares the same links, active state and mobile menu.
+"Your nest" entry. `annotate.html` loads the same search, appearance control,
+level ring and mobile menu as the reader pages.
 
 ## Content authoring conventions
 

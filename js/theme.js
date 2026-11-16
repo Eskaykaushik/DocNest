@@ -2,7 +2,8 @@
  * theme.js
  * Minimal theme manager. Resolves the effective theme from localStorage
  * (explicit choice) → the built-in default (dark), applies it to
- * <html data-theme>, and wires the navbar toggle button (sun/moon icon).
+ * <html data-theme>, and wires any [data-theme-toggle] button that is
+ * present (sun/moon icon).
  *
  * Loaded as a regular (non-module) script in <head> so it runs before the
  * page paints, avoiding a flash of the wrong theme. localStorage is only
