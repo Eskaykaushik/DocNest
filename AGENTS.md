@@ -80,6 +80,7 @@ js/quiz.js             Inline "check yourself" quizzes built from ```quiz fences
 js/chat.js             k-mentor chat widget + persona selector
 js/theme.js            Appearance boot: theme + skin attributes before first paint
 js/appearance.js       Skin × theme dropdown, registry, persistence, change events
+js/nav.js              Mobile navigation menu: clones the nav links + Nest entry below 560px
 js/reveal.js           IntersectionObserver "summon" reveal system (homepage only)
 js/easter.js           Homepage easter eggs (logo ×5, "docnest", search wink, Konami, …)
 js/effects.js          Shared delight layer: toasts, particles, confetti, flash
@@ -161,12 +162,13 @@ Appearance has two orthogonal axes:
 
 One control sets both: the navbar `<select>` lists every skin × theme pair
 (`Doodle · Light`, `Doodle · Dark`, `Paper · Light`, `Paper · Dark`). The
-default appearance is **Doodle · Dark** for every visitor — `js/theme.js`
-pins `DEFAULT_SKIN = "doodle"` and `DEFAULT_THEME = "dark"` and no longer
+default appearance is **Paper · Dark** for every visitor — `js/theme.js`
+pins `DEFAULT_SKIN = "paper"` and `DEFAULT_THEME = "dark"` and no longer
 consults `prefers-color-scheme`. Once the reader picks a pair, both values
-persist in `localStorage` and win on every later visit. Below 700px the
-control collapses to a 38px icon so the navbar still fits at 390px; the native
-menu keeps every pair. Annotate is excluded — it keeps its own theme toggle.
+persist in `localStorage` and win on every later visit. Below 900px the
+control collapses to a 38px icon so the navbar still fits next to the links
+and search; the native menu keeps every pair. Annotate is excluded — it keeps
+its own theme toggle.
 
 Keeping them separate matters: `js/draw.js` and `js/annotate.js` branch on
 `dataset.theme === "light"`, so a third theme value would silently land in the
@@ -244,6 +246,25 @@ the existing lines. The implementation lives in `js/draw.js` (theme palettes +
 `MutationObserver` repaint) and `js/annotate.js`/`css/annotate.css` (`--paper-bg`
 + default pen color per theme). Export/print use the light palette for
 consistent output.
+
+## Navbar contract
+
+Every page uses the same `<header class="navbar">` → `.navbar-inner` skeleton
+with the brand and `.nav-actions`. The action order is always
+**links → search → appearance → level ring → Nest panel**; `js/appearance.js`
+inserts the dropdown after the search and `js/progress.js` appends the ring
+and panel, so the order holds on pages without a navbar search too.
+
+Each page marks its own section with `aria-current="page"` on the matching
+link (Learn on browse/tutorial, Papers on papers/paper, Annotate on
+annotate). `.nav-link[aria-current="page"]` renders the active state with the
+surface background and an accent underline. The homepage marks nothing —
+the brand is the home link.
+
+`js/nav.js` clones the nav links into a hamburger menu at ≤560px, where the
+inline links are hidden and the level ring collapses into the menu's
+"Your nest" entry. `annotate.html` keeps its own theme toggle and omits the
+search/ring, but shares the same links, active state and mobile menu.
 
 ## Content authoring conventions
 
@@ -371,6 +392,9 @@ prev/next navigation.
   also works): attributes flip, the pair persists on reload, and paper stays
   visually identical to the original site.
 - Check mobile breakpoint if layout shifts matter (< 1025px sidebar drawer).
+- Check the navbar at 360/390/560/700/768/900px: no horizontal overflow, the
+  mobile menu opens with the four entries, and the active link matches the
+  page.
 
 ## Roadmap
 
@@ -382,7 +406,7 @@ Done:
       "summoned" content — slow staggered scroll-reveals (`js/reveal.js`),
       topic/level chips + search (tags included in search matches), easter eggs
       (`js/easter.js`)
-- [x] Dark + light themes with a skin × theme dropdown (default Doodle · Dark)
+- [x] Dark + light themes with a skin × theme dropdown (default Paper · Dark)
 - [x] Tagging (`tags` / `featured` fields)
 - [x] Research-papers library (papers.json, hub + reader, 10 papers: Attention,
       RAG, Chain-of-Thought, ReAct, BERT, GPT-3, InstructGPT, LoRA,

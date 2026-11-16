@@ -7,13 +7,13 @@
  * Loaded as a regular (non-module) script in <head> so it runs before the
  * page paints, avoiding a flash of the wrong theme. localStorage is only
  * written when the user explicitly picks a pair — otherwise the default
- * Doodle · Dark look is used.
+ * Paper · Dark look is used.
  */
 
 (function () {
   const STORAGE_KEY = "docnest.theme";
   const SKIN_KEY = "docnest.skin";
-  const DEFAULT_SKIN = "doodle";
+  const DEFAULT_SKIN = "paper";
   const DEFAULT_THEME = "dark";
   const root = document.documentElement;
 

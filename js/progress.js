@@ -328,9 +328,7 @@ export function initNestUI() {
   panelEl.setAttribute("aria-label", "Your nest");
   panelEl.hidden = true;
 
-  const searchWrap = nav.querySelector(".search-wrap");
-  if (searchWrap) nav.insertBefore(ringEl, searchWrap);
-  else nav.appendChild(ringEl);
+  nav.appendChild(ringEl);
   nav.appendChild(panelEl);
 
   ringEl.addEventListener("click", (event) => {

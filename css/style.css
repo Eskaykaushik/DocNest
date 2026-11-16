@@ -363,6 +363,7 @@ button {
   align-items: center;
   gap: var(--space-6);
   position: relative;
+  min-width: 0;
 }
 
 .nav-link {
@@ -381,6 +382,12 @@ button {
 .nav-link:hover {
   color: var(--color-text);
   background: var(--color-surface);
+}
+
+.nav-link[aria-current="page"] {
+  color: var(--color-text);
+  background: var(--color-surface);
+  box-shadow: inset 0 -2px 0 var(--color-accent);
 }
 
 /* Theme toggle */
@@ -445,6 +452,7 @@ button {
 /* Appearance control (skin × theme dropdown) */
 
 .appearance-control {
+  position: relative;
   display: inline-flex;
   align-items: center;
   flex-shrink: 0;
@@ -452,12 +460,14 @@ button {
 
 .appearance-control::after {
   content: "";
+  position: absolute;
+  top: 50%;
+  right: 12px;
   width: 6px;
   height: 6px;
-  margin-left: -17px;
   border-right: 1.5px solid var(--color-muted);
   border-bottom: 1.5px solid var(--color-muted);
-  transform: translateY(-2px) rotate(45deg);
+  transform: translateY(-65%) rotate(45deg);
   pointer-events: none;
 }
 
@@ -489,10 +499,11 @@ button {
   outline-offset: 2px;
 }
 
-/* Below ~700px the full label does not fit next to the brand and search, so
-   the control collapses to an icon. The native menu still shows every pair. */
+/* Below ~900px the full label does not fit next to the brand, links and
+   search, so the control collapses to an icon. The native menu still shows
+   every pair. */
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
   .appearance-control {
     position: relative;
     width: 38px;
@@ -522,6 +533,88 @@ button {
     mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='9' fill='none' stroke='%23000' stroke-width='2'/%3E%3Cpath d='M12 3a9 9 0 0 1 0 18z'/%3E%3C/svg%3E") center / contain no-repeat;
     pointer-events: none;
   }
+}
+
+/* Mobile navigation menu (links + Nest entry below the compact breakpoint) */
+
+.nav-menu {
+  display: none;
+  position: relative;
+}
+
+.nav-menu-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  padding: 0;
+  border-radius: var(--control-radius);
+  background: var(--control-bg);
+  border: var(--control-border);
+  box-shadow: var(--control-shadow);
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: color var(--duration-fast) var(--ease),
+    border-color var(--duration-fast) var(--ease);
+}
+
+.nav-menu-toggle:hover,
+.nav-menu-toggle[aria-expanded="true"] {
+  color: var(--color-text);
+  border-color: var(--color-accent);
+}
+
+.nav-menu-toggle svg {
+  width: 18px;
+  height: 18px;
+}
+
+.nav-menu-panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 0;
+  z-index: 92;
+  min-width: 184px;
+  padding: var(--space-3);
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  border: 1px solid var(--color-border);
+  box-shadow: var(--shadow-md);
+}
+
+.nav-menu-panel[hidden] {
+  display: none;
+}
+
+.nav-menu-link {
+  display: block;
+  width: 100%;
+  padding: 9px var(--space-6);
+  border-radius: var(--radius-sm);
+  color: var(--color-text);
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  font-weight: 500;
+  text-align: left;
+}
+
+.nav-menu-link:hover {
+  background: var(--color-bg);
+}
+
+.nav-menu-link[aria-current="page"] {
+  color: var(--color-accent);
+}
+
+.nav-menu-nest {
+  background: none;
+  border: none;
+  cursor: pointer;
 }
 
 /* Navbar search */
@@ -1077,9 +1170,23 @@ button {
   }
 }
 
-@media (max-width: 480px) {
+@media (max-width: 560px) {
   .nav-link {
     display: none;
+  }
+
+  .nav-menu {
+    display: inline-flex;
+  }
+
+  .nav-actions > .level-ring {
+    display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .navbar #search-input::placeholder {
+    color: transparent;
   }
 }
 

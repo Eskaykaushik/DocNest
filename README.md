@@ -47,8 +47,8 @@ get a fast, searchable docs site — no build step, no framework, no backend.
 - **Dark + light themes** — developer palette (near-black `#0d1117` + `#58a6ff`
   in dark, `#fff` + `#0969da` in light), all-Inter typography, JetBrains Mono for
   code; the navbar appearance dropdown picks the pair and the default is
-  Doodle · Dark.
-- **Skins** — a visual language layer orthogonal to light/dark. The default
+  Paper · Dark.
+- **Skins** — a visual language layer orthogonal to light/dark. The
   `doodle` skin is a hand-drawn whiteboard in light mode and a chalkboard in
   dark mode (graph-paper ground, marker inks, Caveat headings, wobbly borders,
   sketch shadows). One navbar dropdown picks any skin × theme pair; the choice
@@ -105,6 +105,7 @@ DocNest/
 │   ├── pen.js               Global presentation pen overlay (all reader pages)
 │   ├── theme.js             Appearance boot: dark/light + skin attribute before paint
 │   ├── appearance.js        Skin × theme dropdown, registry, persistence, change events
+│   ├── nav.js               Mobile navigation menu: links + Nest entry below 560px
 │   ├── reveal.js            IntersectionObserver "summon" reveal system (homepage)
 │   ├── easter.js            Homepage easter eggs (brand ×5, docnest, search, Konami, …)
 │   └── utils.js             Shared helpers (reading time, slugify, fetch wrappers…)

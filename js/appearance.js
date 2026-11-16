@@ -6,7 +6,7 @@
 
 const SKIN_KEY = "docnest.skin";
 const THEME_KEY = "docnest.theme";
-const DEFAULT_SKIN = "doodle";
+const DEFAULT_SKIN = "paper";
 const DEFAULT_THEME = "dark";
 const FILTER_ID = "dn-wobble";
 const DEFS_ID = "dn-skin-defs";
