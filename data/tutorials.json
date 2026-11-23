@@ -415,5 +415,44 @@
     "featured": false,
     "updated": "2026-11-15",
     "file": "tutorials/design-coding-agent.md"
+  },
+  {
+    "id": "hybrid-search-reranking",
+    "title": "Hybrid Search and Reranking",
+    "description": "BM25 plus dense retrieval, reciprocal rank fusion, and a cross-encoder reranker — how to get the right chunk into the model's context.",
+    "category": "LLM Engineering",
+    "subtopic": "Retrieval",
+    "difficulty": "Intermediate",
+    "readingTime": 9,
+    "tags": ["RAG", "Retrieval", "Search"],
+    "featured": false,
+    "updated": "2026-11-23",
+    "file": "tutorials/hybrid-search-reranking.md"
+  },
+  {
+    "id": "evaluating-rag",
+    "title": "Evaluating RAG Systems",
+    "description": "Measure retrieval and generation separately: context precision and recall, faithfulness, answer relevancy, and the unanswerable case.",
+    "category": "Evaluation & Production",
+    "subtopic": "Evals",
+    "difficulty": "Intermediate",
+    "readingTime": 9,
+    "tags": ["RAG", "Evals", "Retrieval"],
+    "featured": false,
+    "updated": "2026-11-23",
+    "file": "tutorials/evaluating-rag.md"
+  },
+  {
+    "id": "prompt-caching-economics",
+    "title": "Prompt Caching and Token Economics",
+    "description": "What prefix caching actually stores, where to place breakpoints, what invalidates a cache, and how to do the cost arithmetic across providers.",
+    "category": "LLM Engineering",
+    "subtopic": "Cost",
+    "difficulty": "Intermediate",
+    "readingTime": 8,
+    "tags": ["Cost", "Caching", "LLMs"],
+    "featured": false,
+    "updated": "2026-11-23",
+    "file": "tutorials/prompt-caching-economics.md"
   }
 ]
