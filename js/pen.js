@@ -1,8 +1,8 @@
 import { drawStroke } from "./draw.js";
 
-const PEN_HOLD_MS = 1600;
-const PEN_FADE_MS = 900;
-const LASER_TRAIL_MS = 650;
+const PEN_HOLD_MS = 3200;
+const PEN_FADE_MS = 1300;
+const LASER_TRAIL_MS = 900;
 const LASER_COLOR = "#ff3b30";
 const PEN_WIDTH = 3;
 const LASER_TIP_RADIUS = 5;
