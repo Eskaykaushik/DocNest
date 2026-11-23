@@ -142,6 +142,28 @@ The habit worth building: for anything you're going to run repeatedly and test (
 | Long reasoning appended to short answers | Chain-of-thought not scoped | Ask the model to do the reasoning then output only the final answer on its own line |
 | Strange answers when user input contains text like "ignore previous instructions" | Prompt injection | Delimit user data, label it as DATA, and never let it override system rules |
 
+## Worked example
+
+A support engineer needs bug reports labeled P0/P1/P2 for routing; the current prompt returns prose the router can't parse.
+
+**Input:** "Checkout returns 500 for all users in eu-west since 09:15; 340 failed payments."
+**Output:** before: "Sounds critical — probably P1?" → after: `{"severity": "P0", "reason": "all users blocked; 340 payments failed"}`
+
+```text
+BEFORE  "How bad is this bug? Checkout returns 500 for all users in eu-west
+         since 09:15; 340 failed payments."
+→       "Sounds critical — probably P1?"
+
+AFTER (system) "P0 = all users blocked or data loss; P1 = major feature broken
+                for some users; P2 = minor. Output only JSON with keys
+                severity and reason."
+AFTER (user)   "Checkout returns 500 for all users in eu-west since 09:15;
+                340 failed payments."
+→              {"severity": "P0", "reason": "all users blocked; 340 payments failed"}
+```
+
+The rewrite adds no cleverness — it states the output contract (task, format, constraints) and moves the severity definitions into the system message, so the router gets the same shape every time.
+
 ## Glossary (for quick reference)
 
 - **Token** — the unit a model processes text in; roughly a word fragment. Billing and context limits are counted in tokens.

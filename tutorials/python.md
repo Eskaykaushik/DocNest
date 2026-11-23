@@ -161,6 +161,29 @@ You don't need async for a simple learning script. But once you're building some
 | `RuntimeWarning: coroutine was never awaited` | Called an `async def` function without `await` | Add `await` before the call, or run it via `asyncio.run()` at the top level |
 | Program runs slower than expected despite using async | Awaited each call one at a time instead of using `asyncio.gather` | Use `asyncio.gather(...)` to run independent calls concurrently |
 
+## Worked example
+
+Mina is wiring a `lookup_user` tool for an agent; the CRM sometimes omits the optional `email` field.
+
+**Input:** `{"name": "Aisha", "age": 31}` — no `email` key.
+**Output:** `{'name': 'Aisha', 'age': 31, 'email': 'not provided'}` — no `KeyError`, and the hint still describes the shape.
+
+```python
+from typing import TypedDict
+
+class UserRecord(TypedDict):
+    name: str
+    age: int
+    email: str
+
+def normalize(crm: dict) -> UserRecord:
+    return {"name": crm["name"], "age": crm["age"], "email": crm.get("email", "not provided")}
+
+print(normalize({"name": "Aisha", "age": 31}))
+```
+
+The annotation tells the agent what to send; `.get()` keeps a missing field from breaking the tool call.
+
 ## Glossary (for quick reference)
 
 - **Type hint** — an annotation describing the expected type of a variable, argument, or return value.

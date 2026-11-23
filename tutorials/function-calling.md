@@ -160,6 +160,27 @@ messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
 | Results appear to belong to the wrong call | Mis-matched `tool_call_id` | Always echo `call.id` back in the matching `tool` message |
 | Function works in chat, never gets invoked by the model | Description doesn't say *when* to use it | Add a "Use when…" clause to the description |
 
+## Worked example
+
+An order-support assistant handles a customer asking about two orders at once; both lookups are requested in a single response.
+
+**Input:** "Where are orders DN-1042 and DN-1087?"
+**Output:** "DN-1042 shipped on 2026-11-21; DN-1087 is still packing." — after two parallel tool calls, `call_1a` and `call_2b`, fed back by id.
+
+```python
+def get_order_status(order_id):
+    status = "shipped" if order_id == "DN-1042" else "packing"
+    return json.dumps({"order": order_id, "status": status})
+
+messages = [{"role": "user", "content": "Where are orders DN-1042 and DN-1087?"}]
+response = client.chat.completions.create(model="gpt-4o-mini", messages=messages, tools=tools)
+for call in response.choices[0].message.tool_calls:
+    result = get_order_status(**json.loads(call.function.arguments))
+    messages.append({"role": "tool", "tool_call_id": call.id, "content": result})
+```
+
+Each result is tied to its request by `call.id`, not by array order — echo the wrong id and the model can attach "shipped" to the wrong order.
+
 ## Glossary (for quick reference)
 
 - **Function/tool calling** — the API pattern where a model requests a structured call to a user-provided function.

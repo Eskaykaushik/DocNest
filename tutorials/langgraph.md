@@ -180,6 +180,23 @@ Here, `route_after_research` can send execution *back* to `research_then_answer`
 | Wrong branch taken every time | Routing function has a bug, or the classification prompt isn't reliable | Print/log the state before the conditional edge to see what value it's actually routing on |
 | Node's changes don't show up in later nodes | Node returned the full state object instead of just the changed fields | Return a small dict with only the fields that changed |
 
+## Worked example
+
+A support bot receives "What's your refund policy?" and must decide whether to answer directly or run the slower research path.
+
+**Input:** `{"question": "What's your refund policy?", "category": "", "answer": ""}`
+**Output:** `classify` writes `category="simple"`, `route_after_classify` returns `"answer_directly"`, and the final state is `{"category": "simple", "answer": "Refunds are accepted within 30 days."}` before `END`.
+
+```python
+state = {"question": "What's your refund policy?", "category": "", "answer": ""}
+after_classify = {**state, **classify(state)}
+next_node = route_after_classify(after_classify)
+result = app.invoke(state)
+print(next_node, result["category"], result["answer"])
+```
+
+The transition is visible node by node: each step reads the shared state and returns only the field it changed.
+
 ## Glossary (for quick reference)
 
 - **State** — the shared data structure (usually a `TypedDict`) that flows through every node in the graph.

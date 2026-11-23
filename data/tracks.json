@@ -34,5 +34,11 @@
     "name": "AI System Design",
     "description": "Pick the shape before the model.",
     "order": 6
+  },
+  {
+    "id": "gate-ai-ds",
+    "name": "GATE AI & Data Science",
+    "description": "Study the syllabus, then practise the marks.",
+    "order": 7
   }
 ]

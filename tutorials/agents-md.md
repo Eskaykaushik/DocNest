@@ -129,6 +129,21 @@ A symlink works too, with two caveats from the docs: the Edit and Write tools re
 - Is anything in it only relevant to one directory? Move it.
 - Has anything become false since the last model upgrade?
 
+## Worked example
+
+Priya's agent has twice reported a billing change done without running the billing suite, so she adds one verifiable rule to `AGENTS.md`.
+
+**Input:** The two lines below, appended to the repo-root `AGENTS.md`.
+**Output:** Before — the agent edited `src/billing/invoice.ts` and said "done" after 0 test commands. After — it runs `pnpm test --filter billing` (14 tests, 1 failure in `proration.test.ts`) and fixes the regression before reporting.
+
+```markdown
+## Verification
+- After any change under `src/billing/`, run `pnpm test --filter billing` before reporting done.
+- Never run `pnpm db:reset`; the staging database is shared.
+```
+
+Both lines demand an observable action, which is why they earn space in the always-loaded file instead of a skill.
+
 ## Glossary
 
 - **AGENTS.md** — an open Markdown format for agent instructions, supported across coding tools.

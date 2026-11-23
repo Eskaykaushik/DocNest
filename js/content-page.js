@@ -23,13 +23,6 @@ export function metaChip(content, className = "") {
   return `<span class="meta-chip${className ? ` ${className}` : ""}">${content}</span>`;
 }
 
-export function clockIconSvg() {
-  return `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5" style="width:14px;height:14px;vertical-align:-2px;">
-    <circle cx="8" cy="8" r="6.25"/>
-    <path d="M8 4.5V8l2.5 1.5" stroke-linecap="round" stroke-linejoin="round"/>
-  </svg>`;
-}
-
 export class ContentPageController {
   constructor(options) {
     this.options = options;

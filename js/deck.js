@@ -488,7 +488,7 @@ function renderCover(slide, pptx, entry, meta) {
     fit: "shrink",
   });
   slide.addText(
-    `${entry.difficulty || "Tutorial"} · ${meta.readingTime} min read · ${meta.wordCount.toLocaleString()} words`,
+    `${entry.difficulty || "Tutorial"} · ${meta.wordCount.toLocaleString()} words`,
     {
       x: 0.9,
       y: 4.45,
@@ -814,7 +814,7 @@ function renderPlan(pptx, plan, entry, meta) {
   });
 }
 
-export async function buildDeck({ entry, articleEl, url, readingTime, wordCount }) {
+export async function buildDeck({ entry, articleEl, url, wordCount }) {
   const sections = collectSections(articleEl);
   const diagrams = await captureDiagrams(articleEl);
   const plan = planDeck(sections, diagrams);
@@ -828,7 +828,6 @@ export async function buildDeck({ entry, articleEl, url, readingTime, wordCount 
   pptx.subject = entry.description || "DocNest tutorial";
 
   renderPlan(pptx, plan, entry, {
-    readingTime,
     wordCount,
     url,
   });
@@ -842,7 +841,7 @@ export async function downloadDeck(options) {
   return slideCount;
 }
 
-export function initDeckButton({ button, entry, articleEl, url, readingTime, wordCount }) {
+export function initDeckButton({ button, entry, articleEl, url, wordCount }) {
   if (!button) return;
 
   const label = button.querySelector(".deck-label");
@@ -861,7 +860,6 @@ export function initDeckButton({ button, entry, articleEl, url, readingTime, wor
         entry,
         articleEl,
         url,
-        readingTime,
         wordCount,
       });
       showToast(`Deck downloaded — ${slideCount} slides`);

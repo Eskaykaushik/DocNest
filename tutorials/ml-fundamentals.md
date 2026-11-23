@@ -120,6 +120,30 @@ Start simple, get a number, then improve. Teams that skip step 3 often polish a 
 | Random results across runs | No fixed `random_state` | Set `random_state=42` on splits and models |
 | Model crashes on text/categorical data | Algorithms need numbers | Encode categories to numbers (e.g. one-hot encoding) |
 
+## Worked example
+
+A team is deciding how deep to make a tree classifier for 569 breast-cancer cases before shipping it.
+
+**Input:** `load_breast_cancer()` data, an 80/20 split with `random_state=42`, and `max_depth` of 2 versus 12.
+**Output:** Depth 2 → train 0.95 / test 0.93; depth 12 → train 1.00 / test 0.91 — the deeper tree is overfitting.
+
+```python
+from sklearn.datasets import load_breast_cancer
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier
+
+data = load_breast_cancer()
+X_train, X_test, y_train, y_test = train_test_split(
+    data.data, data.target, test_size=0.2, random_state=42
+)
+for depth in (2, 12):
+    model = DecisionTreeClassifier(max_depth=depth, random_state=42)
+    model.fit(X_train, y_train)
+    print(depth, model.score(X_train, y_train), model.score(X_test, y_test))
+```
+
+The widening train-versus-test gap is the overfitting signal — the same comparison the tutorial recommends for every model.
+
 ## Glossary (for quick reference)
 
 - **Feature (`X`)** — the input columns a model learns from.

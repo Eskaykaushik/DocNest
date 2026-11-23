@@ -103,6 +103,20 @@ When you talk to ChatGPT, you're using a decoder-only model: it writes one token
 | Why so many "heads"? | One perspective isn't enough | Each head learns a different relationship type |
 | Why residual connections? | Deep stacks are hard to train | Residues let gradients flow through the whole stack |
 
+## Worked example
+
+A product team needs one model for two features: ranking support tickets by topic, and drafting a reply to each ticket.
+
+**Input:** Task A — label 5,000 existing tickets as billing / shipping / other. Task B — write a new reply one token at a time, starting from the ticket text.
+**Output:** Task A → encoder (BERT); Task B → decoder (GPT). The decoder is not used for A, even though it can read text.
+
+- If the task needs one label from the whole input → bidirectional encoder: every token attends to every other token.
+- If the task must produce new text → causal decoder: token 12 can only attend to tokens 1–11.
+- If a decoder were used for Task A, later tokens could not inform earlier ones, so the label would lose context.
+- If the reply must quote the ticket, keep the ticket tokens in the decoder's context so attention can reach them directly.
+
+This is the encoder/decoder split from the tutorial: understanding uses the full input, generation stays left-to-right.
+
 ## Glossary (for quick reference)
 
 - **Self-attention** — every word attending to every other word in the same sequence.

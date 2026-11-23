@@ -202,6 +202,25 @@ A single table like this is worth more than a dashboard of disconnected averages
 }
 ```
 
+## Worked example
+
+A team swaps 512-token chunks for 256-token chunks and sees overall faithfulness rise from 0.81 to 0.83; they need to decide whether to promote it.
+
+**Input:** 120 cases — 80 English, 40 Spanish — with stored runs `v3-512` and `v4-256` and per-case `context_recall` and `faithfulness`.
+**Output:** English faithfulness 0.84→0.88, Spanish 0.74→0.62; Spanish recall 0.71→0.52, so promotion is blocked.
+
+```python
+def slice_delta(before, after, field, lang):
+    a = [r[field] for r in before if r["language"] == lang]
+    b = [r[field] for r in after if r["language"] == lang]
+    return round(sum(b) / len(b) - sum(a) / len(a), 3)
+
+recall_change = slice_delta(runs["v3-512"], runs["v4-256"], "context_recall", "es")
+promote = recall_change >= 0
+```
+
+The aggregate improvement hid a retrieval regression: smaller chunks pushed the Spanish evidence out of the top 5, so the fix belongs in retrieval, not the prompt.
+
 ## Glossary
 
 - **Context precision** — whether relevant chunks are ranked higher than irrelevant ones.

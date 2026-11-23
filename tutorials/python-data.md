@@ -123,6 +123,24 @@ Everything after this tutorial — training a model, evaluating it, building a n
 | Plot doesn't show in a notebook | `plt.show()` missing | Call `plt.show()` after building the figure |
 | Empty DataFrame after filtering | Column names don't match what you typed | `df.columns` and re-check spelling/case |
 
+## Worked example
+
+Ravi has a small `housing.csv` and needs only Bengaluru homes with at least three bedrooms and a known price.
+
+**Input:** Four rows — Bengaluru 3-bed at 950000, Bengaluru 2-bed at 700000, Mumbai 3-bed with a blank price, Bengaluru 3-bed at 880000.
+**Output:** Two rows: Bengaluru 950000 and Bengaluru 880000; the Mumbai row drops out when the blank price is removed.
+
+```python
+import pandas as pd
+
+df = pd.read_csv("housing.csv")
+clean = df.dropna(subset=["price"])
+result = clean[(clean["city"] == "Bengaluru") & (clean["bedrooms"] >= 3)]
+print(result[["city", "price"]].to_string(index=False))
+```
+
+The `&` combines two boolean Series row by row — the same vectorized idea as `prices * 0.9`, applied to a filter.
+
 ## Glossary (for quick reference)
 
 - **NumPy `ndarray`** — a fast, n-dimensional numeric array; the backbone of ML math.

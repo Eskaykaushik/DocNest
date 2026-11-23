@@ -173,6 +173,23 @@ This keeps expectations in sync with reality automatically and dramatically redu
 | Dataset grows forever without updating | Archival habit | Prune/rebalance on every feature change; check distribution quarterly |
 | Expectations drift from reality | Hard-coded expected answers | Derive expected values from the same sources the agent reads |
 
+## Worked example
+
+A support-agent owner in October 2026 wants the 18 failed queries from `logs_2026_10` to stop recurring, using the traffic-seeding pipeline from this tutorial.
+
+**Input:** 1,200 anonymized queries, 18 logged as `failed`; `export_traffic(logs_2026_10, sample=50)` yields 25 failure-bucket drafts.
+**Output:** Dataset grows from 30 to 42 cases with 12 promoted failures; offline pass rate drops from 78% to 74%, and those 12 bugs now have permanent guards.
+
+```python
+drafts = export_traffic(logs_2026_10, sample=50)
+failures = [d for d in drafts if d.notes == "From production log: failed"]
+golden_dataset.extend(failures[:12])
+print(f"Dataset: {len(golden_dataset)} cases, "
+      f"{sum(c.case_type == CaseType.TYPICAL for c in golden_dataset)} typical")
+```
+
+A lower score is the point: yesterday's production failures are now regression cases instead of anecdotes in a chat thread.
+
 ## Wrapping up
 
 The golden dataset is the layer everything else in the eval stack depends on. Getting it right is less about writing more questions and more about coverage across task types, tool routing, information states, and failure behavior — and about treating the dataset as a maintained, living artifact. In the next tutorial we'll look at the open-ended dimension that golden datasets and substring checks can't fully cover, and how LLM-as-judge fills that gap.

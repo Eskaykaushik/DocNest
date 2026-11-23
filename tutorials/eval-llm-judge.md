@@ -135,6 +135,23 @@ The cost asymmetry is the deciding factor: substring checks are near-free and de
 | Evals too expensive to run | Judge on every case | Use cheap checks first; judge only borderline / open-ended cases |
 | Judge praises hallucinated facts | No faithfulness criterion, no source given | Give the judge the tool trace and define faithfulness as traceability |
 
+## Worked example
+
+A support-agent team calibrates its judge on 40 human-labeled answers before letting it gate a prompt change, with 12 of those answers containing an invented stock reason.
+
+**Input:** `labeled_pairs` = 40 (question, answer, label) tuples; the original rubric has no anchored faithfulness score and the judge is called once per answer.
+**Output:** Agreement is 32/40 (80%) with 6 hallucinated answers wrongly judged PASS; after anchoring faithfulness and voting 3 times, agreement is 38/40 (95%) with only 2 misses.
+
+```python
+def calibrated_agreement(pairs, judge, n=3):
+    votes = [majority_verdict(judge, q, a, n) for q, a, _ in pairs]
+    return sum(v == label for v, (_, _, label) in zip(votes, pairs)) / len(pairs)
+
+print(f"Judge agreement: {calibrated_agreement(labeled_pairs, judge):.0%}")
+```
+
+Calibration told the team which lever to pull: the rubric fixed the systematic bias, and majority voting cut the remaining noise.
+
 ## Wrapping up
 
 LLM-as-judge is only as good as the judgment task you give it: anchored rubrics that make pass/fail a function of scores, calibration against human judgment before you trust it, and aggregation to cut noise. Used this way it handles exactly the part of evaluation that deterministic checks can't — deciding whether an open-ended answer is actually *good*. In the final tutorial of this series, we'll wire a golden dataset and a (calibrated) judge into a repeatable, CI-friendly harness that runs on every change.

@@ -190,6 +190,26 @@ There is a minimum-length trap: a prefix just below the cacheable threshold cann
 }
 ```
 
+## Worked example
+
+A support triage agent handles 12 turns on ticket #4821; the system prompt, tool schemas, and refund policy form a 5,200-token prefix, and each turn adds 180 tokens.
+
+**Input:** 12 requests, 5,200-token prefix, 180 tokens per turn, $2 per million input tokens, 0.1× cache read, 1.25× cache write.
+**Output:** broken prefix (ticket ID inside) costs 80,160 weighted tokens ($0.160); fixed prefix costs 14,380 ($0.029), versus $0.129 uncached.
+
+```text
+broken: "Ticket #4821" in system block → 12 writes, no reads
+  12 × 5,200 × 1.25 + 12 × 180 = 80,160 tokens → $0.160
+
+fixed: ticket ID moved into the user turn → 1 write + 11 reads
+  5,200 × 1.25      =  6,500
+  11 × 5,200 × 0.1  =  5,720
+  12 × 180          =  2,160
+  total             = 14,380 tokens → $0.029
+```
+
+Moving the varying field after the breakpoint saves 78% against uncached input; leaving it inside costs 24% more than no caching at all.
+
 ## Glossary
 
 - **KV cache** — stored key/value attention states for a processed prefix.

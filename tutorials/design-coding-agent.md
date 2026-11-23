@@ -256,6 +256,26 @@ That is also when the security model stops being optional. One user's prompt inj
 - Is there a per-task token and turn budget?
 - Have you evaluated it on held-out commits from your own history?
 
+## Worked example
+
+You ask the personal agent to fix a failing test in the CLI repo; the session has a three-attempt cap and snapshots every edit.
+
+**Input:** `pytest tests/test_invoice.py -q` reports 2 failed, 1 passed; file `src/parser.py`; task budget $0.40.
+**Output:** two edits fail, attempt three still fails, and the loop stops with the diff shown and `src/parser.py` restored from its checkpoint.
+
+```python
+for attempt in range(1, 4):
+    result = run_tool({"name": "bash", "command": "pytest tests/test_invoice.py -q"})
+    session.append(result)
+    if result["exit_code"] == 0:
+        break
+else:
+    restore_checkpoint("src/parser.py")
+    report(session.last_failure)
+```
+
+Tests decide done; the checkpoint makes a wrong third edit cheap to undo without touching git.
+
 ## Glossary
 
 - **Harness** — the layer around the model that supplies tools and manages context.

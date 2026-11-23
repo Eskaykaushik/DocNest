@@ -156,6 +156,22 @@ The current toolkit acknowledges this by offering separate entry points: SDD for
 - Did you review the spec and plan before implementation started?
 - Did convergence compare code to spec, not code to vibes?
 
+## Worked example
+
+A team is adding CSV export to `/admin/reports` for support agents, and the first implementation passes its own tests while missing the stated behaviour.
+
+**Input:** The acceptance criterion "export only the visible date range, in UTC, as `orders-2026-11-23.csv`" written in `specs/report-export/spec.md`.
+**Output:** `/speckit-converge` first reports a gap — 2,418 rows exported instead of the 37 filtered rows — then `Converged` after one added task fixes the handler.
+
+```text
+spec.md     Export only the visible date range; UTC timestamps; filename orders-2026-11-23.csv.
+tasks.md    T3: add /admin/reports/export; assert 37 rows and the content-disposition header.
+converge 1  GAP: handler exported 2,418 rows; spec says 37.
+converge 2  Converged: 37 rows, UTC timestamps, orders-2026-11-23.csv.
+```
+
+The gap is cheap to find because the spec named a number. Vague criteria would have let the 2,418-row export ship as "done."
+
 ## Glossary
 
 - **Spec-driven development (SDD)** — a process where a specification drives planning, implementation, and verification.

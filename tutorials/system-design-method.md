@@ -231,6 +231,21 @@ If it does not fit on a page, the design is not clear yet.
 - Are prompt and model versions logged together?
 - Is there a kill switch, and has someone tested it?
 
+## Worked example
+
+A product engineer applies the four questions to an inline email-reply suggestion feature before drawing any architecture.
+
+**Input:** 50,000 daily active users × 8 suggestions each = 400,000 calls/day; p95 TTFT budget 300ms; a wrong suggestion that gets auto-sent is customer-visible.
+**Output:** Classified as inline completion → one small model with a cached prefix, no retrieval and no agent loop; p95 TTFT 240ms, $40/day, and low-confidence suggestions simply do not appear.
+
+- **IF** a person waits on every keystroke **THEN** the archetype is inline completion and the budget is 300ms to first token, not 2 seconds.
+- **IF** retrieval adds 120ms at p95 for a marginal quality gain **THEN** drop it — spend the budget on latency.
+- **IF** the output can be auto-applied **THEN** fail closed on low confidence; if the user must accept it, fail open by showing nothing.
+- **IF** volume passes 300,000 calls/day **THEN** use a stable cached prefix; do not trade cost for an agent loop.
+- **OUTCOME:** simplest shape that meets the bar is a single cached call; no diagram was needed until the workload was written down.
+
+Four questions picked the archetype, and the archetype picked the architecture — the order the method is built around.
+
 ## Glossary
 
 - **Workload archetype** — the traffic and latency shape of a feature.

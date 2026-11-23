@@ -197,6 +197,32 @@ The `method` literal tells the model which branch it is in and tells your code h
 - Have you compared quality against a free-form baseline on a hard task?
 - Is the schema versioned and validated when read back?
 
+## Worked example
+
+A marketplace indexes product reviews into a typed object so its dashboard can group by sentiment — but the model's label can contradict the star rating.
+
+**Input:** "Aurora Headphones — 2 stars. Battery died after two days; please refund."
+**Output:** schema result `{"product":"Aurora Headphones","rating":2,"sentiment":"positive","refund_requested":true}` → after validation `sentiment="negative"`.
+
+```python
+from typing import Literal
+from pydantic import BaseModel
+
+class Review(BaseModel):
+    product: str
+    rating: int
+    sentiment: Literal["positive", "neutral", "negative"]
+    refund_requested: bool
+
+review = response.output_parsed
+expected = "negative" if review.rating <= 2 else "positive" if review.rating >= 4 else "neutral"
+if review.sentiment != expected and review.sentiment != "neutral":
+    review = review.model_copy(update={"sentiment": expected})
+print(review)
+```
+
+The schema guaranteed four typed keys and one of three allowed labels; it could not know that two stars means negative. That rule lives in the last three lines.
+
 ## Glossary
 
 - **Structured Outputs** — constraining generation to a supplied JSON Schema.

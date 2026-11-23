@@ -71,6 +71,19 @@ Ask one question before you prompt: **will I have to maintain this?**
 
 The rest of this track is about the second case.
 
+## Worked example
+
+Maya is generating a `POST /api/invoices/:id/send` handler in `src/api/invoices.ts` for a billing app that already has paying customers.
+
+**Input:** Prompt: "Add invoice emailing, get it working." The diff rewrites 240 lines across 6 files and adds no tests.
+**Output:** The same feature ships as a reviewed 38-line change with one new test file and a named owner — engineering, not vibe coding.
+
+- Condition: the code touches real payment data → outcome: reject Accept All and read every hunk before staging.
+- Condition: one route rewrites 6 files → outcome: re-prompt, scoped to `src/api/invoices.ts` and `src/mail/send.ts`.
+- Condition: the diff contains no test → outcome: require `npm test -- invoices` green before review.
+- Condition: the generated retry loop has no cap → outcome: add `maxAttempts: 3` and explain the choice in review.
+- Condition: Maya cannot explain the retry policy to a teammate → outcome: keep it in the throwaway sandbox, not this repo.
+
 ## Glossary
 
 - **Vibe coding** — generating code with an LLM without reviewing or understanding the output.

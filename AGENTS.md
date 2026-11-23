@@ -284,18 +284,18 @@ level ring and mobile menu as the reader pages.
   "difficulty": "Beginner",
   "tags": ["DevOps"],
   "featured": false,
-  "readingTime": 5,
   "updated": "2026-08-08",
   "file": "tutorials/deploying.md"
 }
 ```
 
 Optional: `subtopic` (sidebar subgroups), `tags` (keywords searchable from the
-palette — not rendered as chips), `featured` (fallback pick), `readingTime`
-(precomputed minutes; keeps the homepage from fetching Markdown), `updated`
-(chip). `category`
+palette — not rendered as chips), `featured` (fallback pick), `updated` (chip).
+`category`
 must match a `name` in `data/tracks.json`. Entry order in the JSON sets
-prev/next navigation.
+prev/next navigation. Every tutorial includes one `## Worked example` section
+before the closing sections: a concrete scenario, input/output or before/after,
+and a short snippet or decision trace.
 
 ### Adding a paper
 
@@ -431,6 +431,8 @@ Done:
       batch-enrichment case studies
 - [x] Skin system: component token contract + `data-skin` registry, with a
       doodle/whiteboard skin (chalkboard in dark) across the reader pages
+- [x] GATE AI & Data Science track: syllabus map plus one subject-wise note for
+      each of the eight GATE blocks
 
 Planned / ideas:
 

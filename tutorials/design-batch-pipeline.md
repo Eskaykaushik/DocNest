@@ -190,6 +190,22 @@ The architecture holds. The operational tooling gets more serious.
 - Does an expired batch resume only the unfinished requests?
 - Is there a per-run cost cap and an alert?
 
+## Worked example
+
+The beauty-category shard submits 50,000 records at 21:00; the 24-hour window expires with 2,200 requests unfinished.
+
+**Input:** manifest `beauty-v3`, 50,000 `custom_id`s, 47,800 completed results, 2,200 IDs in the error file.
+**Output:** 2,200 resubmitted instead of 50,000; the accepted table holds at 47,800 rows with no duplicates.
+
+```python
+completed = {row["custom_id"] for row in read_results("beauty-v3.jsonl")}
+requested = load_ids("beauty-v3.ids")
+unfinished = requested - completed
+submit_batch("beauty-v3-retry", [build_request(cid) for cid in sorted(unfinished)])
+```
+
+Only the unfinished IDs are charged again, because completed requests are billed even when the batch expires.
+
 ## Glossary
 
 - **Batch API** — an asynchronous endpoint for large request sets, usually cheaper and slower than synchronous calls.

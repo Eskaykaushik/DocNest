@@ -161,6 +161,27 @@ The "deep" in deep learning refers to stacking *many* layers. More layers let th
 | Great on training, bad on new data | Overfitting (see ML fundamentals) | Add more data, or regularization (e.g. dropout) |
 | Training "works" but is slow | Hand-writing loops | Let a framework like PyTorch do backprop |
 
+## Worked example
+
+Leah is debugging a three-class classifier whose first layer rejects her batches of 32 ten-feature samples.
+
+**Input:** A batch `X` of shape `(32, 10)` and labels for 3 classes.
+**Output:** `Linear(10, 16) → Tanh → Linear(16, 3)`; the batch flows `(32, 10) → (32, 16) → (32, 3)` with no shape error.
+
+```python
+import torch
+
+X = torch.randn(32, 10)
+model = torch.nn.Sequential(
+    torch.nn.Linear(10, 16),
+    torch.nn.Tanh(),
+    torch.nn.Linear(16, 3),
+)
+print(tuple(model(X).shape))
+```
+
+Each layer's input size must match the previous layer's output; the batch size just rides along unchanged.
+
 ## Glossary (for quick reference)
 
 - **Weight / bias** — the learnable numbers inside a network; the entire model is these.

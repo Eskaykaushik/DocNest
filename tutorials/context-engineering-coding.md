@@ -129,6 +129,23 @@ That is also why they call context engineering a craft rather than a prompt tric
 
 Böckeler adds a caution worth keeping: context configuration is not enforcement. The features "can definitely make a coding agent more effective," but execution still depends on how the model interprets the instructions. Treat the setup as a probability improvement, not a guarantee.
 
+## Worked example
+
+An engineer is chasing an intermittent total in `test/checkout.test.js` during a session that has already burned 92K tokens on grep output and CI logs.
+
+**Input:** Before — three whole files and a 380-line CI log pasted into the prompt. After — the compact packet below.
+**Output:** Context spend drops from ~46K tokens to ~400; the agent reads only the two files it needs, and `npm test -- test/checkout.test.js --runInBand` reproduces the failure in 2 of 40 runs.
+
+```text
+BEFORE  src/cart.ts (full) + src/checkout.ts (full) + test/checkout.test.js (full) + ci.log (380 lines)
+AFTER   files: src/checkout.ts, test/checkout.test.js
+        symptom: total 41.00, expected 42.50; fails in 2 of 40 runs
+        command: npm test -- test/checkout.test.js --runInBand
+        done: fix rounding in calculateTotal() and re-run that command
+```
+
+The packet is a pointer plus a test, not a copy of the repository — the move that keeps the agent in the smart zone.
+
 ## Glossary
 
 - **Context window** — the tokens available to the model for one inference step.

@@ -188,6 +188,18 @@ The [RAG evaluation tutorial](../tutorials/evaluating-rag.md) covers the dataset
 }
 ```
 
+## Worked example
+
+A developer searches the docs for "ERR_429 retry limit exhausted"; the only correct passage sits at BM25 rank 12 and dense rank 3, outside both top-5 lists.
+
+**Input:** query `ERR_429 retry limit exhausted`, `k=60`, fused window 50, reranker top 5; retriever window 5 before and 20 after.
+**Output:** before — the passage is absent from the final 5; after — it enters the fused top 8 and lands at final position 2.
+
+- Condition: BM25 rank 12 > window 5 → outcome: the lexical list drops the passage.
+- Condition: dense rank 3 ≤ window 20 → outcome: fusion scores it 1/72 + 1/63 = 0.0298.
+- Condition: fused rank 8 ≤ 50 → outcome: the cross-encoder sees it.
+- Condition: pair score 0.91 vs the leader's 0.94 → outcome: final position 2.
+
 ## Glossary
 
 - **BM25** — a lexical ranking function based on term frequency, inverse document frequency, and document length.

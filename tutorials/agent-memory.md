@@ -138,6 +138,26 @@ The second boundary is trust. Text the agent read from a web page, an email, or 
 - Have you tested what happens when the store returns nothing?
 - Does a user have a way to see and clear what is remembered?
 
+## Worked example
+
+A user in the Acme tenant tells support they moved from Kolkata to New York, so the assistant has to replace a stale preference instead of adding a second one.
+
+**Input:** namespace `("acme", "users", "u_4821")`, key `"preferences"`, new timezone `"America/New_York"`.
+**Output:** `Asia/Kolkata → America/New_York`; the namespace still holds one preferences document, with `updated: "2026-11-23"`.
+
+```python
+ns = ("acme", "users", "u_4821")
+before = store.get(ns, "preferences").value
+store.put(ns, "preferences", {
+    **before,
+    "timezone": "America/New_York",
+    "updated": "2026-11-23",
+})
+print(before["timezone"], "->", store.get(ns, "preferences").value["timezone"])
+```
+
+Consolidation is an overwrite of the same key, not a second row that a later search would have to reconcile.
+
 ## Glossary
 
 - **Thread** — one conversation, identified by a thread ID.

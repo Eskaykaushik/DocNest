@@ -150,6 +150,27 @@ This "evaluate retrieval separately from generation" mindset is the foundation o
 | Every query returns the same handful of chunks | Index contains near-duplicate content | Deduplicate documents before indexing |
 | Model answers are stale even after adding new docs | Store never re-embedded | Re-run embedding for new/updated chunks, not just the prompt |
 
+## Worked example
+
+A support bot must answer a refund question using only DocNest's 2026 policy text, which was never in the model's training data.
+
+**Input:** "Can I get a refund if I cancel 20 days after purchase?"
+**Output:** "Yes. The policy grants a full refund within 30 days, and 20 days is inside that window."
+
+```text
+index
+  chunk-0 "Refunds: full refund within 30 days of purchase. After 30 days,
+           no refunds except defective items."                  score 0.87
+  chunk-1 "Cancellation: subscriptions end at the billing cycle." score 0.44
+  chunk-2 "Shipping: orders over $50 ship free in 3-5 days."     score 0.21
+
+retrieved (top_k=2): chunk-0, chunk-1
+answer (from chunk-0 only): "Yes. The policy grants a full refund within 30
+  days, and 20 days is inside that window."
+```
+
+The answer came from `chunk-0`, not from memory — and `top_k=2` mattered because the word "cancel" also pulled in the less relevant cancellation chunk. If retrieval had missed `chunk-0`, the system message would have forced "I don't know".
+
 ## Glossary (for quick reference)
 
 - **RAG** — Retrieval-Augmented Generation: retrieving relevant context and handing it to an LLM before it answers.

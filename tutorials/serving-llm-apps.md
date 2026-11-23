@@ -143,6 +143,29 @@ The goal is a system where an LLM failure degrades the experience instead of bre
 | One slow user blocks everyone | Synchronous wait inside request handling | Make calls async or background them; set timeouts |
 | Malformed JSON crashes the app | Unvalidated model output | Validate/repair the output before using it |
 
+## Worked example
+
+A docs assistant gets 20 requests per second at the 9 a.m. peak, exceeding the provider's 900-calls-per-minute cap, so an engineer puts the prompt cache and token bucket in front of the paid call.
+
+**Input:** 1,200 LLM calls/min at peak; 40% of prompts are exact repeats; `TokenBucket(capacity=15, refill_per_second=15)` caps bursts.
+**Output:** 720 provider calls/min after caching (down from 1,200), zero provider 429s, and cost per 1,000 requests falls from $6.00 to $3.60.
+
+```python
+limiter = TokenBucket(capacity=15, refill_per_second=15)
+cache: dict[str, str] = {}
+
+def serve(messages):
+    key = hashlib.sha256(repr(messages).encode()).hexdigest()
+    if key in cache:
+        return cache[key]
+    if not limiter.allow():
+        raise RuntimeError("rate_limit")
+    cache[key] = llm.invoke(messages)
+    return cache[key]
+```
+
+The cache removes the bill and the bucket removes the surprise; both act before the provider sees the request, which is why they belong in the request path.
+
 ## Glossary (for quick reference)
 
 - **Time-to-first-token (TTFT)** — the latency before the first output token arrives; what users actually perceive.

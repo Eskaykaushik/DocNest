@@ -148,6 +148,22 @@ That last point connects back to context engineering: an MCP server is a context
 - Have you capped or paginated large outputs?
 - Did you check the context cost of leaving it connected?
 
+## Worked example
+
+An engineer fixing checkout bug `PAY-2841` has pasted the same Sentry stack trace into chat four times this week, so she connects Sentry at project scope.
+
+**Input:** The command below, run in the repo root, plus the ticket `PAY-2841`.
+**Output:** Before — four manual pastes per session, with a trace already two days stale. After — the agent reads live issue `SENTRY-7742` through the Sentry tool and names deploy `d4f19c2` as the cause, with no pasting.
+
+```text
+$ claude mcp add --transport http --scope project sentry https://mcp.sentry.io/mcp
+Added MCP server sentry to project config (.mcp.json)
+$ claude mcp list
+sentry: https://mcp.sentry.io/mcp (HTTP) - Connected
+```
+
+Project scope puts the server in `.mcp.json`, so teammates approve it once after reading it — the copy-paste loop disappears without silently trusting new configuration.
+
 ## Glossary
 
 - **MCP** — Model Context Protocol, an open standard for connecting AI applications to external systems.

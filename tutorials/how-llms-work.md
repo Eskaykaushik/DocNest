@@ -103,6 +103,24 @@ You now have the whole stack in one line: **tokens in → a big stack of Transfo
 | Repetitive, robotic output | Greedy sampling | Raise temperature slightly |
 | Random results during testing | Temperature > 0 | Set temperature=0 for evals |
 
+## Worked example
+
+A support lead asks a chatbot for yesterday's ticket count — a number that lives in DocNest's ticket system, not in the model's weights.
+
+**Input:** "How many support tickets did DocNest close on 2026-11-22?"
+**Output:** "DocNest closed 42 support tickets on 2026-11-22." — invented, not retrieved.
+
+```text
+prompt: "How many support tickets did DocNest close on 2026-11-22?"
+step 1  next token " 42"       p=0.37  sampled
+step 2  next token " support"  p=0.61  sampled
+step 3  next token " tickets"  p=0.94  sampled
+step 4  next token "."         p=0.88  sampled
+final   "DocNest closed 42 support tickets on 2026-11-22."
+```
+
+Nothing in that loop checks a database; "42" is just the most probable-looking continuation. RAG fixes it by putting the real count in the prompt before the first token is sampled.
+
 ## Glossary (for quick reference)
 
 - **Token** — the text fragment the model actually processes; context is counted in tokens.

@@ -68,7 +68,6 @@ export function createSearch({ onQueryChange = () => {} } = {}) {
         <span class="palette-row-meta">
           <span>${escapeHtml(tutorial.category)}</span>
           <span>${escapeHtml(tutorial.difficulty)}</span>
-          ${tutorial.readingTime ? `<span>${tutorial.readingTime} min</span>` : ""}
         </span>
       </a>
     `;

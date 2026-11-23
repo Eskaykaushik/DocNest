@@ -162,6 +162,21 @@ This table is the practical payoff. Without spans, every row collapses into "the
 - Can a failing trace be promoted into an evaluation dataset?
 - Are latency and cost broken down by prompt and model version?
 
+## Worked example
+
+A support lead investigates a "weird answer" complaint from 12:14 on 2026-11-18 using the nested spans the support agent already exports.
+
+**Input:** Trace `4bf92f10` for "Where is my refund?" — model span `gen_ai.response.model=gpt-4o-2026-03-01`, `output_tokens=142`; retrieval span `chunks=0` with filter `tenant=acme-corp`.
+**Output:** Root cause is empty retrieval, not the model; after normalizing the filter to `acme`, the trace records `chunks=3` and the answer cites the refund policy.
+
+- **IF** the retrieval span reports `chunks = 0` **THEN** inspect filters before the model span — the answer came from parametric memory.
+- **IF** `gen_ai.request.model` differs from `gen_ai.response.model` **THEN** blame routing or a version bump, not the prompt.
+- **IF** the `get_refund_status` tool span is absent **THEN** check the model span's input messages to see whether the tool was offered.
+- **IF** `gen_ai.usage.output_tokens` exceeds 1,000 with flat traffic **THEN** look at reasoning tokens, not response length.
+- **OUTCOME:** only the first condition fired, so the fix was the tenant filter, and this trace was promoted into the golden dataset.
+
+This is the payoff of nested spans: without them, every row in the debugging table collapses into "the model was weird."
+
 ## Glossary
 
 - **Trace** — the full record of one request, made of nested spans.

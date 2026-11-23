@@ -195,6 +195,25 @@ This function sends the user's question to your `/ask` endpoint, waits for the J
 | Agent calls a tool with malformed input | Missing or wrong type hints | The model infers the expected input shape from your type hints | Add precise type hints (`str`, `int`, etc.) |
 | Agent loops or calls the same tool repeatedly | Tool result doesn't clearly answer the sub-question | Model can't tell if it already has what it needs | Make tool return values explicit and unambiguous |
 
+## Worked example
+
+A support lead asks the agent for the price and stock of a gizmo before sending a customer quote, and the answer requires two separate lookups.
+
+**Input:** "How much does a gizmo cost, and how many are in stock?"
+**Output:** `get_price("gizmo") → "$8.75"`, then `get_stock("gizmo") → "47 units in stock"`; final answer: "A gizmo costs $8.75 and 47 units are in stock."
+
+```python
+agent = initialize_agent(
+    tools=[get_price, get_stock],
+    llm=ChatOpenAI(model="gpt-4o-mini", temperature=0),
+    agent=AgentType.OPENAI_FUNCTIONS,
+    verbose=True,
+)
+print(agent.run("How much does a gizmo cost, and how many are in stock?"))
+```
+
+The verbose trace is the point: the model picked both tools and their arguments from the docstrings alone.
+
 ## Glossary (for quick reference)
 
 - **LLM** — the underlying language model (e.g. GPT-4o-mini) that generates text and decides on actions.

@@ -159,6 +159,21 @@ Log the reasoning-token count on every call. It is the cheapest observability yo
 - Is the prompt prefix stable enough for caching?
 - Have you compared quality and cost against the non-reasoning baseline?
 
+## Worked example
+
+A team is choosing an effort level for a 200-case bug-fix triage eval; high effort looked great in a demo, so the eval has to decide.
+
+**Input:** 200 labeled diffs; `max_output_tokens=6_000`; ship gate ≥90% correct and <3 s median latency.
+**Output:** `low` 88% → rejected; `medium` 94% at 1,180 reasoning tokens → shipped; `high` 95% at 3,260 tokens → rejected on cost.
+
+- condition: `low` accuracy 176/200 = 88% < 90% gate → reject
+- condition: `medium` 188/200 = 94%, 1,180 reasoning tokens, 2.7 s → passes both gates
+- condition: `high` 190/200 = 95%, 3,260 reasoning tokens, 6.4 s → +2 cases for 2.8× tokens
+- condition: high must beat medium by ≥5 cases to justify latency → false → reject
+- outcome: ship `medium`; log `output_tokens_details.reasoning_tokens` on every request
+
+The extra thinking at `high` was real spend for two extra correct cases out of 200 — start one level below where you think you need to be and let the eval move you.
+
 ## Glossary
 
 - **Reasoning tokens** — internal tokens generated before the visible answer; billed as output.

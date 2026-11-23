@@ -240,7 +240,7 @@ function renderGrid(tutorials) {
 }
 
 function renderCard(tutorial) {
-  const meta = [tutorial.difficulty, tutorial.readingTime ? `${tutorial.readingTime} min` : null]
+  const meta = [tutorial.difficulty]
     .filter(Boolean)
     .map(
       (item, index) =>

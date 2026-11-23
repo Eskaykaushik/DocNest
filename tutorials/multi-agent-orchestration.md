@@ -143,6 +143,21 @@ A single agent's transcript is one thing to read. A multi-agent run is a tree of
 - Can you reconstruct the whole tree from traces after a bad run?
 - Have you measured the multi-agent version against a single-agent baseline on your own evals?
 
+## Worked example
+
+A research lead handles "Compare Q3 pricing for Acme and Globex and flag EU regulatory changes" under a four-subagent cap and a three-slot concurrency limit.
+
+**Input:** `max_subtasks=4`, `Semaphore(3)`, `budget=8_000` tokens per subagent; the question covers Acme, Globex, and EU rules.
+**Output:** plan has three tasks — `pricing-acme`, `pricing-globex`, `regulations-eu`; the first synthesis gets two `ok` findings with sources, and a coverage check flags the missing EU item for one retry.
+
+- `len(plan.tasks) == 3 <= 4` → fan out all three; no task is dropped.
+- Three tasks, three semaphore slots → all start in one wave; a fourth task would wait.
+- `pricing-acme` uses 6,140 tokens < 8,000 → status `ok`, two sources returned.
+- `pricing-globex` uses 7,320 tokens < 8,000 → status `ok`, one source returned.
+- `regulations-eu` hits 8,000 tokens → status `truncated`, excluded from `findings`; the verifier sees the "EU" constraint uncovered and asks for one retry.
+
+The verification bullet is the one a demo usually omits: bounded outputs make it possible to check coverage instead of trusting the synthesis.
+
 ## Glossary
 
 - **Orchestrator** — the agent or controller that plans and delegates.

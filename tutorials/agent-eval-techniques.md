@@ -153,6 +153,26 @@ Running this before and after every meaningful change turns "I think this prompt
 | Substring check fails even though the answer is clearly correct | Expected phrasing was too rigid (e.g. expecting "$8.75" but agent wrote "eight dollars and seventy-five cents") | Loosen the check, or use LLM-as-judge for cases where phrasing legitimately varies |
 | Eval pipeline takes too long to run regularly | Every case uses a slow LLM-as-judge call | Reserve LLM-as-judge for genuinely open-ended cases; use substring/tool checks for the rest |
 
+## Worked example
+
+A gadget-shop engineer rewrites the `get_price` tool docstring, reruns the three-case golden dataset above, and sees every expected substring still present in the answers.
+
+**Input:** The 3-case `golden_dataset`; after the edit, "What's the capital of France?" still answers "Paris" but its trace now contains `tool_call:get_price`.
+**Output:** Containment accuracy stays 3/3 (100%), while tool-call accuracy drops from 3/3 (100%) to 2/3 (67%) — the no-tool case regressed.
+
+```python
+def tool_accuracy(cases, run_case) -> float:
+    correct = 0
+    for case in cases:
+        answer, trace = run_case(case["question"])
+        correct += check_tool_usage(trace, case["expected_tool"])
+    return correct / len(cases)
+
+print(f"Tool accuracy: {tool_accuracy(golden_dataset, run_with_trace):.0%}")
+```
+
+A containment-only eval would have reported 100% and shipped the spurious call; the trace check is the layer that makes it visible.
+
 ## Glossary (for quick reference)
 
 - **Golden dataset** — a curated set of test inputs with known-correct (or acceptable) expected outputs.

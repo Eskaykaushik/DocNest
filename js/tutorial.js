@@ -5,11 +5,10 @@
  */
 
 import {
-  calculateReadingTime,
   formatDate,
   escapeHtml,
 } from "./utils.js";
-import { ContentPageController, metaChip, clockIconSvg } from "./content-page.js";
+import { ContentPageController, metaChip } from "./content-page.js";
 import { initDeckButton } from "./deck.js";
 import { buildSidebar, initSidebarDrawer } from "./sidebar.js";
 import { createSearch } from "./search.js";
@@ -47,7 +46,6 @@ const page = new ContentPageController({
   metaChips: (tutorial, markdownText) => {
     const wordCount = markdownText.trim().split(/\s+/).filter(Boolean).length;
     return [
-      metaChip(`${clockIconSvg()} ${calculateReadingTime(markdownText)} min read`),
       metaChip(escapeHtml(tutorial.difficulty)),
       metaChip(`${wordCount.toLocaleString()} words`),
       tutorial.subtopic ? metaChip(escapeHtml(tutorial.subtopic), "subtopic-chip") : "",
@@ -65,7 +63,6 @@ const page = new ContentPageController({
       entry: tutorial,
       articleEl: elements.content,
       url: new URL(`tutorial.html?id=${encodeURIComponent(tutorial.id)}`, window.location.href).href,
-      readingTime: calculateReadingTime(markdownText),
       wordCount,
     });
   },

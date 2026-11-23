@@ -209,6 +209,26 @@ That last classification is what makes a blocking gate tolerable: if the report 
 | Every change is slow | Full judge on every case | Two tiers: cheap filter + expensive nightly |
 | Eval "passes" but prod breaks | Dataset stale or judge biased | Dataset hygiene (previous tutorial) + judge calibration |
 
+## Worked example
+
+A GitHub Actions job on PR #418 compares a fresh fast-tier report against the repo's stored baseline and has to decide whether the merge is safe.
+
+**Input:** `reports/latest.json` has `metrics = {accuracy: 0.86, faithfulness: 0.92, tool_fidelity: 0.90}`; PR #418 reports `{accuracy: 0.85, faithfulness: 0.90, tool_fidelity: 0.90}`.
+**Output:** accuracy 86% → 85% (within the 2-point allowance), faithfulness 92% → 90% (against a 0-point allowance) → gate FAILS with exit 1; after restoring `get_price` to the tool docstring, the rerun matches the baseline and passes.
+
+```python
+import json, sys
+from evals.reporter import is_regression, DEFAULT_THRESHOLD
+
+report = json.load(open("reports/pr-418.json"))
+if is_regression(report, "reports/latest.json", DEFAULT_THRESHOLD):
+    print("EVAL GATE FAILED — faithfulness regressed")
+    sys.exit(1)
+print(f"Overall accuracy: {report['metrics']['accuracy']:.0%} (baseline ok)")
+```
+
+Overall accuracy alone would have passed; the per-dimension threshold is what blocks a hallucination regression while tolerating wording noise.
+
 ## Wrapping up
 
 A harness converts evaluation from a thing you do occasionally, by hand, into a repeating system with a single command, a stored baseline, per-dimension gates, and a readable report. Combined with the golden datasets from the second tutorial and the calibrated judge from the third, it closes the loop that "Agent Evaluation Techniques" opened: now a prompt tweak, a tool edit, or a model bump is provably better or worse, before it ships.

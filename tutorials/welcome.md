@@ -149,6 +149,29 @@ is a good general reference for Markdown conventions.
 
 ---
 
+## Worked example
+
+Priya is writing a five-step setup guide and wants the reader TOC to show only two entries, not one per step.
+
+**Input:** A `tutorials/setup.md` file with two `##` headings and five numbered steps under the second one.
+**Output:** TOC shows `Install` and `Configure` only; the five steps stay numbered inside the article.
+
+```markdown
+## Install
+Run `pip install numpy pandas`.
+
+## Configure
+1. Open `config.json`
+2. Set `data_dir`
+3. Save the file
+4. Run `python verify.py`
+5. Check the output
+```
+
+Turning a step into a `###` heading would add a third TOC entry automatically — headings, not numbering, drive the reader outline.
+
+---
+
 ## What's next
 
 Head back to the homepage and open the LangChain tutorial to see a longer, more technical
