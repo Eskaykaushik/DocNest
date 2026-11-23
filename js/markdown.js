@@ -6,9 +6,11 @@
  */
 
 import { slugify, escapeHtml } from "./utils.js";
+import { flowFromCode } from "./code-flow.js";
 
 let renderer = null;
 let usedIds = null;
+let flowSeq = 0;
 
 const CONTENT_LINK = /^(?:\.{0,2}\/)*(tutorials|papers)\/([^/]+?)\.md(#.*)?$/;
 
@@ -70,17 +72,51 @@ function getRenderer() {
     const validLanguage = langInfo ? language : "plaintext";
     const highlighted = hljs.highlight(code, { language: validLanguage }).value;
     const label = langInfo?.name || (validLanguage === "plaintext" ? "text" : validLanguage);
+    const flow = flowFromCode(code, language);
+    let flowButton = "";
+    let flowDrawer = "";
+
+    if (flow) {
+      flowSeq += 1;
+      const flowId = `code-flow-${flowSeq}`;
+      flowButton = `
+          <button type="button" class="flow-btn" data-flow-lang="${escapeHtml(language)}"
+            aria-pressed="false" aria-controls="${flowId}" title="Show the execution flow">
+            ${flowIconSvg()}
+            <span class="flow-label">Flow</span>
+            <svg class="flow-chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+              stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 6.5 8 10l4-3.5"/>
+            </svg>
+          </button>`;
+      flowDrawer = `
+        <div class="code-flow" id="${flowId}" aria-hidden="true" inert>
+          <div class="code-flow-inner">
+            <div class="code-flow-meta">
+              <span class="code-flow-kicker">Execution flow</span>
+              <span class="code-flow-count">${flow.steps} steps</span>
+            </div>
+            <div class="code-flow-diagram mermaid-diagram" data-diagram-fit="natural"></div>
+          </div>
+        </div>`;
+    }
 
     return `
-      <div class="code-block"${isTabbed ? ` data-tab="${escapeHtml(label)}"` : ""}>
+      <div class="code-block${flow ? " has-flow" : ""}"${isTabbed ? ` data-tab="${escapeHtml(label)}"` : ""}>
         <div class="code-block-header">
           <span class="code-lang">${escapeHtml(label)}</span>
-          <button type="button" class="copy-btn" data-code="${encodeURIComponent(code)}">
-            ${copyIconSvg()}
-            <span class="copy-label">Copy</span>
-          </button>
+          <div class="code-block-actions">
+            ${flowButton}
+            <button type="button" class="copy-btn" data-code="${encodeURIComponent(code)}">
+              ${copyIconSvg()}
+              <span class="copy-label">Copy</span>
+            </button>
+          </div>
         </div>
-        <pre><code class="hljs language-${validLanguage}">${highlighted}</code></pre>
+        <div class="code-stage">
+          <div class="code-face"><pre><code class="hljs language-${validLanguage}">${highlighted}</code></pre></div>
+          ${flowDrawer}
+        </div>
       </div>
     `;
   };
@@ -103,6 +139,16 @@ function copyIconSvg() {
   return `<svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
     <rect x="5" y="5" width="9" height="9" rx="1.5"/>
     <path d="M11 5V3.5A1.5 1.5 0 0 0 9.5 2h-6A1.5 1.5 0 0 0 2 3.5v6A1.5 1.5 0 0 0 3.5 11H5"/>
+  </svg>`;
+}
+
+function flowIconSvg() {
+  return `<svg class="flow-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor"
+    stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+    <circle cx="4" cy="3.5" r="1.6"/>
+    <circle cx="12" cy="3.5" r="1.6"/>
+    <circle cx="8" cy="12.5" r="1.6"/>
+    <path d="M5.6 3.5h4.8M4 5.1v2.1a2.4 2.4 0 0 0 2.4 2.4h1.2M12 5.1v2.1a2.4 2.4 0 0 1-2.4 2.4H8.4"/>
   </svg>`;
 }
 

@@ -24,6 +24,7 @@ canvas.setAttribute("aria-hidden", "true");
 
 const toolbar = document.createElement("div");
 toolbar.className = "pen-toolbar";
+toolbar.id = "pen-toolbar";
 toolbar.setAttribute("role", "toolbar");
 toolbar.setAttribute("aria-label", "Presentation ink tools");
 toolbar.hidden = true;
@@ -33,20 +34,35 @@ toolbar.innerHTML = `
   <button type="button" class="pen-tool" data-pen-tool="clear" title="Clear ink" aria-label="Clear ink">${ICONS.clear}</button>
 `;
 
-const launcher = document.createElement("button");
-launcher.type = "button";
-launcher.className = "pen-launcher";
-launcher.setAttribute("aria-label", "Presentation ink");
-launcher.setAttribute("aria-pressed", "false");
-launcher.title = "Presentation ink (Esc to exit)";
-launcher.innerHTML = ICONS.launcher;
+function configureLauncher(button) {
+  button.setAttribute("aria-label", "Presentation ink");
+  button.setAttribute("aria-expanded", "false");
+  button.setAttribute("aria-controls", "pen-toolbar");
+  button.title = "Presentation ink (Esc to exit)";
+  return button;
+}
 
-const root = document.createElement("div");
-root.className = "pen-widget";
-root.appendChild(toolbar);
-root.appendChild(launcher);
+const brandLauncher = document.querySelector("[data-pen-launcher]");
+let launcher;
+
+if (brandLauncher) {
+  launcher = configureLauncher(brandLauncher);
+  const group = launcher.closest(".navbar-brand-group") || launcher.parentElement;
+  group.insertBefore(toolbar, launcher.nextSibling);
+} else {
+  launcher = configureLauncher(document.createElement("button"));
+  launcher.type = "button";
+  launcher.className = "pen-launcher";
+  launcher.innerHTML = ICONS.launcher;
+
+  const root = document.createElement("div");
+  root.className = "pen-widget";
+  root.appendChild(toolbar);
+  root.appendChild(launcher);
+  document.body.appendChild(root);
+}
+
 document.body.appendChild(canvas);
-document.body.appendChild(root);
 
 const ctx = canvas.getContext("2d");
 
@@ -239,7 +255,7 @@ function setActive(next) {
   active = next;
   canvas.classList.toggle("is-active", active);
   launcher.classList.toggle("is-active", active);
-  launcher.setAttribute("aria-pressed", String(active));
+  launcher.setAttribute("aria-expanded", String(active));
   toolbar.hidden = !active;
   document.body.classList.toggle("pen-active", active);
   if (!active) clearInk();
@@ -263,7 +279,10 @@ toolbar.addEventListener("click", (event) => {
 });
 
 document.addEventListener("keydown", (event) => {
-  if (event.key === "Escape" && active) setActive(false);
+  if (event.key !== "Escape" || !active) return;
+  const focusWasInside = toolbar.contains(document.activeElement) || document.activeElement === canvas;
+  setActive(false);
+  if (focusWasInside) launcher.focus();
 });
 
 setTool("laser");

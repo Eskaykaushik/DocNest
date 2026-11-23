@@ -6,6 +6,7 @@
  */
 
 import { renderMarkdown, initCopyButtons } from "./markdown.js";
+import { initCodeFlows } from "./code-flow.js";
 import { showToast } from "./effects.js";
 
 const API_URL = "https://kaushix-api-service.onrender.com";
@@ -258,6 +259,7 @@ function addMessage(author, text, type) {
   if (type === "bot") {
     content.innerHTML = renderMarkdown(text);
     initCopyButtons(wrap);
+    initCodeFlows(wrap);
   } else {
     content.textContent = text;
   }
@@ -320,6 +322,7 @@ function streamResponse(bot, fullText) {
           streamTimer = null;
           bot.content.innerHTML = renderMarkdown(fullText);
           initCopyButtons(bot.wrap);
+          initCodeFlows(bot.wrap);
           bot.wrap.classList.remove("streaming");
           scrollToBottom();
           resolve();

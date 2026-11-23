@@ -15,6 +15,7 @@ import {
 } from "./utils.js";
 import { renderMarkdown, initCopyButtons, initCodeTabs } from "./markdown.js";
 import { initDiagrams } from "./diagram.js";
+import { initCodeFlows } from "./code-flow.js";
 import { attachCompletion as trackCompletion, recordQuizPerfect } from "./progress.js";
 import { initQuizzes } from "./quiz.js";
 
@@ -156,6 +157,7 @@ export class ContentPageController {
     initDiagrams(this.contentEl);
     initCodeTabs(this.contentEl);
     initCopyButtons(this.contentEl);
+    initCodeFlows(this.contentEl);
     initQuizzes(this.contentEl, { onPerfect: () => recordQuizPerfect(entry.id) });
     this.options.enhance?.(this.contentEl, entry);
   }

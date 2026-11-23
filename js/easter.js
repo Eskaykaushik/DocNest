@@ -1,42 +1,13 @@
-import { showToast, flash, burstParticles, starfieldRain } from "./effects.js";
+import { showToast, burstParticles, starfieldRain } from "./effects.js";
 import { recordEgg } from "./progress.js";
 
 const CONSOLE_EGG =
-  "\n%c DocNest %c a nest for your AI curiosity\n%c psst… try clicking the D mark a few times, or type hackable words in search.\n";
+  '\n%c DocNest %c a nest for your AI curiosity\n%c psst… type hackable words in search, whisper "docnest", or try the arrow-key classic.\n';
 const CONSOLE_STYLE = [
   "color:#0d1117;background:#58a6ff;padding:2px 8px;border-radius:6px;font-weight:700;",
   "color:#f0f6fc;background:transparent;",
   "color:#8b949e;background:transparent;padding-left:2px;",
 ];
-
-function initLogoEgg() {
-  const brand = document.querySelector(".brand");
-  const mark = document.querySelector(".brand-mark");
-  if (!brand || !mark) return;
-  let clicks = 0;
-  let fired = false;
-  brand.addEventListener("click", (event) => {
-    if (!event.target.closest(".brand-mark")) return;
-    if (fired) return;
-    event.preventDefault();
-    const now = Date.now();
-    if (!mark._windowStart || now - mark._windowStart > 6000) {
-      mark._windowStart = now;
-      clicks = 0;
-    }
-    clicks += 1;
-    if (clicks >= 5) {
-      fired = true;
-      flash();
-      brand.classList.remove("pulse");
-      void brand.offsetWidth;
-      brand.classList.add("pulse");
-      setTimeout(() => brand.classList.remove("pulse"), 750);
-      showToast("Nest initialized.");
-      recordEgg("logo");
-    }
-  });
-}
 
 function initTypedSecret() {
   let buffer = "";
@@ -168,7 +139,6 @@ function initConsoleEgg() {
 }
 
 export function initEasterEggs() {
-  initLogoEgg();
   initTypedSecret();
   initSearchEgg();
   initThemeFlipEgg();

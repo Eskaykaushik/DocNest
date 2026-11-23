@@ -36,6 +36,7 @@
 /* --------------------------------------------------------------------- */
 
 .navbar-brand-group {
+  position: relative;
   display: flex;
   align-items: center;
   gap: var(--space-6);
@@ -2070,6 +2071,13 @@ body.pen-active {
 
 .pen-toolbar[hidden] {
   display: none;
+}
+
+.navbar-brand-group > .pen-toolbar {
+  position: absolute;
+  top: calc(50% + var(--nav-height) / 2 + var(--space-2));
+  left: 0;
+  z-index: 50;
 }
 
 .pen-tool {

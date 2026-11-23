@@ -160,7 +160,8 @@ async function render(figures, container) {
     if (!svg) continue;
     const box = measure(svg, diagramWidth());
     if (box) {
-      const width = Math.min(diagramWidth(), box.naturalWidth * MAX_UPSCALE);
+      const fit = figure.dataset.diagramFit === "natural" ? box.naturalWidth : box.naturalWidth * MAX_UPSCALE;
+      const width = Math.min(diagramWidth(), fit);
       figure.style.setProperty("--diagram-max-width", `${Math.round(width)}px`);
     }
     figure.innerHTML = svg;
@@ -199,14 +200,14 @@ function watchTheme() {
 
 export function initDiagrams(container = document) {
   const figures = Array.from(container.querySelectorAll(SELECTOR));
-  if (!figures.length || typeof window.mermaid !== "object") return;
+  if (!figures.length || typeof window.mermaid !== "object") return Promise.resolve();
 
   figures.forEach((figure) => {
     if (!figure.dataset.mermaidSrc) figure.dataset.mermaidSrc = figure.textContent;
   });
 
-  render(figures, container);
   watchTheme();
+  return render(figures, container);
 }
 
 function nodeKey(id) {
