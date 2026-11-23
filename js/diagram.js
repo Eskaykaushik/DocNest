@@ -335,8 +335,9 @@ export function initDiagramInteractions(container = document) {
       });
     });
 
-    svg.addEventListener("click", (event) => {
-      if (!event.target.closest("g.node")) clear();
+    figure.addEventListener("click", (event) => {
+      if (event.target.closest("g.node, .diagram-clear")) return;
+      clear();
     });
     svg.addEventListener("keydown", (event) => {
       if (event.key === "Escape") clear();
